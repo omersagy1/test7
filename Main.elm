@@ -21,8 +21,8 @@ init = (model, Cmd.none)
 
 type alias Model = 
   { val: Float
-  , corpus: List(String)
-  , display: List(String)
+  , corpus: List String
+  , display: List String
   , textDraft: String
   }
 
@@ -81,12 +81,14 @@ view model =
     []
     ((renderCorpus model.corpus) ++ [renderAddText])
 
-renderCorpus : List (String) -> List(Html a)
+renderCorpus : List String -> List (Html a)
 renderCorpus = List.reverse << renderCorpusHelper 
+
+renderCorpusHelper : List String -> List (Html a)
 renderCorpusHelper list = 
   case list of
     [] -> []
-    x::xs -> (div [] [(text x)])::(renderCorpusHelper xs)
+    x::xs -> (div [] [text x])::(renderCorpusHelper xs)
 
 renderAddText : Html Message
 renderAddText = div []
