@@ -1,5 +1,5 @@
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, button, div, text, input)
+import Html.Events exposing (onClick, onInput)
 import Annex
 import AnimationFrame
 import Time exposing (Time, second)
@@ -13,50 +13,61 @@ main =
     , subscriptions = subscriptions
     }
 
-init : (Model, Cmd Msg)
-init = 
-  ({ val = 0 },
-   Cmd.none)
+init : (Model, Cmd Message)
+init = (model, Cmd.none)
 
 
 -- MODEL
 
-type alias Model = { val: Float }
+type alias Model = 
+  { val: Float
+  , corpus: List(String)
+  , display: List(String)
+  , textDraft: String
+  }
 
 model : Model
-model = { val = 0 }
+model = 
+  { val = 0
+  , corpus = []
+  , display = []
+  , textDraft = ""
+  }
 
 
 -- SUBSCRIPTIONS
 
-subscriptions : Model -> Sub Msg
+subscriptions : Model -> Sub Message
 subscriptions model =
-  AnimationFrame.diffs (\t -> UpdateTime t)
+  AnimationFrame.diffs UpdateTime
 
 
 -- UPDATE
 
-type Msg = Increment 
-           | Decrement
-           | Double
-           | UpdateTime Time
+type Message = UpdateTime Time
+               | AddText
+               | SaveDraft String
+               | Run
+               | Pause
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Message -> Model -> (Model, Cmd Message)
 update msg model =
   let newModel =
     case msg of
-      Increment ->
-        { model | val = model.val + 1 }
 
-      Decrement ->
-        { model | val = model.val - 1 }
+      UpdateTime t -> model
 
-      Double ->
-        { model | val = (Annex.double model.val) }
+      AddText ->
+        { model | corpus = model.corpus ++ [model.textDraft] }
 
-      UpdateTime t ->
-        { model | val = model.val + t / 1000 }
+      SaveDraft t ->
+        { model | textDraft = t }
+
+      Run -> model
+
+      Pause -> model
+
   in
     (newModel, Cmd.none)
       
@@ -64,13 +75,21 @@ update msg model =
 
 -- VIEW
 
-view : Model -> Html Msg
+view : Model -> Html Message
 view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (toString model.val) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , div [] [ button [ onClick Double ] [ text "*2" ]
-             ]
-    , div [ onClick Double ] [ text "double" ]
-    ]
+  div 
+    []
+    ((renderCorpus model.corpus) ++ [renderAddText])
+
+renderCorpus : List (String) -> List(Html a)
+renderCorpus = List.reverse << renderCorpusHelper 
+renderCorpusHelper list = 
+  case list of
+    [] -> []
+    x::xs -> (div [] [(text x)])::(renderCorpusHelper xs)
+
+renderAddText : Html Message
+renderAddText = div []
+                  [ input [onInput SaveDraft] []
+                  , button [onClick AddText] [text "Add Text"]
+                  ]
