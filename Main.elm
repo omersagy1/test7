@@ -25,6 +25,9 @@ type alias Model =
   , corpus: List String
   , display: List String
   , textDraft: String
+
+  , gameTime: Time
+  , paused: Bool
   }
 
 model : Model
@@ -33,6 +36,9 @@ model =
   , corpus = []
   , display = []
   , textDraft = ""
+
+  , gameTime = 0
+  , paused = True
   }
 
 
@@ -48,7 +54,7 @@ subscriptions model =
 type Message = UpdateTime Time
                | AddText
                | SaveDraft String
-               | Run
+               | Play
                | Pause
 
 
@@ -56,20 +62,29 @@ update : Message -> Model -> (Model, Cmd Message)
 update msg model =
   let newModel = case msg of
 
-      UpdateTime t -> model
+      UpdateTime t -> gameLoop model t
 
       AddText -> { model | corpus = model.corpus ++ [model.textDraft]
                          , textDraft = "" }
 
-      SaveDraft t -> { model | textDraft = t }
+      SaveDraft txt -> { model | textDraft = txt }
 
-      Run -> model
+      Play -> { model | paused = False }
 
-      Pause -> model
+      Pause -> { model | paused = True }
 
   in
     (newModel, Cmd.none)
       
+
+gameLoop : Model -> Time -> Model
+gameLoop model timePassed =
+  if model.paused then
+    model
+  else
+    { model | gameTime = model.gameTime + timePassed }
+
+
 
 
 -- VIEW
@@ -78,7 +93,9 @@ view : Model -> Html Message
 view model = div []
                  [ corpusHeader
                  , renderCorpus model.corpus
-                 , renderAddText model.textDraft]
+                 , renderAddText model.textDraft
+                 , renderPlay
+                 ]
 
 
 corpusHeader : Html a
@@ -97,11 +114,19 @@ renderCorpus l =
 
 
 renderAddText : String -> Html Message
-renderAddText txt = 
+renderAddText draft = 
   div [ style[("margin", "5px")] ]
       [ input [ onInput SaveDraft
-                , value txt
+                , value draft
               ] 
               []
       , button [onClick AddText] [text "Add Text"]
       ]
+
+
+renderPlay : Html Message
+renderPlay = div [style[("margin", "5px")]] 
+                 [button [style [("margin-right", "5px")]
+                         ,onClick Play] 
+                         [text "PLAY"]
+                 ,button [onClick Pause] [text "PAUSE"]]

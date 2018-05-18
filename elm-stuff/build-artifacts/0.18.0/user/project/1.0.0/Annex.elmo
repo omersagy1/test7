@@ -12,7 +12,3 @@ var _user$project$Annex$enumerate = function (list) {
 			_elm_lang$core$List$length(list)),
 		list);
 };
-var _user$project$Annex$double = F2(
-	function (x, y) {
-		return x * y;
-	})(2);

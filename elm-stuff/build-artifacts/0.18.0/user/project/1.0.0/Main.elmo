@@ -53,13 +53,19 @@ var _user$project$Main$corpusHeader = A2(
 		_0: _elm_lang$html$Html$text('CORPUS'),
 		_1: {ctor: '[]'}
 	});
+var _user$project$Main$gameLoop = F2(
+	function (model, timePassed) {
+		return model.paused ? model : _elm_lang$core$Native_Utils.update(
+			model,
+			{gameTime: model.gameTime + timePassed});
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var newModel = function () {
 			var _p2 = msg;
 			switch (_p2.ctor) {
 				case 'UpdateTime':
-					return model;
+					return A2(_user$project$Main$gameLoop, model, _p2._0);
 				case 'AddText':
 					return _elm_lang$core$Native_Utils.update(
 						model,
@@ -78,10 +84,14 @@ var _user$project$Main$update = F2(
 					return _elm_lang$core$Native_Utils.update(
 						model,
 						{textDraft: _p2._0});
-				case 'Run':
-					return model;
+				case 'Play':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{paused: false});
 				default:
-					return model;
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{paused: true});
 			}
 		}();
 		return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
@@ -90,20 +100,74 @@ var _user$project$Main$model = {
 	val: 0,
 	corpus: {ctor: '[]'},
 	display: {ctor: '[]'},
-	textDraft: ''
+	textDraft: '',
+	gameTime: 0,
+	paused: true
 };
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {val: a, corpus: b, display: c, textDraft: d};
+var _user$project$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {val: a, corpus: b, display: c, textDraft: d, gameTime: e, paused: f};
 	});
 var _user$project$Main$Pause = {ctor: 'Pause'};
-var _user$project$Main$Run = {ctor: 'Run'};
+var _user$project$Main$Play = {ctor: 'Play'};
+var _user$project$Main$renderPlay = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$style(
+			{
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'margin', _1: '5px'},
+				_1: {ctor: '[]'}
+			}),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'margin-right', _1: '5px'},
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Play),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('PLAY'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Pause),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('PAUSE'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		}
+	});
 var _user$project$Main$SaveDraft = function (a) {
 	return {ctor: 'SaveDraft', _0: a};
 };
 var _user$project$Main$AddText = {ctor: 'AddText'};
-var _user$project$Main$renderAddText = function (txt) {
+var _user$project$Main$renderAddText = function (draft) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -125,7 +189,7 @@ var _user$project$Main$renderAddText = function (txt) {
 					_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SaveDraft),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$value(txt),
+						_0: _elm_lang$html$Html_Attributes$value(draft),
 						_1: {ctor: '[]'}
 					}
 				},
@@ -161,7 +225,11 @@ var _user$project$Main$view = function (model) {
 				_1: {
 					ctor: '::',
 					_0: _user$project$Main$renderAddText(model.textDraft),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$renderPlay,
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
