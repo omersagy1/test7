@@ -31,7 +31,16 @@ var _user$project$Main$renderCorpus = function (l) {
 	var lineDivs = _user$project$Main$renderCorpusHelper(numberedLines);
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'margin', _1: '5px'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
 		lineDivs);
 };
 var _user$project$Main$corpusHeader = A2(
@@ -41,7 +50,7 @@ var _user$project$Main$corpusHeader = A2(
 		_0: _elm_lang$html$Html_Attributes$style(
 			{
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '10px'},
+				_0: {ctor: '_Tuple2', _0: 'margin', _1: '5px'},
 				_1: {ctor: '[]'}
 			}),
 		_1: {ctor: '[]'}
@@ -69,7 +78,8 @@ var _user$project$Main$update = F2(
 									ctor: '::',
 									_0: model.textDraft,
 									_1: {ctor: '[]'}
-								})
+								}),
+							textDraft: ''
 						});
 				case 'SaveDraft':
 					return _elm_lang$core$Native_Utils.update(
@@ -100,36 +110,51 @@ var _user$project$Main$SaveDraft = function (a) {
 	return {ctor: 'SaveDraft', _0: a};
 };
 var _user$project$Main$AddText = {ctor: 'AddText'};
-var _user$project$Main$renderAddText = A2(
-	_elm_lang$html$Html$div,
-	{ctor: '[]'},
-	{
-		ctor: '::',
-		_0: A2(
-			_elm_lang$html$Html$input,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SaveDraft),
-				_1: {ctor: '[]'}
-			},
-			{ctor: '[]'}),
-		_1: {
+var _user$project$Main$renderAddText = function (t) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$button,
+			_0: _elm_lang$html$Html_Attributes$style(
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$AddText),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Add Text'),
+					_0: {ctor: '_Tuple2', _0: 'margin', _1: '5px'},
 					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
-		}
-	});
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$SaveDraft),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$value(t),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$AddText),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Add Text'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -142,7 +167,7 @@ var _user$project$Main$view = function (model) {
 				_0: _user$project$Main$renderCorpus(model.corpus),
 				_1: {
 					ctor: '::',
-					_0: _user$project$Main$renderAddText,
+					_0: _user$project$Main$renderAddText(model.textDraft),
 					_1: {ctor: '[]'}
 				}
 			}

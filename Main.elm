@@ -1,6 +1,6 @@
 import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, value)
 import AnimationFrame
 import Time exposing (Time, second)
 
@@ -58,7 +58,8 @@ update msg model =
 
       UpdateTime t -> model
 
-      AddText -> { model | corpus = model.corpus ++ [model.textDraft] }
+      AddText -> { model | corpus = model.corpus ++ [model.textDraft]
+                         , textDraft = "" }
 
       SaveDraft t -> { model | textDraft = t }
 
@@ -75,11 +76,13 @@ update msg model =
 
 view : Model -> Html Message
 view model = div []
-                 [corpusHeader, renderCorpus model.corpus, renderAddText]
+                 [ corpusHeader
+                 , renderCorpus model.corpus
+                 , renderAddText model.textDraft]
 
 
 corpusHeader : Html a
-corpusHeader = div [style [("margin-bottom", "10px")]]
+corpusHeader = div [style [("margin", "5px")]]
                    [text "CORPUS"]
 
 
@@ -90,7 +93,7 @@ renderCorpus l =
                              (enumerate l)
     lineDivs = renderCorpusHelper numberedLines
   in
-    div [] lineDivs
+    div [style [("margin", "5px")]] lineDivs
 
 
 renderCorpusHelper : List String -> List (Html a)
@@ -100,8 +103,10 @@ renderCorpusHelper list =
     x::xs -> (div [] [text x])::(renderCorpusHelper xs)
 
 
-renderAddText : Html Message
-renderAddText = div []
-                  [ input [onInput SaveDraft] []
-                  , button [onClick AddText] [text "Add Text"]
-                  ]
+renderAddText : String -> Html Message
+renderAddText t = div [style[("margin", "5px")]]
+                    [ input [ onInput SaveDraft
+                            , value t
+                            ] []
+                    , button [onClick AddText] [text "Add Text"]
+                    ]
