@@ -1,10 +1,10 @@
 import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (style)
-import Annex
 import AnimationFrame
 import Time exposing (Time, second)
 
+import Annex exposing(zip, enumerate)
 
 main =
   Html.program
@@ -55,7 +55,7 @@ type Message = UpdateTime Time
 update : Message -> Model -> (Model, Cmd Message)
 update msg model =
   let newModel = case msg of
-    
+
       UpdateTime t -> model
 
       AddText -> { model | corpus = model.corpus ++ [model.textDraft] }
@@ -84,8 +84,13 @@ corpusHeader = div [style [("margin-bottom", "10px")]]
 
 
 renderCorpus : List String -> Html a
-renderCorpus l = div [] 
-                     (renderCorpusHelper l |> List.reverse)
+renderCorpus l = 
+  let 
+    numberedLines = List.map (\(x, y) -> toString (x + 1) ++ ". " ++ y)
+                             (enumerate l)
+    lineDivs = renderCorpusHelper numberedLines
+  in
+    div [] lineDivs
 
 
 renderCorpusHelper : List String -> List (Html a)

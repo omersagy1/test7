@@ -18,11 +18,21 @@ var _user$project$Main$renderCorpusHelper = function (list) {
 	}
 };
 var _user$project$Main$renderCorpus = function (l) {
+	var numberedLines = A2(
+		_elm_lang$core$List$map,
+		function (_p1) {
+			var _p2 = _p1;
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(_p2._0 + 1),
+				A2(_elm_lang$core$Basics_ops['++'], '. ', _p2._1));
+		},
+		_user$project$Annex$enumerate(l));
+	var lineDivs = _user$project$Main$renderCorpusHelper(numberedLines);
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
-		_elm_lang$core$List$reverse(
-			_user$project$Main$renderCorpusHelper(l)));
+		lineDivs);
 };
 var _user$project$Main$corpusHeader = A2(
 	_elm_lang$html$Html$div,
@@ -44,8 +54,8 @@ var _user$project$Main$corpusHeader = A2(
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var newModel = function () {
-			var _p1 = msg;
-			switch (_p1.ctor) {
+			var _p3 = msg;
+			switch (_p3.ctor) {
 				case 'UpdateTime':
 					return model;
 				case 'AddText':
@@ -64,7 +74,7 @@ var _user$project$Main$update = F2(
 				case 'SaveDraft':
 					return _elm_lang$core$Native_Utils.update(
 						model,
-						{textDraft: _p1._0});
+						{textDraft: _p3._0});
 				case 'Run':
 					return model;
 				default:
