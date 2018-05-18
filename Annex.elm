@@ -2,9 +2,6 @@ module Annex exposing (..)
 
 import  List
 
-double : Float -> Float
-double = (*) 2
-
 zip : List a -> List b -> List (a, b)
 zip = List.map2 (,)
 
