@@ -1,5 +1,6 @@
 import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
+import Html.Attributes exposing (style)
 import Annex
 import AnimationFrame
 import Time exposing (Time, second)
@@ -53,16 +54,13 @@ type Message = UpdateTime Time
 
 update : Message -> Model -> (Model, Cmd Message)
 update msg model =
-  let newModel =
-    case msg of
-
+  let newModel = case msg of
+    
       UpdateTime t -> model
 
-      AddText ->
-        { model | corpus = model.corpus ++ [model.textDraft] }
+      AddText -> { model | corpus = model.corpus ++ [model.textDraft] }
 
-      SaveDraft t ->
-        { model | textDraft = t }
+      SaveDraft t -> { model | textDraft = t }
 
       Run -> model
 
@@ -76,19 +74,26 @@ update msg model =
 -- VIEW
 
 view : Model -> Html Message
-view model =
-  div 
-    []
-    ((renderCorpus model.corpus) ++ [renderAddText])
+view model = div []
+                 [corpusHeader, renderCorpus model.corpus, renderAddText]
 
-renderCorpus : List String -> List (Html a)
-renderCorpus = List.reverse << renderCorpusHelper 
+
+corpusHeader : Html a
+corpusHeader = div [style [("margin-bottom", "10px")]]
+                   [text "CORPUS"]
+
+
+renderCorpus : List String -> Html a
+renderCorpus l = div [] 
+                     (renderCorpusHelper l |> List.reverse)
+
 
 renderCorpusHelper : List String -> List (Html a)
 renderCorpusHelper list = 
   case list of
     [] -> []
     x::xs -> (div [] [text x])::(renderCorpusHelper xs)
+
 
 renderAddText : Html Message
 renderAddText = div []
