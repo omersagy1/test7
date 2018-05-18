@@ -91,22 +91,17 @@ renderCorpus l =
   let 
     numberedLines = List.map (\(x, y) -> toString (x + 1) ++ ". " ++ y)
                              (enumerate l)
-    lineDivs = renderCorpusHelper numberedLines
+    lineDivs = List.map (\x -> div [] [text x]) numberedLines
   in
     div [style [("margin", "5px")]] lineDivs
 
 
-renderCorpusHelper : List String -> List (Html a)
-renderCorpusHelper list = 
-  case list of
-    [] -> []
-    x::xs -> (div [] [text x])::(renderCorpusHelper xs)
-
-
 renderAddText : String -> Html Message
-renderAddText t = div [style[("margin", "5px")]]
-                    [ input [ onInput SaveDraft
-                            , value t
-                            ] []
-                    , button [onClick AddText] [text "Add Text"]
-                    ]
+renderAddText txt = 
+  div [ style[("margin", "5px")] ]
+      [ input [ onInput SaveDraft
+                , value txt
+              ] 
+              []
+      , button [onClick AddText] [text "Add Text"]
+      ]
