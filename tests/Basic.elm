@@ -12,7 +12,6 @@ suite =
 
   describe "Basic Functionality"
   [
-
     test "does not crash" 
       (\_ -> Expect.equal 4 (2 + 2))
 
