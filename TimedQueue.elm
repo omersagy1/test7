@@ -30,13 +30,23 @@ enqueue (TQ q t) x delay =
 
 
 dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
-dequeue (TQ q timeElapsed) =
-  let
-    (entry, newQueue) = (Queue.dequeue q)
+dequeue timedQueue =
+  let 
+    (TQ q timeElapsed) = timedQueue
+    delay = (nextDelay timedQueue)
   in
-    case entry of
-      Nothing -> 
-        (Nothing, (TQ newQueue timeElapsed))
+    case delay of
+      Nothing -> (Nothing, timedQueue)
+      (Just t) ->
+        if t > timeElapsed then
+        (Nothing, timedQueue)
+        else
+          let
+            (entry, newQueue) = (Queue.dequeue q)
+          in
+            case entry of
+              Nothing -> 
+                (Nothing, (TQ newQueue timeElapsed))
 
-      (Just (x, delay)) -> 
-        ((Just x), (TQ newQueue timeElapsed))
+              (Just (x, delay)) -> 
+                ((Just x), (TQ newQueue timeElapsed))
