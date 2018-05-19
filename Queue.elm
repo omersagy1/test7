@@ -38,10 +38,13 @@ dequeue queue =
 -- an empty 'front' and then immediately 'dequeue'.
 peek : Queue a -> (Maybe a, Queue a)
 peek queue =
-  let rtn = dequeue queue
-      newQueue = enqueue queue rtn
+  let 
+    (rtn, q2) = dequeue queue
+    q3 = case rtn of
+          Nothing -> queue
+          (Just x) -> enqueue q2 x
   in
-    (rtn, newQueue)
+    (rtn, q3)
 
 size : Queue a -> Int
 size (Q front rear) = (List.length front) + (List.length rear)
