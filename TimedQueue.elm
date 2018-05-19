@@ -17,11 +17,11 @@ update (TQ q currentTime) timeElapsed =
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay (TQ q currentTime) =
   let 
-    res, _ = Queue.peek q
+    (res, _) = Queue.peek q
   in
     case res of
       Nothing -> Nothing
-      (Just (x, delay)) -> delay
+      (Just (x, delay)) -> (Just delay)
 
 
 enqueue : TimedQueue a -> a -> Time -> TimedQueue a
@@ -29,19 +29,14 @@ enqueue (TQ q t) x delay =
   (TQ (Queue.enqueue q (x, delay)) t)
 
 
-canDequeue : TimedQueue a -> Bool
-canDequeue (TQ q timeElapsed) = 
-  case (nextDelay (TQ q timeElapsed)) of
-    Nothing -> False
-    Just delay -> delay > timeElapsed
-
-
 dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
 dequeue (TQ q timeElapsed) =
-  if not (Queue.canDequeue q) then
-    (Nothing, (TQ q timeElapsed))
-  else
-    let
-      (x, newQueue) = (Queue.dequeue q)
-    in
-      (x, (TQ newQueue timeElapsed))
+  let
+    (entry, newQueue) = (Queue.dequeue q)
+  in
+    case entry of
+      Nothing -> 
+        (Nothing, (TQ newQueue timeElapsed))
+
+      (Just (x, delay)) -> 
+        ((Just x), (TQ newQueue timeElapsed))

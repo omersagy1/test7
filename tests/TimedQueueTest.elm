@@ -8,15 +8,16 @@ import TimedQueue exposing (TimedQueue)
 
 suite : Test
 suite =
-  describe "Vanilla Queue Tests"
+  describe "Timed Queue Tests"
   [
     test "dequeue one item"
       (\_ ->
         let
           q1 = TimedQueue.newTimedQueue
-          q2 = (TimedQueue.enqueue 1 (2 * second))
-          q3 = (TimedQueue.update q2 (2 * second))
+          q2 = (TimedQueue.enqueue q1 1 (2 * Time.second))
+          q3 = (TimedQueue.update q2 (2 * Time.second))
+          (e1, q4) = (TimedQueue.dequeue q3)
         in
-          Expect.equal 1 (TimedQueue.dequeue q3))
+          Expect.equal (Just 1) e1)
 
   ]
