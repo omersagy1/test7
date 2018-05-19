@@ -85,8 +85,6 @@ gameLoop model timePassed =
     { model | gameTime = model.gameTime + timePassed }
 
 
-
-
 -- VIEW
 
 view : Model -> Html Message
