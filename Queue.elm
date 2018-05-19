@@ -31,5 +31,20 @@ dequeue queue =
     -- Front is non-empty, return its first element.
     (Q (x::xs) rear) -> (Just x, (Q xs rear))
 
+-- Can transform the internal representation
+-- of the queue, altough conceptually it does
+-- not change. This prevents us from reversing
+-- twice in the case we 'peek' a queue with
+-- an empty 'front' and then immediately 'dequeue'.
+peek : Queue a -> (Maybe a, Queue a)
+peek queue =
+  let rtn = dequeue queue
+      newQueue = enqueue queue rtn
+  in
+    (rtn, newQueue)
+
 size : Queue a -> Int
 size (Q front rear) = (List.length front) + (List.length rear)
+
+canDequeue : Queue a -> Bool
+canDequeue q = size q > 0
