@@ -22,6 +22,8 @@ dequeue queue =
         rtn = List.head front
         remainingFront = List.tail front
       in
+        -- TODO: This check should not be necessary since we know
+        -- that 'rear' is not [].
         case remainingFront of
           Just x -> (rtn, (Q x []))
           Nothing -> (rtn, (Q [] []))
