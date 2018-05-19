@@ -19,5 +19,4 @@ suite =
           (e1, q4) = (TimedQueue.dequeue q3)
         in
           Expect.equal (Just 1) e1)
-
   ]
