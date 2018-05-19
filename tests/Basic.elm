@@ -1,4 +1,4 @@
-module Example exposing (..)
+module Basic exposing (..)
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
@@ -24,4 +24,3 @@ suite =
       (\_ -> Expect.equal (Annex.enumerate ["a", "b", "c"])
                           [(0, "a"), (1, "b"), (2, "c")])
   ]
-
