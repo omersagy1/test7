@@ -50,7 +50,7 @@ suite =
         in
           Expect.equal e1 (Just 2))
   ,
-    test "peek a queue does not affect size"
+    test "peeking queue does not affect size"
       (\_ ->
         let
           q1 = (Queue.enqueue Queue.newQueue 2)

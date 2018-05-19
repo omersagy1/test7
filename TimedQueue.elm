@@ -1,30 +1,47 @@
 module TimedQueue exposing (..)
 
 import Queue
+import Time exposing (Time)
 
-type TimedQueue a = TQ (Queue (QueueEntry a)) Float
+type TimedQueue a = TQ (Queue.Queue (QueueEntry a)) Time
 
-type QueueEntry a = (a, Float)
+type alias QueueEntry a = (a, Time)
 
 newTimedQueue : TimedQueue a
 newTimedQueue = TQ Queue.newQueue 0
 
 update : TimedQueue a -> Float -> TimedQueue a
 update (TQ q currentTime) timeElapsed =
-  (TQ q currentTime + timeElapsed)
+  (TQ q (currentTime + timeElapsed))
 
-nextDelay : TimedQueue a -> Maybe Float
+nextDelay : TimedQueue a -> Maybe Time
 nextDelay (TQ q currentTime) =
-  if not (Queue.canDequeue q) then 
-    Nothing
-  else
-    let 
-      (x, delay) = Queue.peek q
-    in
-      Just delay
+  let 
+    res, _ = Queue.peek q
+  in
+    case res of
+      Nothing -> Nothing
+      (Just (x, delay)) -> delay
 
-canDequeue : TimedQueue a -> Boolean
-canDequeue (TQ q t) = 
-  case (nextDelay (TQ q t)) of
+
+enqueue : TimedQueue a -> a -> Time -> TimedQueue a
+enqueue (TQ q t) x delay =
+  (TQ (Queue.enqueue q (x, delay)) t)
+
+
+canDequeue : TimedQueue a -> Bool
+canDequeue (TQ q timeElapsed) = 
+  case (nextDelay (TQ q timeElapsed)) of
     Nothing -> False
-    Just t -> t
+    Just delay -> delay > timeElapsed
+
+
+dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
+dequeue (TQ q timeElapsed) =
+  if not (Queue.canDequeue q) then
+    (Nothing, (TQ q timeElapsed))
+  else
+    let
+      (x, newQueue) = (Queue.dequeue q)
+    in
+      (x, (TQ newQueue timeElapsed))
