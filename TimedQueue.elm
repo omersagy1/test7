@@ -2,10 +2,19 @@ module TimedQueue exposing (..)
 
 import Queue
 import Time exposing (Time)
+import Tuple
 
-type TimedQueue a = TQ (Queue.Queue (QueueEntry a)) Time
 
 type alias QueueEntry a = (a, Time)
+
+item : QueueEntry a -> a
+item = Tuple.first
+
+delay : QueueEntry a -> Time
+delay = Tuple.second
+
+
+type TimedQueue a = TQ (Queue.Queue (QueueEntry a)) Time
 
 newTimedQueue : TimedQueue a
 newTimedQueue = TQ Queue.newQueue 0
@@ -14,12 +23,13 @@ update : TimedQueue a -> Float -> TimedQueue a
 update (TQ q currentTime) timeElapsed =
   (TQ q (currentTime + timeElapsed))
 
+
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay (TQ q currentTime) =
   let 
-    (res, _) = Queue.peek q
+    entry = Queue.peek q |> Tuple.first
   in
-    case res of
+    case entry of
       Nothing -> Nothing
       (Just (x, delay)) -> (Just delay)
 
