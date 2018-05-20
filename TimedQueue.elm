@@ -8,11 +8,11 @@ import Annex
 
 type alias QueueEntry a = (a, Time)
 
-item : QueueEntry a -> a
-item = Tuple.first
+getItem : QueueEntry a -> a
+getItem = Tuple.first
 
-delay : QueueEntry a -> Time
-delay = Tuple.second
+getDelay : QueueEntry a -> Time
+getDelay = Tuple.second
 
 
 type TimedQueue a = TQ (Queue.Queue (QueueEntry a)) Time
@@ -28,17 +28,21 @@ update (TQ q currentTime) timeElapsed =
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay (TQ q currentTime) =
   Queue.peek q 
-    |> Tuple.first
-    |> Annex.andThen delay
+    |> Tuple.first -- the head value.
+    |> Annex.maybeChain getDelay
 
 
 enqueue : TimedQueue a -> a -> Time -> TimedQueue a
 enqueue (TQ q t) x delay =
-  (TQ (Queue.enqueue q (x, delay)) t)
+  (TQ (Queue.enqueue (x, delay) q) t)
 
 
 dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
 dequeue timedQueue =
+  -- 1. nextDelay
+  -- 2. "compareDelay" delay > timeElapsed => Nothing
+  -- 3. dequeue
+  -- 4. 'item' from entry
   let 
     (TQ q timeElapsed) = timedQueue
     delay = (nextDelay timedQueue)
@@ -47,7 +51,7 @@ dequeue timedQueue =
       Nothing -> (Nothing, timedQueue)
       (Just t) ->
         if t > timeElapsed then
-        (Nothing, timedQueue)
+          (Nothing, timedQueue)
         else
           let
             (entry, newQueue) = (Queue.dequeue q)

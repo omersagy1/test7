@@ -1,13 +1,15 @@
 module Queue exposing (..)
 
+import Tuple
+
 -- QUEUE type
 type Queue a = Q (List a) (List a)
 
 newQueue : Queue a
 newQueue = (Q [] [])
 
-enqueue : Queue a -> a -> Queue a
-enqueue (Q front rear) i = (Q front (i::rear))
+enqueue : a -> Queue a -> Queue a
+enqueue i (Q front rear) = (Q front (i::rear))
 
 dequeue : Queue a -> (Maybe a, Queue a)
 dequeue queue =
@@ -42,7 +44,7 @@ peek queue =
     (rtn, q2) = dequeue queue
     q3 = case rtn of
           Nothing -> queue
-          (Just x) -> enqueue q2 x
+          (Just x) -> enqueue x q2
   in
     (rtn, q3)
 
@@ -51,3 +53,6 @@ size (Q front rear) = (List.length front) + (List.length rear)
 
 canDequeue : Queue a -> Bool
 canDequeue q = size q > 0
+
+ignoreResult : (s -> (a, s)) -> (s -> s)
+ignoreResult f = (\x -> (f x) |> Tuple.second)
