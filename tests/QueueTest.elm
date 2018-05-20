@@ -67,11 +67,11 @@ suite =
     test "use pipes"
       (\_ ->
         let q = newQueue
-                  |> (enqueue 1)
-                  |> (enqueue 2)
-                  |> (enqueue 5)
-                  |> (ignoreResult dequeue)
-                  |> (ignoreResult dequeue)
+              |> (enqueue 1)
+              |> (enqueue 2)
+              |> (enqueue 5)
+              |> (ignoreResult dequeue)
+              |> (ignoreResult dequeue)
         in
           Expect.equal 1 (size q))
   ]
