@@ -3,6 +3,7 @@ module TimedQueue exposing (..)
 import Queue
 import Time exposing (Time)
 import Tuple
+import Annex
 
 
 type alias QueueEntry a = (a, Time)
@@ -26,12 +27,9 @@ update (TQ q currentTime) timeElapsed =
 
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay (TQ q currentTime) =
-  let 
-    entry = Queue.peek q |> Tuple.first
-  in
-    case entry of
-      Nothing -> Nothing
-      (Just (x, delay)) -> (Just delay)
+  Queue.peek q 
+    |> Tuple.first
+    |> Annex.andThen delay
 
 
 enqueue : TimedQueue a -> a -> Time -> TimedQueue a
