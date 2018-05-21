@@ -47,6 +47,3 @@ size (Q front rear) = (List.length front) + (List.length rear)
 
 canDequeue : Queue a -> Bool
 canDequeue q = size q > 0
-
-ignoreResult : (s -> (a, s)) -> (s -> s)
-ignoreResult f = (\x -> (f x) |> Tuple.second)

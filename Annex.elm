@@ -17,3 +17,6 @@ maybeChain callback maybe =
     Nothing -> Nothing
     Just value ->
       Just (callback value)
+
+ignoreResult : (s -> (a, s)) -> (s -> s)
+ignoreResult f = (\x -> (f x) |> Tuple.second)

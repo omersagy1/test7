@@ -4,6 +4,7 @@ import Expect exposing (Expectation)
 import Test exposing (..)
 
 import Queue exposing (..)
+import Annex exposing (..)
 
 suite : Test
 suite =
