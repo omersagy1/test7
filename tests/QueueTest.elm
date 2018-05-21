@@ -44,34 +44,38 @@ suite =
         in
           Expect.equal 1 (size q))
   ,
+    test "multiple dequeues"
+      (\_ ->
+        let q = newQueue
+              |> (enqueue 99)
+              |> (enqueue 2)
+              |> (enqueue 5)
+              |> (ignoreResult dequeue)
+            e1 = dequeue q |> Tuple.first
+        in
+          Expect.equal (Just 2) e1)
+  ,
     test "peek a queue returns the right head"
       (\_ ->
         let
           q = newQueue
             |> (enqueue 2)
             |> (enqueue 8)
-          e1 = peek q |> Tuple.first
+          e1 = peek q
         in
           Expect.equal (Just 2) e1)
   ,
-    test "peeking queue does not affect size"
-      (\_ ->
-        let
-          q = newQueue
-            |> (enqueue 2)
-            |> (enqueue 8)
-            |> (ignoreResult peek)
-        in
-          Expect.equal 2 (size q))
-  ,
-    test "use pipes"
+    test "alternate enqueue and dequeue"
       (\_ ->
         let q = newQueue
               |> (enqueue 1)
               |> (enqueue 2)
-              |> (enqueue 5)
+              |> (ignoreResult dequeue)
+              |> (enqueue 3)
               |> (ignoreResult dequeue)
               |> (ignoreResult dequeue)
+              |> (enqueue 4)
+            e1 = dequeue q |> Tuple.first
         in
-          Expect.equal 1 (size q))
+          Expect.equal (Just 4) e1)
   ]

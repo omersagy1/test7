@@ -33,20 +33,14 @@ dequeue queue =
     -- Front is non-empty, return its first element.
     (Q (x::xs) rear) -> (Just x, (Q xs rear))
 
--- Can transform the internal representation
--- of the queue, altough conceptually it does
--- not change. This prevents us from reversing
--- twice in the case we 'peek' a queue with
--- an empty 'front' and then immediately 'dequeue'.
-peek : Queue a -> (Maybe a, Queue a)
+
+peek : Queue a -> Maybe a
 peek queue =
-  let 
-    (rtn, q2) = dequeue queue
-    q3 = case rtn of
-          Nothing -> queue
-          (Just x) -> enqueue x q2
-  in
-    (rtn, q3)
+  case queue of
+    (Q [] []) -> Nothing
+    (Q [] rear) -> List.reverse rear |> List.head
+    (Q front rear) -> List.head front
+
 
 size : Queue a -> Int
 size (Q front rear) = (List.length front) + (List.length rear)
