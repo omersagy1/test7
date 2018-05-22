@@ -6,59 +6,30 @@ import Tuple
 import Annex
 
 
-type alias QueueEntry a = (a, Time)
-
-getItem : QueueEntry a -> a
-getItem = Tuple.first
-
-getDelay : QueueEntry a -> Time
-getDelay = Tuple.second
+type alias QueueEntry a = 
+  { item: a
+  , delay: Time
+  }
 
 
-type TimedQueue a = TQ (Queue.Queue (QueueEntry a)) Time
-
-newTimedQueue : TimedQueue a
-newTimedQueue = TQ Queue.newQueue 0
-
-update : TimedQueue a -> Float -> TimedQueue a
-update (TQ q currentTime) timeElapsed =
-  (TQ q (currentTime + timeElapsed))
+type alias TimedQueue a = 
+  { queue: Queue.Queue (QueueEntry a)
+  , currentTime: Time
+  }
 
 
-nextDelay : TimedQueue a -> Maybe Time
-nextDelay (TQ q currentTime) =
-  Queue.peek q 
-    |> Tuple.first -- the head value.
-    |> Annex.maybeChain getDelay
+new : TimedQueue a
+new = { queue = Queue.newQueue
+      , currentTime = 0
+      }
 
 
-enqueue : TimedQueue a -> a -> Time -> TimedQueue a
-enqueue (TQ q t) x delay =
-  (TQ (Queue.enqueue (x, delay) q) t)
+enqueue : a -> Time -> TimedQueue a -> TimedQueue a
+enqueue item delay timedQueue =
+  { timedQueue | queue = (Queue.enqueue 
+                            { item = item, delay = delay }
+                            timedQueue.queue) 
+  }
 
-
-dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
-dequeue timedQueue =
-  -- 1. nextDelay
-  -- 2. "compareDelay" delay > timeElapsed => Nothing
-  -- 3. dequeue
-  -- 4. 'item' from entry
-  let 
-    (TQ q timeElapsed) = timedQueue
-    delay = (nextDelay timedQueue)
-  in
-    case delay of
-      Nothing -> (Nothing, timedQueue)
-      (Just t) ->
-        if t > timeElapsed then
-          (Nothing, timedQueue)
-        else
-          let
-            (entry, newQueue) = (Queue.dequeue q)
-          in
-            case entry of
-              Nothing -> 
-                (Nothing, (TQ newQueue timeElapsed))
-
-              (Just (x, delay)) -> 
-                ((Just x), (TQ newQueue timeElapsed))
+size : TimedQueue a -> Int
+size timedQueue = (Queue.size timedQueue.queue)
