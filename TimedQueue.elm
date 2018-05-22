@@ -23,6 +23,10 @@ new = { queue = Queue.newQueue
       , currentTime = 0
       }
 
+update : Time -> TimedQueue a -> TimedQueue a
+update timeElapsed timedQueue =
+  { timedQueue | currentTime = timedQueue.currentTime + timeElapsed }
+
 enqueue : a -> Time -> TimedQueue a -> TimedQueue a
 enqueue item delay timedQueue =
   { timedQueue | queue = (Queue.enqueue 
@@ -35,4 +39,11 @@ size timedQueue = (Queue.size timedQueue.queue)
 
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay timedQueue =
-  Queue.peek timedQueue.queue |> (maybeChain .delay)
+  Queue.peek timedQueue.queue 
+    |> maybeChain .delay
+
+canDequeue : TimedQueue a -> Bool
+canDequeue timedQueue =
+  nextDelay timedQueue
+    |> maybeChain ((>) timedQueue.currentTime)
+    |> (==) (Just True)

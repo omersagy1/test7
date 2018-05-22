@@ -38,4 +38,24 @@ suite =
         in
           Expect.equal (Just (2*Time.second)) 
                        (nextDelay tq))
+  ,
+    test "can dequeue"
+      (\_ ->
+        let 
+          tq = new
+            |> (enqueue "a" (2*Time.second))
+            |> (enqueue "b" (5*Time.second))
+            |> (update (3*Time.second))
+        in
+          Expect.equal True (canDequeue tq))
+  ,
+    test "can't dequeue"
+      (\_ ->
+        let 
+          tq = new
+            |> (enqueue "a" (3*Time.second))
+            |> (enqueue "b" (5*Time.second))
+            |> (update (2*Time.second))
+        in
+          Expect.equal False (canDequeue tq))
   ]

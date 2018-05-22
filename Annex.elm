@@ -20,3 +20,9 @@ maybeChain callback maybe =
 
 ignoreResult : (s -> (a, s)) -> (s -> s)
 ignoreResult f = (\x -> (f x) |> Tuple.second)
+
+isJust : Maybe a -> Bool
+isJust m =
+  case m of
+    Nothing -> False
+    (Just x) -> True
