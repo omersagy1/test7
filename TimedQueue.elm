@@ -23,7 +23,6 @@ new = { queue = Queue.newQueue
       , currentTime = 0
       }
 
-
 enqueue : a -> Time -> TimedQueue a -> TimedQueue a
 enqueue item delay timedQueue =
   { timedQueue | queue = (Queue.enqueue 
