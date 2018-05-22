@@ -47,3 +47,13 @@ canDequeue timedQueue =
   nextDelay timedQueue
     |> maybeChain ((>) timedQueue.currentTime)
     |> (==) (Just True)
+
+dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
+dequeue timedQueue =
+  if (canDequeue timedQueue) then
+    let 
+      (entry, q) = (Queue.dequeue timedQueue.queue)
+    in
+      (entry |> maybeChain .item, { timedQueue | queue = q })
+  else
+    (Nothing, timedQueue)

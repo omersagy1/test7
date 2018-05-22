@@ -58,4 +58,15 @@ suite =
             |> (update (2*Time.second))
         in
           Expect.equal False (canDequeue tq))
+  ,
+    test "dequeue one element"
+      (\_ ->
+        let 
+          tq = new
+            |> (enqueue "a" (3*Time.second))
+            |> (enqueue "b" (5*Time.second))
+            |> (update (4*Time.second))
+          e1 = (dequeue tq) |> first
+        in
+          Expect.equal (Just "a") e1)
   ]
