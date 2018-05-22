@@ -5,6 +5,7 @@ import Test exposing (..)
 
 import Queue exposing (..)
 import Annex exposing (..)
+import Tuple exposing (..)
 
 suite : Test
 suite =
@@ -17,7 +18,7 @@ suite =
             |> (enqueue 9)
             |> (enqueue 5)
             |> (enqueue 2)
-          e1 = dequeue q |> Tuple.first
+          e1 = dequeue q |> first
         in
           Expect.equal (Just 9) e1)
   ,
@@ -52,7 +53,7 @@ suite =
               |> (enqueue 2)
               |> (enqueue 5)
               |> (ignoreResult dequeue)
-            e1 = dequeue q |> Tuple.first
+            e1 = dequeue q |> first
         in
           Expect.equal (Just 2) e1)
   ,
@@ -76,7 +77,7 @@ suite =
               |> (ignoreResult dequeue)
               |> (ignoreResult dequeue)
               |> (enqueue 4)
-            e1 = dequeue q |> Tuple.first
+            e1 = dequeue q |> first
         in
           Expect.equal (Just 4) e1)
   ]
