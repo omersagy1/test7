@@ -3,7 +3,7 @@ module TimedQueue exposing (..)
 import Queue
 import Time exposing (Time)
 import Tuple
-import Annex
+import Annex exposing (..)
 
 
 type alias QueueEntry a = 
@@ -32,3 +32,7 @@ enqueue item delay timedQueue =
 
 size : TimedQueue a -> Int
 size timedQueue = (Queue.size timedQueue.queue)
+
+nextDelay : TimedQueue a -> Maybe Time
+nextDelay timedQueue =
+  Queue.peek timedQueue.queue |> (maybeChain .delay)

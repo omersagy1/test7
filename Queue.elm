@@ -44,6 +44,3 @@ peek queue =
 
 size : Queue a -> Int
 size (Q front rear) = (List.length front) + (List.length rear)
-
-canDequeue : Queue a -> Bool
-canDequeue q = size q > 0
