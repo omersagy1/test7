@@ -69,4 +69,15 @@ suite =
           e1 = (dequeue tq) |> first
         in
           Expect.equal (Just "a") e1)
+  ,
+    test "delay only counts for one element"
+      (\_ ->
+        let 
+          tq = new
+            |> (enqueue "a" (3*Time.second))
+            |> (enqueue "b" (5*Time.second))
+            |> (update (10*Time.second))
+            |> (ignoreResult dequeue)
+        in
+          Expect.equal False (canDequeue tq))
   ]

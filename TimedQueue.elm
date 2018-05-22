@@ -54,6 +54,7 @@ dequeue timedQueue =
     let 
       (entry, q) = (Queue.dequeue timedQueue.queue)
     in
-      (entry |> maybeChain .item, { timedQueue | queue = q })
+      (entry |> maybeChain .item, { timedQueue | queue = q 
+                                               , currentTime = 0 })
   else
     (Nothing, timedQueue)
