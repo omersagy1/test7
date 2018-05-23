@@ -93,6 +93,9 @@ suite =
             |> (update (5*Time.second))
             |> (ignoreResult dequeue)
             |> (update (3*Time.second))
+            |> (enqueue "d" (8*Time.second))
+            |> (ignoreResult dequeue)
+            |> (update (9*Time.second))
             |> (ignoreResult dequeue)
         in
           Expect.equal 0 (size tq))
