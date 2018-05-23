@@ -79,5 +79,21 @@ suite =
             |> (update (10*Time.second))
             |> (ignoreResult dequeue)
         in
-          Expect.equal False (canDequeue tq))
+          Expect.equal Nothing (dequeue tq |> first))
+  ,
+    test "dequeue entire queue"
+      (\_ ->
+        let 
+          tq = new
+            |> (enqueue "a" (3*Time.second))
+            |> (enqueue "b" (5*Time.second))
+            |> (enqueue "c" (2*Time.second))
+            |> (update (4*Time.second))
+            |> (ignoreResult dequeue)
+            |> (update (5*Time.second))
+            |> (ignoreResult dequeue)
+            |> (update (3*Time.second))
+            |> (ignoreResult dequeue)
+        in
+          Expect.equal 0 (size tq))
   ]

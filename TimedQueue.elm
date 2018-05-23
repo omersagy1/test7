@@ -45,7 +45,7 @@ nextDelay timedQueue =
 canDequeue : TimedQueue a -> Bool
 canDequeue timedQueue =
   nextDelay timedQueue
-    |> maybeChain ((>) timedQueue.currentTime)
+    |> maybeChain ((>=) timedQueue.currentTime)
     |> (==) (Just True)
 
 dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
