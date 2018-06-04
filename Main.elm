@@ -1,34 +1,26 @@
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style, value)
 import AnimationFrame
+import Html exposing (Html, button, div, text, input)
 import Time exposing (Time, second)
 
 import Annex exposing(zip, enumerate)
+import TimedQueue exposing(TimedQueue)
+
+import Model exposing (..)
+import Render
+
 
 main =
   Html.program
     { init = init
-    , view = view
+    , view = Render.view
     , update = update
     , subscriptions = subscriptions
     }
 
+
 init : (Model, Cmd Message)
 init = (model, Cmd.none)
 
-
--- MODEL
-
-type alias Model = 
-  { val: Float
-  , corpus: List String
-  , display: List String
-  , textDraft: String
-
-  , gameTime: Time
-  , paused: Bool
-  }
 
 model : Model
 model = 
@@ -39,6 +31,8 @@ model =
 
   , gameTime = 0
   , paused = True
+
+  , renderQueue = TimedQueue.new
   }
 
 
@@ -51,11 +45,6 @@ subscriptions model =
 
 -- UPDATE
 
-type Message = UpdateTime Time
-               | AddText
-               | SaveDraft String
-               | Play
-               | Pause
 
 
 update : Message -> Model -> (Model, Cmd Message)
@@ -65,7 +54,10 @@ update msg model =
       UpdateTime t -> gameLoop model t
 
       AddText -> { model | corpus = model.corpus ++ [model.textDraft]
-                         , textDraft = "" }
+                         , textDraft = "" 
+                         , renderQueue = (enqueueMessage model.renderQueue 
+                                                         model.textDraft)
+                         }
 
       SaveDraft txt -> { model | textDraft = txt }
 
@@ -82,49 +74,29 @@ gameLoop model timePassed =
   if model.paused then
     model
   else
-    { model | gameTime = model.gameTime + timePassed }
+    let
+      (nextRenderQueue, nextDisplay) = 
+        processRenderQueue model.renderQueue timePassed model.display
+    in
+      { model | gameTime = model.gameTime + timePassed
+              , renderQueue = nextRenderQueue
+              , display = nextDisplay
+      }
 
 
--- VIEW
-
-view : Model -> Html Message
-view model = div []
-                 [ corpusHeader
-                 , renderCorpus model.corpus
-                 , renderAddText model.textDraft
-                 , renderPlay
-                 ]
+enqueueMessage : TimedQueue String -> String -> TimedQueue String
+enqueueMessage q m = TimedQueue.enqueue m (1*second) q
 
 
-corpusHeader : Html a
-corpusHeader = div [style [("margin", "5px")]]
-                   [text "CORPUS"]
-
-
-renderCorpus : List String -> Html a
-renderCorpus l = 
+processRenderQueue : TimedQueue String -> Time -> Display -> (TimedQueue String, Display)
+processRenderQueue timedQueue timePassed display = 
   let 
-    numberedLines = List.map (\(x, y) -> toString (x + 1) ++ ". " ++ y)
-                             (enumerate l)
-    lineDivs = List.map (\x -> div [] [text x]) numberedLines
+    updated = TimedQueue.update timePassed timedQueue
+    (m, dequeued) = TimedQueue.dequeue updated
   in
-    div [style [("margin", "5px")]] lineDivs
+    case m of
+      Nothing -> (dequeued, display)
+      (Just x) -> (dequeued, display ++ [x])
 
 
-renderAddText : String -> Html Message
-renderAddText draft = 
-  div [ style[("margin", "5px")] ]
-      [ input [ onInput SaveDraft
-                , value draft
-              ] 
-              []
-      , button [onClick AddText] [text "Add Text"]
-      ]
 
-
-renderPlay : Html Message
-renderPlay = div [style[("margin", "5px")]] 
-                 [button [style [("margin-right", "5px")]
-                         ,onClick Play] 
-                         [text "PLAY"]
-                 ,button [onClick Pause] [text "PAUSE"]]

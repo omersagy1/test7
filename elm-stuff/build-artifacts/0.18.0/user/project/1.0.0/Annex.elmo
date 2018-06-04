@@ -1,3 +1,26 @@
+var _user$project$Annex$isJust = function (m) {
+	var _p0 = m;
+	if (_p0.ctor === 'Nothing') {
+		return false;
+	} else {
+		return true;
+	}
+};
+var _user$project$Annex$ignoreResult = F2(
+	function (f, x) {
+		return _elm_lang$core$Tuple$second(
+			f(x));
+	});
+var _user$project$Annex$maybeChain = F2(
+	function (callback, maybe) {
+		var _p1 = maybe;
+		if (_p1.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			return _elm_lang$core$Maybe$Just(
+				callback(_p1._0));
+		}
+	});
 var _user$project$Annex$zip = _elm_lang$core$List$map2(
 	F2(
 		function (v0, v1) {
