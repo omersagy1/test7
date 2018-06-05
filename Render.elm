@@ -8,7 +8,16 @@ import Annex exposing(zip, enumerate)
 import Model exposing(..)
 
 view : Model -> Html Message
-view model = div []
+view model =
+  case model.currentPage of
+    EditorPage -> editorView model.editorModel
+    GamePage -> gameView
+
+gameView : Html a
+gameView = div [] []
+
+editorView : EditorModel -> Html Message
+editorView model = div []
                  [ corpusHeader
                  , renderCorpus model.corpus
                  , renderAddText model.textDraft

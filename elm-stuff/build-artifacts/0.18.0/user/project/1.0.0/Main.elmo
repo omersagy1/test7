@@ -39,40 +39,61 @@ var _user$project$Main$gameLoop = F2(
 				{gameTime: model.gameTime + timePassed, renderQueue: nextRenderQueue, display: nextDisplay});
 		}
 	});
+var _user$project$Main$updateEditor = F2(
+	function (msg, model) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
+			case 'UpdateTime':
+				return A2(_user$project$Main$gameLoop, model, _p3._0);
+			case 'AddText':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						corpus: A2(
+							_elm_lang$core$Basics_ops['++'],
+							model.corpus,
+							{
+								ctor: '::',
+								_0: model.textDraft,
+								_1: {ctor: '[]'}
+							}),
+						textDraft: '',
+						renderQueue: A2(_user$project$Main$enqueueMessage, model.renderQueue, model.textDraft)
+					});
+			case 'SaveDraft':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{textDraft: _p3._0});
+			case 'Play':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{paused: false});
+			default:
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{paused: true});
+		}
+	});
+var _user$project$Main$updateGame = F2(
+	function (msg, model) {
+		return model;
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var newModel = function () {
-			var _p3 = msg;
-			switch (_p3.ctor) {
-				case 'UpdateTime':
-					return A2(_user$project$Main$gameLoop, model, _p3._0);
-				case 'AddText':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							corpus: A2(
-								_elm_lang$core$Basics_ops['++'],
-								model.corpus,
-								{
-									ctor: '::',
-									_0: model.textDraft,
-									_1: {ctor: '[]'}
-								}),
-							textDraft: '',
-							renderQueue: A2(_user$project$Main$enqueueMessage, model.renderQueue, model.textDraft)
-						});
-				case 'SaveDraft':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{textDraft: _p3._0});
-				case 'Play':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{paused: false});
-				default:
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{paused: true});
+			var _p4 = model.currentPage;
+			if (_p4.ctor === 'EditorPage') {
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						editorModel: A2(_user$project$Main$updateEditor, msg, model.editorModel)
+					});
+			} else {
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						gameModel: A2(_user$project$Main$updateGame, msg, model.gameModel)
+					});
 			}
 		}();
 		return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
@@ -81,13 +102,17 @@ var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime);
 };
 var _user$project$Main$model = {
-	val: 0,
-	corpus: {ctor: '[]'},
-	display: {ctor: '[]'},
-	textDraft: '',
-	gameTime: 0,
-	paused: true,
-	renderQueue: _user$project$TimedQueue$new
+	currentPage: _user$project$Model$EditorPage,
+	editorModel: {
+		val: 0,
+		corpus: {ctor: '[]'},
+		display: {ctor: '[]'},
+		textDraft: '',
+		gameTime: 0,
+		paused: true,
+		renderQueue: _user$project$TimedQueue$new
+	},
+	gameModel: {dummy: 2}
 };
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Main$main = _elm_lang$html$Html$program(

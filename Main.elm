@@ -23,16 +23,20 @@ init = (model, Cmd.none)
 
 
 model : Model
-model = 
-  { val = 0
-  , corpus = []
-  , display = []
-  , textDraft = ""
+model =
+  { currentPage = EditorPage
+  , editorModel = 
+    { val = 0
+    , corpus = []
+    , display = []
+    , textDraft = ""
 
-  , gameTime = 0
-  , paused = True
+    , gameTime = 0
+    , paused = True
 
-  , renderQueue = TimedQueue.new
+    , renderQueue = TimedQueue.new
+    }
+  , gameModel = { dummy = 2 }
   }
 
 
@@ -45,11 +49,23 @@ subscriptions model =
 
 -- UPDATE
 
-
-
 update : Message -> Model -> (Model, Cmd Message)
 update msg model =
-  let newModel = case msg of
+  let newModel = 
+    case model.currentPage of
+      EditorPage -> { model | editorModel = updateEditor msg model.editorModel }
+      GamePage -> { model | gameModel = updateGame msg model.gameModel }
+  in
+    (newModel, Cmd.none)
+
+
+updateGame : Message -> GameModel -> GameModel
+updateGame msg model = model
+
+
+updateEditor : Message -> EditorModel -> EditorModel
+updateEditor msg model =
+  case msg of
 
       UpdateTime t -> gameLoop model t
 
@@ -64,12 +80,9 @@ update msg model =
       Play -> { model | paused = False }
 
       Pause -> { model | paused = True }
-
-  in
-    (newModel, Cmd.none)
       
 
-gameLoop : Model -> Time -> Model
+gameLoop : EditorModel -> Time -> EditorModel
 gameLoop model timePassed =
   if model.paused then
     model
@@ -97,6 +110,3 @@ processRenderQueue timedQueue timePassed display =
     case m of
       Nothing -> (dequeued, display)
       (Just x) -> (dequeued, display ++ [x])
-
-
-
