@@ -6,6 +6,7 @@ import Html.Attributes exposing (style, value)
 
 import Annex exposing(zip, enumerate)
 import Model exposing(..)
+import RenderGame
 
 
 view : Model -> Html Message
@@ -13,7 +14,7 @@ view model =
   let mainPage =
     case model.currentPage of
       EditorPage -> Html.map EditorMessage (editorView model.editorModel)
-      GamePage -> Html.map GameMessage gameView
+      GamePage -> Html.map GameMessage RenderGame.gameView
   in
     div [] [ navBar model
            , mainPage
@@ -39,9 +40,6 @@ switchPageButton currentPage =
              , onClick SwitchPage] 
            [ text buttonText ]
 
-
-gameView : Html a
-gameView = div [] []
 
 editorView : EditorModel -> Html EditorMessage
 editorView model = div []
