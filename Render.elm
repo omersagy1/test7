@@ -7,11 +7,33 @@ import Html.Attributes exposing (style, value)
 import Annex exposing(zip, enumerate)
 import Model exposing(..)
 
+
 view : Model -> Html Message
 view model =
-  case model.currentPage of
-    EditorPage -> Html.map EditorMessage (editorView model.editorModel)
-    GamePage -> Html.map GameMessage gameView
+  let mainPage =
+    case model.currentPage of
+      EditorPage -> Html.map EditorMessage (editorView model.editorModel)
+      GamePage -> Html.map GameMessage gameView
+  in
+    div [] [ navBar model
+           , mainPage
+           ]
+
+navBar : Model -> Html Message
+navBar model = div [] [switchPageButton model.currentPage]
+
+switchPageButton : AppPage -> Html Message
+switchPageButton currentPage = 
+  let 
+    buttonText = 
+      case currentPage of
+        EditorPage -> "START GAME"
+        GamePage -> "GO TO EDITOR"
+  in    
+    button [ style [("margin-right", "5px")]
+             , onClick SwitchPage] 
+           [ text buttonText ]
+
 
 gameView : Html a
 gameView = div [] []
@@ -25,7 +47,6 @@ editorView model = div []
                  , renderPausedStatus model.paused
                  , renderDisplay model.display
                  ]
-
 
 corpusHeader : Html a
 corpusHeader = div [style [("margin", "5px")]]
