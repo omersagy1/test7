@@ -23,9 +23,11 @@ type alias EditorModel =
   , renderQueue : TimedQueue.TimedQueue String
   }
 
+type alias Display = List String
+
+
 type alias GameModel = { dummy: Int }
 
-type alias Display = List String
 
 
 

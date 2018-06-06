@@ -20,7 +20,12 @@ view model =
            ]
 
 navBar : Model -> Html Message
-navBar model = div [] [switchPageButton model.currentPage]
+navBar model = div [ style [ ("margin-bottom", "15px")
+                           , ("background-color", "blue")
+                           , ("text-color", "white")
+                           ] 
+                   ] 
+                   [switchPageButton model.currentPage]
 
 switchPageButton : AppPage -> Html Message
 switchPageButton currentPage = 
@@ -30,7 +35,7 @@ switchPageButton currentPage =
         EditorPage -> "START GAME"
         GamePage -> "GO TO EDITOR"
   in    
-    button [ style [("margin-right", "5px")]
+    button [ style [("margin", "5px")]
              , onClick SwitchPage] 
            [ text buttonText ]
 
