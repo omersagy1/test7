@@ -10,13 +10,13 @@ import Model exposing(..)
 view : Model -> Html Message
 view model =
   case model.currentPage of
-    EditorPage -> editorView model.editorModel
-    GamePage -> gameView
+    EditorPage -> Html.map EditorMessage (editorView model.editorModel)
+    GamePage -> Html.map GameMessage gameView
 
 gameView : Html a
 gameView = div [] []
 
-editorView : EditorModel -> Html Message
+editorView : EditorModel -> Html EditorMessage
 editorView model = div []
                  [ corpusHeader
                  , renderCorpus model.corpus
@@ -42,7 +42,7 @@ renderCorpus l =
     div [style [("margin", "5px")]] lineDivs
 
 
-renderAddText : String -> Html Message
+renderAddText : String -> Html EditorMessage
 renderAddText draft = 
   div [ style[("margin", "5px")] ]
       [ input [ onInput SaveDraft
@@ -53,21 +53,21 @@ renderAddText draft =
       ]
 
 
-renderPlay : Html Message
+renderPlay : Html EditorMessage
 renderPlay = div [style[("margin", "5px")]] 
                  [button [style [("margin-right", "5px")]
                          ,onClick Play] 
                          [text "PLAY"]
                  ,button [onClick Pause] [text "PAUSE"]]
 
-renderPausedStatus : Bool -> Html Message
+renderPausedStatus : Bool -> Html EditorMessage
 renderPausedStatus paused =
   let msg = if paused then "PAUSED" else "PLAYING"
   in
     div [style [("margin", "5px")]] 
         [text msg]
 
-renderDisplay : Display -> Html Message
+renderDisplay : Display -> Html EditorMessage
 renderDisplay messages = 
   let 
     numberedLines = List.map (\(x, y) -> toString (x + 1) ++ ". " ++ y)

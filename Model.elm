@@ -27,9 +27,18 @@ type alias GameModel = { dummy: Int }
 
 type alias Display = List String
 
-type Message = UpdateTime Time
-               | AddText
-               | SaveDraft String
-               | Play
-               | Pause
 
+
+-- MESSAGES
+
+type Message = EditorMessage EditorMessage
+               | GameMessage GameMessage
+               | SwitchPage
+
+type EditorMessage = UpdateTime Time
+                     | AddText
+                     | SaveDraft String
+                     | Play
+                     | Pause
+
+type GameMessage = DummyMessage

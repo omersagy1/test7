@@ -44,7 +44,7 @@ model =
 
 subscriptions : Model -> Sub Message
 subscriptions model =
-  AnimationFrame.diffs UpdateTime
+  Sub.map EditorMessage (AnimationFrame.diffs UpdateTime)
 
 
 -- UPDATE
@@ -52,18 +52,24 @@ subscriptions model =
 update : Message -> Model -> (Model, Cmd Message)
 update msg model =
   let newModel = 
-    case model.currentPage of
-      EditorPage -> { model | editorModel = updateEditor msg model.editorModel }
-      GamePage -> { model | gameModel = updateGame msg model.gameModel }
+    case msg of
+      EditorMessage m -> 
+        { model | editorModel = updateEditor m model.editorModel }
+
+      GameMessage m -> 
+        { model | gameModel = updateGame m model.gameModel }
+
+      SwitchPage ->
+        switchPage model
   in
     (newModel, Cmd.none)
 
 
-updateGame : Message -> GameModel -> GameModel
+updateGame : GameMessage -> GameModel -> GameModel
 updateGame msg model = model
 
 
-updateEditor : Message -> EditorModel -> EditorModel
+updateEditor : EditorMessage -> EditorModel -> EditorModel
 updateEditor msg model =
   case msg of
 
@@ -110,3 +116,11 @@ processRenderQueue timedQueue timePassed display =
     case m of
       Nothing -> (dequeued, display)
       (Just x) -> (dequeued, display ++ [x])
+
+
+switchPage : Model -> Model
+switchPage model =
+  if model.currentPage == EditorPage then
+    { model | currentPage = GamePage }
+  else
+    { model | currentPage = EditorPage }

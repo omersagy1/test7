@@ -1,3 +1,10 @@
+var _user$project$Main$switchPage = function (model) {
+	return _elm_lang$core$Native_Utils.eq(model.currentPage, _user$project$Model$EditorPage) ? _elm_lang$core$Native_Utils.update(
+		model,
+		{currentPage: _user$project$Model$GamePage}) : _elm_lang$core$Native_Utils.update(
+		model,
+		{currentPage: _user$project$Model$EditorPage});
+};
 var _user$project$Main$processRenderQueue = F3(
 	function (timedQueue, timePassed, display) {
 		var updated = A2(_user$project$TimedQueue$update, timePassed, timedQueue);
@@ -81,25 +88,31 @@ var _user$project$Main$updateGame = F2(
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var newModel = function () {
-			var _p4 = model.currentPage;
-			if (_p4.ctor === 'EditorPage') {
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						editorModel: A2(_user$project$Main$updateEditor, msg, model.editorModel)
-					});
-			} else {
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						gameModel: A2(_user$project$Main$updateGame, msg, model.gameModel)
-					});
+			var _p4 = msg;
+			switch (_p4.ctor) {
+				case 'EditorMessage':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							editorModel: A2(_user$project$Main$updateEditor, _p4._0, model.editorModel)
+						});
+				case 'GameMessage':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							gameModel: A2(_user$project$Main$updateGame, _p4._0, model.gameModel)
+						});
+				default:
+					return _user$project$Main$switchPage(model);
 			}
 		}();
 		return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Main$subscriptions = function (model) {
-	return _elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime);
+	return A2(
+		_elm_lang$core$Platform_Sub$map,
+		_user$project$Model$EditorMessage,
+		_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime));
 };
 var _user$project$Main$model = {
 	currentPage: _user$project$Model$EditorPage,
