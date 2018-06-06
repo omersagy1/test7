@@ -6,13 +6,13 @@ import Annex exposing(zip, enumerate)
 import TimedQueue exposing(TimedQueue)
 
 import Model exposing (..)
-import Render
+import Render.App
 
 
 main =
   Html.program
     { init = init
-    , view = Render.view
+    , view = Render.App.view
     , update = update
     , subscriptions = subscriptions
     }
