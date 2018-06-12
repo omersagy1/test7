@@ -91,17 +91,27 @@ var _user$project$Main$update = F2(
 			var _p4 = msg;
 			switch (_p4.ctor) {
 				case 'EditorMessage':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							editorModel: A2(_user$project$Main$updateEditor, _p4._0, model.editorModel)
-						});
+					var _p5 = model.currentPage;
+					if (_p5.ctor === 'EditorPage') {
+						return _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								editorModel: A2(_user$project$Main$updateEditor, _p4._0, model.editorModel)
+							});
+					} else {
+						return model;
+					}
 				case 'GameMessage':
-					return _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							gameModel: A2(_user$project$Main$updateGame, _p4._0, model.gameModel)
-						});
+					var _p6 = model.currentPage;
+					if (_p6.ctor === 'GamePage') {
+						return _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								gameModel: A2(_user$project$Main$updateGame, _p4._0, model.gameModel)
+							});
+					} else {
+						return model;
+					}
 				default:
 					return _user$project$Main$switchPage(model);
 			}
@@ -109,10 +119,15 @@ var _user$project$Main$update = F2(
 		return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Main$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Platform_Sub$map,
-		_user$project$Model$EditorMessage,
-		_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime));
+	var _p7 = model.currentPage;
+	if (_p7.ctor === 'EditorPage') {
+		return A2(
+			_elm_lang$core$Platform_Sub$map,
+			_user$project$Model$EditorMessage,
+			_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime));
+	} else {
+		return _elm_lang$core$Platform_Sub$none;
+	}
 };
 var _user$project$Main$model = {
 	currentPage: _user$project$Model$EditorPage,
