@@ -11,6 +11,7 @@ initialModel =
   , storyEventCorpus = []
   }
 
+
 initialGameState : GameState
 initialGameState =
   { gameTime = 0
@@ -36,6 +37,7 @@ type alias Model =
 
   }
 
+
 type alias GameState =
   -- Time passed in the game so far.
   { gameTime : Time
@@ -45,15 +47,18 @@ type alias GameState =
 type Event = DisplayText String
              | DisplayChoice List String 
 
+
 type alias Choice =
   { text : String
   , consequence : Maybe Event
   } 
 
+
 type alias StoryEvent = 
   { text: List String 
   , trigger: Trigger 
   }
+
 
 type alias Trigger = GameState -> Bool
 
