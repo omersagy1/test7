@@ -3,11 +3,12 @@ import Html exposing (Html, button, div, text, input)
 import Time exposing (Time, second)
 
 import Annex exposing(zip, enumerate)
-import TimedQueue exposing(TimedQueue)
+import Queue.TimedQueue as TimedQueue exposing(TimedQueue)
 
 import Model exposing (..)
 import Render.App
 
+import Game.Model
 import Game.Update
 
 
@@ -38,7 +39,7 @@ model =
 
     , renderQueue = TimedQueue.new
     }
-  , gameModel = { dummy = 2 }
+  , gameModel = Game.Model.initialModel
   }
 
 

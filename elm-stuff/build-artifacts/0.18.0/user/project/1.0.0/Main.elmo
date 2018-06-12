@@ -7,8 +7,8 @@ var _user$project$Main$switchPage = function (model) {
 };
 var _user$project$Main$processRenderQueue = F3(
 	function (timedQueue, timePassed, display) {
-		var updated = A2(_user$project$TimedQueue$update, timePassed, timedQueue);
-		var _p0 = _user$project$TimedQueue$dequeue(updated);
+		var updated = A2(_user$project$Queue_TimedQueue$update, timePassed, timedQueue);
+		var _p0 = _user$project$Queue_TimedQueue$dequeue(updated);
 		var m = _p0._0;
 		var dequeued = _p0._1;
 		var _p1 = m;
@@ -31,7 +31,7 @@ var _user$project$Main$processRenderQueue = F3(
 	});
 var _user$project$Main$enqueueMessage = F2(
 	function (q, m) {
-		return A3(_user$project$TimedQueue$enqueue, m, 1 * _elm_lang$core$Time$second, q);
+		return A3(_user$project$Queue_TimedQueue$enqueue, m, 1 * _elm_lang$core$Time$second, q);
 	});
 var _user$project$Main$gameLoop = F2(
 	function (model, timePassed) {
@@ -134,9 +134,9 @@ var _user$project$Main$model = {
 		textDraft: '',
 		gameTime: 0,
 		paused: true,
-		renderQueue: _user$project$TimedQueue$new
+		renderQueue: _user$project$Queue_TimedQueue$new
 	},
-	gameModel: {dummy: 2}
+	gameModel: _user$project$Game_Model$initialModel
 };
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Main$main = _elm_lang$html$Html$program(

@@ -1,7 +1,7 @@
 module Model exposing(..)
 
 import Time exposing (Time)
-import TimedQueue exposing(TimedQueue)
+import Queue.TimedQueue exposing(TimedQueue)
 import Game.Model
 
 type alias Model = 
@@ -21,7 +21,7 @@ type alias EditorModel =
 
   , gameTime: Time
   , paused: Bool
-  , renderQueue : TimedQueue.TimedQueue String
+  , renderQueue : TimedQueue String
   }
 
 type alias Display = List String

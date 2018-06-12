@@ -1,4 +1,4 @@
-module Queue exposing (..)
+module Queue.Queue exposing (..)
 
 import Tuple
 

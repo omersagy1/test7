@@ -1,6 +1,6 @@
-module TimedQueue exposing (..)
+module Queue.TimedQueue exposing (..)
 
-import Queue
+import Queue.Queue as Queue
 import Time exposing (Time)
 import Tuple
 import Annex exposing (..)
