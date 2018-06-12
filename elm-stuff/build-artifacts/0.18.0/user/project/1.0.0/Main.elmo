@@ -81,10 +81,6 @@ var _user$project$Main$updateEditor = F2(
 					{paused: true});
 		}
 	});
-var _user$project$Main$updateGame = F2(
-	function (msg, model) {
-		return model;
-	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var newModel = function () {
@@ -107,7 +103,7 @@ var _user$project$Main$update = F2(
 						return _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								gameModel: A2(_user$project$Main$updateGame, _p4._0, model.gameModel)
+								gameModel: A2(_user$project$Game_Update$update, _p4._0, model.gameModel)
 							});
 					} else {
 						return model;

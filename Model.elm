@@ -2,12 +2,13 @@ module Model exposing(..)
 
 import Time exposing (Time)
 import TimedQueue exposing(TimedQueue)
+import Game.Model
 
 type alias Model = 
   { currentPage : AppPage
 
   , editorModel : EditorModel
-  , gameModel : GameModel
+  , gameModel : Game.Model.Model
   }
 
 type AppPage = EditorPage | GamePage
@@ -25,16 +26,10 @@ type alias EditorModel =
 
 type alias Display = List String
 
-
-type alias GameModel = { dummy: Int }
-
-
-
-
 -- MESSAGES
 
 type Message = EditorMessage EditorMessage
-               | GameMessage GameMessage
+               | GameMessage Game.Model.Message
                | SwitchPage
 
 type EditorMessage = UpdateTime Time
@@ -42,5 +37,3 @@ type EditorMessage = UpdateTime Time
                      | SaveDraft String
                      | Play
                      | Pause
-
-type GameMessage = DummyMessage

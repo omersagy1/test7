@@ -8,6 +8,8 @@ import TimedQueue exposing(TimedQueue)
 import Model exposing (..)
 import Render.App
 
+import Game.Update
+
 
 main =
   Html.program
@@ -68,7 +70,7 @@ update msg model =
       GameMessage m -> 
         case model.currentPage of
           GamePage ->
-            { model | gameModel = updateGame m model.gameModel }
+            { model | gameModel = Game.Update.update m model.gameModel }
           other ->
             model
 
@@ -78,8 +80,6 @@ update msg model =
     (newModel, Cmd.none)
 
 
-updateGame : GameMessage -> GameModel -> GameModel
-updateGame msg model = model
 
 
 updateEditor : EditorMessage -> EditorModel -> EditorModel
