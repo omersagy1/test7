@@ -2,7 +2,9 @@ module Model exposing(..)
 
 import Time exposing (Time)
 import Queue.TimedQueue exposing(TimedQueue)
+
 import Game.Model
+import Game.Update
 
 type alias Model = 
   { currentPage : AppPage
@@ -29,7 +31,7 @@ type alias Display = List String
 -- MESSAGES
 
 type Message = EditorMessage EditorMessage
-               | GameMessage Game.Model.Message
+               | GameMessage Game.Update.Message
                | SwitchPage
 
 type EditorMessage = UpdateTime Time
