@@ -9,7 +9,6 @@ import Game.GameState exposing(GameState)
 import Game.Event exposing(Event)
 
 -- TODO --
--- update based on time
 -- create story events and triggers
 -- draw messages on screen
 -- create multi-line events

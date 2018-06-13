@@ -51,7 +51,7 @@ subscriptions model =
     EditorPage ->
       Sub.map EditorMessage (AnimationFrame.diffs UpdateTime)
     GamePage ->
-      Sub.none
+      Sub.map GameMessage (AnimationFrame.diffs Game.Update.UpdateTime)
 
 
 -- UPDATE

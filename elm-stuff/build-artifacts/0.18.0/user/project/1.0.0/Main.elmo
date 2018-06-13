@@ -122,7 +122,10 @@ var _user$project$Main$subscriptions = function (model) {
 			_user$project$Model$EditorMessage,
 			_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Model$UpdateTime));
 	} else {
-		return _elm_lang$core$Platform_Sub$none;
+		return A2(
+			_elm_lang$core$Platform_Sub$map,
+			_user$project$Model$GameMessage,
+			_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Game_Update$UpdateTime));
 	}
 };
 var _user$project$Main$model = {
