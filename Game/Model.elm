@@ -2,6 +2,17 @@ module Game.Model exposing(..)
 
 import Time exposing(Time)
 
+import Queue.TimedQueue exposing(TimedQueue)
+import Game.Story exposing(StoryEvent, Trigger)
+import Game.GameState exposing(GameState)
+
+-- TODO --
+-- update based on time
+-- create story events and triggers
+-- draw messages on screen
+-- create multi-line events
+-- add choices as issuable events
+-- add resources and cooldown bars
 
 initialModel : Model
 initialModel = 
@@ -30,36 +41,9 @@ type alias Model =
   , messageHistory : List String 
 
   -- Events waiting to be executed.
-  , eventQueue : List Event
+  , eventQueue : TimedQueue Event
 
   -- All story events that could be triggered.
   , storyEventCorpus : List StoryEvent
 
   }
-
-
-type alias GameState =
-  -- Time passed in the game so far.
-  { gameTime : Time
-  }
-
-
-type Event = DisplayText String
-             | DisplayChoice List String 
-
-
-type alias Choice =
-  { text : String
-  , consequence : Maybe Event
-  } 
-
-
-type alias StoryEvent = 
-  { text: List String 
-  , trigger: Trigger 
-  }
-
-
-type alias Trigger = GameState -> Bool
-
-
