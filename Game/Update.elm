@@ -3,7 +3,7 @@ module Game.Update exposing (..)
 import Time exposing(Time)
 
 import Game.Model exposing(Model)
-import Game.GameState exposing(GameState)
+import Game.GameState as GameState exposing(GameState)
 
 
 type Message = UpdateTime Time
@@ -12,11 +12,24 @@ type Message = UpdateTime Time
 update : Message -> Model -> Model
 update msg model =
   case msg of
-    UpdateTime t -> 
-      { model | gameState = updateGameTime model.gameState t }
+    UpdateTime time -> updateGame model time
 
 
-updateGameTime : GameState -> Time -> GameState
-updateGameTime s t =
-  { s | gameTime = s.gameTime + t }
+updateGame : Model -> Time -> Model
+updateGame m t =
+  updateGameTime m t
+  |> triggerStoryEvents
+  |> processEventQueue
 
+
+updateGameTime : Model -> Time -> Model
+updateGameTime m t =
+  { m | gameState = GameState.updateGameTime m.gameState t }
+
+
+triggerStoryEvents : Model -> Model
+triggerStoryEvents m = m
+
+
+processEventQueue : Model -> Model
+processEventQueue m = m

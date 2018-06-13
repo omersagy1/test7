@@ -9,8 +9,12 @@ type alias GameState =
   , resources : List Resource
   }
 
-  
+
 type alias Resource =
   { name : String
   , amount : Int 
   }
+
+
+updateGameTime : GameState -> Time -> GameState
+updateGameTime s t = { s | gameTime = s.gameTime + t }
