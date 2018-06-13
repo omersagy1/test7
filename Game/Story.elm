@@ -1,10 +1,12 @@
 module Game.Story exposing(..)
 
 import Game.GameState exposing(..)
+import Game.Event exposing(Event)
 
 
 type alias StoryEvent = 
-  { trigger: Trigger 
+  { name: String
+  , trigger: Trigger 
   , text: List String 
   , choices: List Choice
   }

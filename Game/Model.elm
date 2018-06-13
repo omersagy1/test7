@@ -2,9 +2,11 @@ module Game.Model exposing(..)
 
 import Time exposing(Time)
 
-import Queue.TimedQueue exposing(TimedQueue)
+import Queue.TimedQueue as TimedQueue
+
 import Game.Story exposing(StoryEvent, Trigger)
 import Game.GameState exposing(GameState)
+import Game.Event exposing(Event)
 
 -- TODO --
 -- update based on time
@@ -18,7 +20,7 @@ initialModel : Model
 initialModel = 
   { gameState = initialGameState 
   , messageHistory = []
-  , eventQueue = []
+  , eventQueue = TimedQueue.new
   , storyEventCorpus = []
   }
 
@@ -26,6 +28,7 @@ initialModel =
 initialGameState : GameState
 initialGameState =
   { gameTime = 0
+  , resources = []
   }
 
 
@@ -41,7 +44,7 @@ type alias Model =
   , messageHistory : List String 
 
   -- Events waiting to be executed.
-  , eventQueue : TimedQueue Event
+  , eventQueue : TimedQueue.TimedQueue Event
 
   -- All story events that could be triggered.
   , storyEventCorpus : List StoryEvent
