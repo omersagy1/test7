@@ -20,7 +20,7 @@ initialModel =
   { gameState = initialGameState 
   , messageHistory = []
   , eventQueue = TimedQueue.new
-  , storyEventCorpus = []
+  , storyEventCorpus = Game.Story.storyEventCorpus
   }
 
 

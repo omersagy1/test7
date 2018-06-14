@@ -129,7 +129,7 @@ var _user$project$Main$subscriptions = function (model) {
 	}
 };
 var _user$project$Main$model = {
-	currentPage: _user$project$Model$EditorPage,
+	currentPage: _user$project$Model$GamePage,
 	editorModel: {
 		val: 0,
 		corpus: {ctor: '[]'},

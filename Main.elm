@@ -27,7 +27,7 @@ init = (model, Cmd.none)
 
 model : Model
 model =
-  { currentPage = EditorPage
+  { currentPage = GamePage
   , editorModel = 
     { val = 0
     , corpus = []
