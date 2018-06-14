@@ -22,11 +22,6 @@ type alias Choice =
   } 
 
 
-triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
-triggeredStoryEvents events state =
-  List.filter (\e -> e.trigger state) events
-
-
 -- TRIGGERS 
 
 type alias Trigger = GameState -> Bool

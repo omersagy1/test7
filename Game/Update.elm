@@ -2,9 +2,12 @@ module Game.Update exposing (..)
 
 import Time exposing(Time)
 
+import Queue.TimedQueue as TimedQueue
+
 import Game.Model exposing(Model)
 import Game.GameState as GameState exposing(GameState)
 import Game.Story exposing(StoryEvent)
+import Game.Event as Event
 
 
 type Message = UpdateTime Time
@@ -35,6 +38,11 @@ triggerStoryEvents m =
     m
 
 
+triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
+triggeredStoryEvents events state =
+  List.filter (\e -> e.trigger state) events
+
+
 playStoryEvents : List StoryEvent -> Model -> Model
 playStoryEvents events m =
   case events of
@@ -44,12 +52,30 @@ playStoryEvents events m =
 
 
 playStoryEvent : StoryEvent -> Model -> Model
-playStoryEvent event m = m
+playStoryEvent event m = 
+  enqueueTextEvents event m
+  |> enqueueChoiceEvent event
 
 
-triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
-triggeredStoryEvents events state =
-  List.filter (\e -> e.trigger state) events
+enqueueTextEvents : StoryEvent -> Model -> Model
+enqueueTextEvents event m =
+  List.foldl enqueueTextEvent m event.text 
+
+
+enqueueTextEvent : String -> Model -> Model
+enqueueTextEvent text m =
+  let 
+    textEvent = Event.DisplayText text
+  in
+    { m | eventQueue = TimedQueue.enqueue 
+                          textEvent 
+                          (1*Time.second) 
+                          m.eventQueue 
+    }
+
+
+enqueueChoiceEvent : StoryEvent -> Model -> Model
+enqueueChoiceEvent event m = m
 
 
 processEventQueue : Model -> Model
