@@ -9,14 +9,24 @@ import Game.Update exposing (Message)
 
 
 gameView : Model -> Html Message
-gameView m = div [] [togglePauseButton m]
+gameView m = div [] 
+  [ togglePauseButton m.paused
+  , messageHistory m.messageHistory
+  ]
 
 
-togglePauseButton : Model -> Html Message
-togglePauseButton m = 
+togglePauseButton : Bool -> Html Message
+togglePauseButton paused = 
   let
-    buttonText = if m.paused then "PLAY" else "PAUSE"
+    buttonText = if paused then "PLAY" else "PAUSE"
   in
     div [style[("margin", "5px")]] 
         [button [onClick Game.Update.TogglePause]
                 [text buttonText]]
+
+messageHistory : List String -> Html a 
+messageHistory msgs =
+  div [] (List.map message msgs)
+
+message : String -> Html a
+message msg = div [] [text msg]

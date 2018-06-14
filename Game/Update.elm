@@ -108,7 +108,7 @@ processEventQueue m =
   in
     case e of
       Nothing -> newModel
-      (Just event) -> processEvent event m
+      (Just event) -> processEvent event newModel
 
 
 processEvent : Event -> Model -> Model

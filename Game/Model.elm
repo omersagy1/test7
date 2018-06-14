@@ -8,12 +8,6 @@ import Game.Story exposing(StoryEvent, Trigger)
 import Game.GameState exposing(GameState)
 import Game.Event exposing(Event)
 
--- TODO --
--- create story events and triggers
--- draw messages on screen
--- create multi-line events
--- add choices as issuable events
--- add resources and cooldown bars
 
 initialModel : Model
 initialModel = 

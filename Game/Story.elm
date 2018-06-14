@@ -46,14 +46,14 @@ storyEventCorpus =
     { name = "mystery-man"
     , trigger = gameTimePassed (3 * Time.second)
     , text = 
-      [ "A mysterious man has appeared."
+      [ "A mysterious squirrel has appeared."
       , "What do you want to do?"
       ]
     , choices = Just
       [ { text = "Wait"
         , consequence = Nothing
         }
-      , { text = "Kill him"
+      , { text = "Kill it"
         , consequence = Just (TriggerStoryEvent "man-killed")
         }
       ]
