@@ -7,7 +7,7 @@ import Queue.TimedQueue as TimedQueue
 import Game.Model exposing(Model)
 import Game.GameState as GameState exposing(GameState)
 import Game.Story exposing(StoryEvent)
-import Game.Event as Event
+import Game.Event as Event exposing(Event)
 
 
 type Message = UpdateTime Time
@@ -28,7 +28,9 @@ updateGame m t =
 
 updateGameTime : Model -> Time -> Model
 updateGameTime m t =
-  { m | gameState = GameState.updateGameTime m.gameState t }
+  { m | gameState = GameState.updateGameTime t m.gameState
+      , eventQueue = TimedQueue.update t m.eventQueue 
+  }
 
 
 triggerStoryEvents : Model -> Model
@@ -78,5 +80,35 @@ enqueueChoiceEvent : StoryEvent -> Model -> Model
 enqueueChoiceEvent event m = m
 
 
+dequeueEvent : Model -> (Maybe Event, Model)
+dequeueEvent m =
+  let 
+    (e, queue) = (TimedQueue.dequeue m.eventQueue)
+  in
+    (e, { m | eventQueue = queue })
+
+
+
 processEventQueue : Model -> Model
-processEventQueue m = m
+processEventQueue m = 
+  let 
+    (e, newModel) = dequeueEvent m
+  in
+    case e of
+      Nothing -> newModel
+      (Just event) -> processEvent event m
+
+
+processEvent : Event -> Model -> Model
+processEvent e m =
+  case e of
+    Event.DisplayText text ->
+      renderText text m
+    Event.DisplayChoice choices ->
+      m
+    Event.TriggerStoryEvent name ->
+      m
+
+renderText : String -> Model -> Model
+renderText text m =
+  { m | messageHistory = text::m.messageHistory }

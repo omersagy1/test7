@@ -6,4 +6,4 @@ import Html.Attributes exposing (style, value)
 
 
 gameView : Html a
-gameView = div [] [text "game!"]
+gameView = div [] [text "placeholder"]

@@ -16,5 +16,5 @@ type alias Resource =
   }
 
 
-updateGameTime : GameState -> Time -> GameState
-updateGameTime s t = { s | gameTime = s.gameTime + t }
+updateGameTime : Time -> GameState -> GameState
+updateGameTime t s = { s | gameTime = s.gameTime + t }
