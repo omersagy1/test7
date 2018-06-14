@@ -21,6 +21,7 @@ initialModel =
   , messageHistory = []
   , eventQueue = TimedQueue.new
   , storyEventCorpus = Game.Story.storyEventCorpus
+  , paused = False
   }
 
 
@@ -48,4 +49,6 @@ type alias Model =
   -- All story events that could be triggered.
   , storyEventCorpus : List StoryEvent
 
+  -- Whether the game receives update time events.
+  , paused : Bool
   }

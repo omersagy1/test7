@@ -10,6 +10,7 @@ import Render.App
 
 import Game.Model
 import Game.Update
+import Game.Subs
 
 
 main =
@@ -51,7 +52,7 @@ subscriptions model =
     EditorPage ->
       Sub.map EditorMessage (AnimationFrame.diffs UpdateTime)
     GamePage ->
-      Sub.map GameMessage (AnimationFrame.diffs Game.Update.UpdateTime)
+      Sub.map GameMessage (Game.Subs.subscriptions model.gameModel)
 
 
 -- UPDATE

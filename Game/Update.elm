@@ -11,13 +11,17 @@ import Game.Event as Event exposing(Event)
 
 
 type Message = UpdateTime Time
+               | TogglePause 
 
 
 update : Message -> Model -> Model
 update msg model =
   case msg of
     UpdateTime time -> updateGame model time
+    TogglePause -> togglePause model
 
+togglePause : Model -> Model
+togglePause m = { m | paused = not m.paused }
 
 updateGame : Model -> Time -> Model
 updateGame m t =
@@ -35,14 +39,22 @@ updateGameTime m t =
 
 triggerStoryEvents : Model -> Model
 triggerStoryEvents m =
-  playStoryEvents
-    (triggeredStoryEvents m.storyEventCorpus m.gameState)
-    m
+  playStoryEvents (triggeredStoryEvents m.storyEventCorpus m.gameState) m
+  |> removeStoryEvents
 
 
 triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
 triggeredStoryEvents events state =
   List.filter (\e -> e.trigger state) events
+
+
+-- Remove triggered events that can only be triggered once.
+removeStoryEvents : Model -> Model
+removeStoryEvents m =
+  { m | storyEventCorpus =
+          List.filter (\e -> not ((e.trigger m.gameState) && e.occursOnce)) 
+                      m.storyEventCorpus
+  }
 
 
 playStoryEvents : List StoryEvent -> Model -> Model
@@ -108,6 +120,7 @@ processEvent e m =
       m
     Event.TriggerStoryEvent name ->
       m
+
 
 renderText : String -> Model -> Model
 renderText text m =

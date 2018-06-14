@@ -19,7 +19,8 @@ view model =
       EditorPage -> Html.map EditorMessage 
                       (Render.Editor.editorView model.editorModel)
 
-      GamePage -> Html.map GameMessage Render.Game.gameView
+      GamePage -> Html.map GameMessage 
+                    (Render.Game.gameView model.gameModel)
   in
     div [] [ navBar model
            , mainPage

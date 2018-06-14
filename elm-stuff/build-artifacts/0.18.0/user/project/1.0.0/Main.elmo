@@ -125,7 +125,7 @@ var _user$project$Main$subscriptions = function (model) {
 		return A2(
 			_elm_lang$core$Platform_Sub$map,
 			_user$project$Model$GameMessage,
-			_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Game_Update$UpdateTime));
+			_user$project$Game_Subs$subscriptions(model.gameModel));
 	}
 };
 var _user$project$Main$model = {
