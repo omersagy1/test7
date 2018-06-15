@@ -34,6 +34,7 @@ restartButton =
          , onClick Game.Update.Restart]
          [text "RESTART"]
 
+
 -- MAIN GAME DISPLAY -- 
 
 view : Model -> Html Message

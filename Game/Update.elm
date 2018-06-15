@@ -172,9 +172,15 @@ displayChoices choices m =
 
 makeChoice : Choice -> Model -> Model
 makeChoice choice m =
+  clearActiveChoices <|
   case choice.consequence of
     Nothing -> m
     Just c -> playConsequence c m
+
+
+clearActiveChoices : Model -> Model
+clearActiveChoices m =
+  { m | activeChoices = Nothing }
 
 
 playConsequence : Consequence -> Model -> Model
