@@ -56,4 +56,5 @@ type alias Model =
 
   -- The choice the player must make to continue the game.
   , activeChoices : Maybe (List Choice)
+  
   }

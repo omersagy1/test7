@@ -6,21 +6,30 @@ import Queue.TimedQueue as TimedQueue
 
 import Game.Model exposing(Model)
 import Game.GameState as GameState exposing(GameState)
-import Game.Story exposing(StoryEvent, Choice)
+import Game.Story as Story exposing(StoryEvent, Choice, Consequence)
 import Game.Event as Event exposing(Event)
 
 
-type Message = UpdateTime Time
-               | TogglePause 
+type Message = -- Messages to control the running of the game
+               TogglePause
                | Restart
+
+               -- Messages sent in the normal course of play.
+               | UpdateTime Time
+               | MakeChoice Choice
 
 
 update : Message -> Model -> Model
 update msg model =
   case msg of
-    UpdateTime time -> updateGame model time
+
     TogglePause -> togglePause model
+
     Restart -> restart model.paused
+
+    UpdateTime time -> updateGame time model
+
+    MakeChoice choice -> makeChoice choice model
 
 
 togglePause : Model -> Model
@@ -35,11 +44,18 @@ restart paused =
     { fresh | paused = paused }
 
 
-updateGame : Model -> Time -> Model
-updateGame m t =
-  updateGameTime m t
-  |> triggerStoryEvents
-  |> processEventQueue
+updateGame : Time -> Model -> Model
+updateGame t m =
+  case m.activeChoices of
+
+    Nothing ->
+      updateGameTime m t
+      |> triggerStoryEvents
+      |> processEventQueue
+
+    -- Game is soft-paused while we wait
+    -- for the player to make a choice.
+    other -> m
 
 
 updateGameTime : Model -> Time -> Model
@@ -104,7 +120,7 @@ enqueueChoiceEvent : StoryEvent -> Model -> Model
 enqueueChoiceEvent event m =
   case event.choices of
     Nothing -> m
-    (Just choices) ->
+    Just choices ->
       let
         choiceEvent = Event.DisplayChoices choices
       in
@@ -152,3 +168,41 @@ displayText text m =
 displayChoices : List Choice -> Model -> Model
 displayChoices choices m =
   { m | activeChoices = Just choices }
+
+
+makeChoice : Choice -> Model -> Model
+makeChoice choice m =
+  case choice.consequence of
+    Nothing -> m
+    Just c -> playConsequence c m
+
+
+playConsequence : Consequence -> Model -> Model
+playConsequence consequence m =
+  case consequence of
+
+    Story.ActualEvent storyEvent -> 
+      playStoryEvent storyEvent m
+
+    Story.EventName name ->
+      let 
+        event = getStoryEventByName name m
+      in 
+        case event of
+          Nothing -> m
+          Just e -> playStoryEvent e m
+
+
+getStoryEventByName : String -> Model -> Maybe StoryEvent
+getStoryEventByName name model =
+  let
+    matches = List.filter (\e -> e.name == name) model.storyEventCorpus
+  in
+    case matches of
+      [] -> Nothing
+      [e] -> Just e
+      -- Only return the first match.
+      (e::others) -> Just e
+  
+
+

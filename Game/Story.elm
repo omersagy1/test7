@@ -65,7 +65,14 @@ storyEventCorpus =
       ]
     , choices = Just
       [ { text = "Wait"
-        , consequence = Nothing
+        , consequence = Just (ActualEvent
+          { name = ""
+          , trigger = manualOnly
+          , text = ["nothing happens..."]
+          , choices = Nothing
+          , occursOnce = True
+          , mutator = Nothing
+          })
         }
       , { text = "Kill it"
         , consequence = Just (EventName "squirrel-killed")
