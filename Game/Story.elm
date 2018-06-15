@@ -3,8 +3,7 @@ module Game.Story exposing(..)
 import List
 import Time exposing(Time)
 
-import Game.GameState exposing(..)
-import Game.Event exposing(..)
+import Game.GameState as GameState exposing(GameState)
 
 
 type alias StoryEvent = 
@@ -13,13 +12,18 @@ type alias StoryEvent =
   , text: List String 
   , choices: Maybe (List Choice)
   , occursOnce: Bool
+  , mutator : Maybe Mutator
   }
 
 
 type alias Choice =
   { text : String
-  , consequence : Maybe Event
+  , consequence : Maybe Consequence
   } 
+
+
+type Consequence = ActualEvent StoryEvent
+                   | EventName String
 
 
 -- TRIGGERS 
@@ -33,6 +37,15 @@ manualOnly : Trigger
 manualOnly s = False
 
 
+-- MUTATORS
+
+type alias Mutator = GameState -> GameState
+
+mutateResource : String -> (Int -> Int) -> Mutator
+mutateResource name fn =
+  GameState.updateResource name fn
+
+
 -- ACTUAL STORY EVENTS
 
 storyEventCorpus = 
@@ -41,6 +54,7 @@ storyEventCorpus =
     , text = [ "hello world!" ]
     , choices = Nothing 
     , occursOnce = True
+    , mutator = Nothing
     }
   ,
     { name = "mystery-man"
@@ -54,16 +68,18 @@ storyEventCorpus =
         , consequence = Nothing
         }
       , { text = "Kill it"
-        , consequence = Just (TriggerStoryEvent "man-killed")
+        , consequence = Just (EventName "squirrel-killed")
         }
       ]
     , occursOnce = True
+    , mutator = Nothing
     }
   ,
-    { name = "man-killed"
+    { name = "squirrel-killed"
     , trigger = manualOnly
-    , text = ["He's dead now."]
+    , text = ["It's dead now."]
     , choices = Nothing
     , occursOnce = True
+    , mutator = Nothing
     }
   ]

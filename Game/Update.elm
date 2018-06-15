@@ -6,7 +6,7 @@ import Queue.TimedQueue as TimedQueue
 
 import Game.Model exposing(Model)
 import Game.GameState as GameState exposing(GameState)
-import Game.Story exposing(StoryEvent)
+import Game.Story exposing(StoryEvent, Choice)
 import Game.Event as Event exposing(Event)
 
 
@@ -95,13 +95,24 @@ enqueueTextEvent text m =
   in
     { m | eventQueue = TimedQueue.enqueue 
                           textEvent 
-                          (1*Time.second) 
+                          (1 * Time.second) 
                           m.eventQueue 
     }
 
 
 enqueueChoiceEvent : StoryEvent -> Model -> Model
-enqueueChoiceEvent event m = m
+enqueueChoiceEvent event m =
+  case event.choices of
+    Nothing -> m
+    (Just choices) ->
+      let
+        choiceEvent = Event.DisplayChoices choices
+      in
+        { m | eventQueue = TimedQueue.enqueue 
+                              choiceEvent
+                              (0.2 * Time.second)
+                              m.eventQueue
+        }
 
 
 dequeueEvent : Model -> (Maybe Event, Model)
@@ -110,7 +121,6 @@ dequeueEvent m =
     (e, queue) = (TimedQueue.dequeue m.eventQueue)
   in
     (e, { m | eventQueue = queue })
-
 
 
 processEventQueue : Model -> Model
@@ -127,13 +137,18 @@ processEvent : Event -> Model -> Model
 processEvent e m =
   case e of
     Event.DisplayText text ->
-      renderText text m
-    Event.DisplayChoice choices ->
-      m
+      displayText text m
+    Event.DisplayChoices choices ->
+      displayChoices choices m
     Event.TriggerStoryEvent name ->
       m
 
 
-renderText : String -> Model -> Model
-renderText text m =
+displayText : String -> Model -> Model
+displayText text m =
   { m | messageHistory = text::m.messageHistory }
+
+
+displayChoices : List Choice -> Model -> Model
+displayChoices choices m =
+  { m | activeChoices = Just choices }

@@ -1,6 +1,8 @@
 module Game.Event exposing(..)
 
+import Game.Story exposing(Choice)
+
 
 type Event = DisplayText String
-             | DisplayChoice (List String)
+             | DisplayChoices (List Choice)
              | TriggerStoryEvent String

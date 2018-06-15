@@ -18,3 +18,11 @@ type alias Resource =
 
 updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = { s | gameTime = s.gameTime + t }
+
+
+updateResource : String -> (Int -> Int) -> GameState -> GameState
+updateResource name fn s =
+  { s | resources = List.map (\r -> if r.name == name then
+                                      {r | amount = (fn r.amount)}
+                                    else r) 
+                             s.resources}
