@@ -20,15 +20,19 @@ update msg model =
   case msg of
     UpdateTime time -> updateGame model time
     TogglePause -> togglePause model
-    Restart -> restart
+    Restart -> restart model.paused
 
 
 togglePause : Model -> Model
 togglePause m = { m | paused = not m.paused }
 
 
-restart : Model
-restart = Game.Model.initialModel
+restart : Bool -> Model
+restart paused = 
+  let
+    fresh = Game.Model.initialModel
+  in
+    { fresh | paused = paused }
 
 
 updateGame : Model -> Time -> Model
