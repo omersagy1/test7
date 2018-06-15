@@ -13,7 +13,8 @@ view m = div [] [messageHistory m.messageHistory]
 
 
 navExtension : Model -> List (Html Message)
-navExtension m = [togglePauseButton m.paused]
+navExtension m = [togglePauseButton m.paused
+                 , restartButton]
 
 
 togglePauseButton : Bool -> Html Message
@@ -25,9 +26,18 @@ togglePauseButton paused =
            , onClick Game.Update.TogglePause]
            [text buttonText]
 
+
+restartButton : Html Message
+restartButton = 
+  button [ style [("margin", "5px")]
+         , onClick Game.Update.Restart]
+         [text "RESTART"]
+
+
 messageHistory : List String -> Html a 
 messageHistory msgs =
   div [] (List.map message msgs)
+
 
 message : String -> Html a
 message msg = div [] [text msg]

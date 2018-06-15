@@ -12,6 +12,7 @@ import Game.Event as Event exposing(Event)
 
 type Message = UpdateTime Time
                | TogglePause 
+               | Restart
 
 
 update : Message -> Model -> Model
@@ -19,9 +20,16 @@ update msg model =
   case msg of
     UpdateTime time -> updateGame model time
     TogglePause -> togglePause model
+    Restart -> restart
+
 
 togglePause : Model -> Model
 togglePause m = { m | paused = not m.paused }
+
+
+restart : Model
+restart = Game.Model.initialModel
+
 
 updateGame : Model -> Time -> Model
 updateGame m t =
