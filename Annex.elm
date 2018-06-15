@@ -26,3 +26,9 @@ isJust m =
   case m of
     Nothing -> False
     (Just x) -> True
+
+maybeToList : Maybe a -> List a
+maybeToList m =
+  case m of
+    Nothing -> []
+    Just x -> [x]

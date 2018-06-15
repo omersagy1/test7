@@ -4,8 +4,11 @@ import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (style, value)
 
+import Annex exposing(..)
+
 import Game.Model exposing (Model)
 import Game.Update exposing (Message)
+import Game.Story exposing (Choice)
 
 
 -- TOP BAR NAV --
@@ -50,5 +53,21 @@ message : String -> Html a
 message msg = div [] [text msg]
 
 
-interactiveDisplay : Model -> Html a
-interactiveDisplay m = text "second column"
+interactiveDisplay : Model -> Html Message
+interactiveDisplay m =
+  div [style [("flex-grow", "1")]]
+      (choiceButtons m |> maybeToList)
+
+
+choiceButtons : Model -> Maybe (Html Message)
+choiceButtons m =
+  case m.activeChoices of
+    Nothing -> Nothing
+    Just choices ->
+      div [] (List.map choiceButton choices) 
+      |> Just
+
+
+choiceButton : Choice -> Html Message
+choiceButton c =
+  button [onClick (Game.Update.MakeChoice c)] [text c.text]
