@@ -8,9 +8,7 @@ import Game.Model exposing (Model)
 import Game.Update exposing (Message)
 
 
-view : Model -> Html Message
-view m = div [] [messageHistory m.messageHistory]
-
+-- TOP BAR NAV --
 
 navExtension : Model -> List (Html Message)
 navExtension m = [togglePauseButton m.paused
@@ -33,11 +31,24 @@ restartButton =
          , onClick Game.Update.Restart]
          [text "RESTART"]
 
+-- MAIN GAME DISPLAY -- 
+
+view : Model -> Html Message
+view m = div [ style [("display", "flex")] ]
+             [ messageHistory m.messageHistory
+             , interactiveDisplay m
+             ]
 
 messageHistory : List String -> Html a 
 messageHistory msgs =
-  div [] (List.map message msgs)
+  div [style [("width", "350px"),
+              ("margin-right", "50px")]]
+      (List.map message msgs)
 
 
 message : String -> Html a
 message msg = div [] [text msg]
+
+
+interactiveDisplay : Model -> Html a
+interactiveDisplay m = text "second column"
