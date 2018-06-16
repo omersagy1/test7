@@ -7,6 +7,7 @@ import Queue.TimedQueue as TimedQueue
 import Game.Story exposing(StoryEvent, Trigger, Choice)
 import Game.GameState exposing(GameState)
 import Game.Event exposing(Event)
+import Parser.Main
 
 
 initialModel : Model
@@ -14,7 +15,7 @@ initialModel =
   { gameState = initialGameState 
   , messageHistory = []
   , eventQueue = TimedQueue.new
-  , storyEventCorpus = Game.Story.storyEventCorpus
+  , storyEventCorpus = Parser.Main.storyEventCorpus
   , paused = False
   , activeChoices = Nothing
   }

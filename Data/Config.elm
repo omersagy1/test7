@@ -1,21 +1,25 @@
+module Data.Config exposing (config)
+
+
 config = """
 
-id: init
-{ resource wood 10s }
-{ resource gold 30s }
+name: fakeEvent
+trigger: time >= 2s
+text:
+  first line
+  second line
+consequence: mantriggered
 
 
-id: intro
-if time = 0
-welcome to the game.
-{ gold +100 }
-here is some gold to start you off.
+name: mantriggered
+text:
+  consequence triggered!
 
 
-if 20s after intro
-i'm going to take some of this gold back.
-{ gold -20 }
-sorry about that.
-you'll get more soon.
+name: fakeEvent2
+trigger: time >= 10s
+text: 
+  at least ten seconds passed!
+
 
 """
