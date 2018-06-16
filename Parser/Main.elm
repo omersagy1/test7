@@ -9,37 +9,37 @@ import Game.Story as Story exposing (
 
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
-  [ blankEvent
-    |> setName "begin"
-    |> setTrigger (Story.gameTimePassed (1 * Time.second))
-    |> addTextLine "hello world!"
+  [ newEvent
+    |> name "begin"
+    |> trigger (Story.gameTimePassed (1 * Time.second))
+    |> ln "hello world!"
   ,
-    blankEvent
-    |> setName "mystery-man"
-    |> setTrigger (Story.gameTimePassed (3 * Time.second))
-    |> addTextLine "A mysterious squirrel has appeared."
-    |> addTextLine "What do you want to do?"
-    |> addChoice
-        (blankChoice 
-         |> setChoiceText "Wait"
-         |> setConsequenceEvent 
-             (blankEvent
-              |> addTextLine "nothing happens..."))
-    |> addChoice
-        (blankChoice
-         |> setChoiceText "Kill it"
-         |> setConsequenceName "squirrel-killed")
+    newEvent
+    |> name "mystery-man"
+    |> trigger (Story.gameTimePassed (3 * Time.second))
+    |> ln "A mysterious squirrel has appeared."
+    |> ln "What do you want to do?"
+    |> choice
+        (newChoice 
+         |> text "Wait"
+         |> consq 
+             (newEvent
+              |> ln "nothing happens..."))
+    |> choice
+        (newChoice
+         |> text "Kill it"
+         |> consqName "squirrel-killed")
   ,
-    blankEvent
-    |> setName "squirrel-killed"
-    |> addTextLine "It's dead now."
+    newEvent
+    |> name "squirrel-killed"
+    |> ln "It's dead now."
   ]
 
 
 -- Event with default values that can
 -- be "filled in" with other values.
-blankEvent : StoryEvent
-blankEvent =
+newEvent : StoryEvent
+newEvent =
   { name = ""
   , trigger = Story.manualOnly
   , text = []
@@ -48,50 +48,49 @@ blankEvent =
   , mutator = Nothing
   } 
 
-setName : String -> StoryEvent -> StoryEvent
-setName n e = { e | name = n }
+name : String -> StoryEvent -> StoryEvent
+name n e = { e | name = n }
 
-setTrigger : Trigger -> StoryEvent -> StoryEvent
-setTrigger t e = { e | trigger = t }
+trigger : Trigger -> StoryEvent -> StoryEvent
+trigger t e = { e | trigger = t }
 
 setText : List String -> StoryEvent -> StoryEvent
 setText t e = { e | text = t }
 
-addTextLine : String -> StoryEvent -> StoryEvent
-addTextLine t e = { e | text = e.text ++ [t] }
+ln : String -> StoryEvent -> StoryEvent
+ln t e = { e | text = e.text ++ [t] }
 
-setChoices : List Choice -> StoryEvent -> StoryEvent
-setChoices c e = { e | choices = Just c }
+choices : List Choice -> StoryEvent -> StoryEvent
+choices c e = { e | choices = Just c }
 
-addChoice : Choice -> StoryEvent -> StoryEvent
-addChoice c e =
+choice : Choice -> StoryEvent -> StoryEvent
+choice c e =
   case e.choices of
-    Nothing -> setChoices [c] e
-    Just choices -> setChoices (choices ++ [c]) e
+    Nothing -> choices [c] e
+    Just cs -> choices (cs ++ [c]) e
 
-setOccursOnce : Bool -> StoryEvent -> StoryEvent
-setOccursOnce o e = { e | occursOnce = o }
+occursOnce : Bool -> StoryEvent -> StoryEvent
+occursOnce o e = { e | occursOnce = o }
 
-setMutator : Mutator -> StoryEvent -> StoryEvent
-setMutator m e = { e | mutator = Just m }
+mutator : Mutator -> StoryEvent -> StoryEvent
+mutator m e = { e | mutator = Just m }
 
 
-blankChoice : Choice
-blankChoice =
+newChoice : Choice
+newChoice =
   { text = ""
   , consequence = Nothing
   }
 
-setChoiceText : String -> Choice -> Choice
-setChoiceText t c = { c | text = t }
+text : String -> Choice -> Choice
+text t c = { c | text = t }
 
-setConsequenceName : String -> Choice -> Choice
-setConsequenceName n c = 
+consqName : String -> Choice -> Choice
+consqName n c = 
   { c | consequence = Just (Story.EventName n) }
 
-setConsequenceEvent : StoryEvent -> Choice -> Choice
-setConsequenceEvent e c =
-  { c | consequence = Just (Story.ActualEvent e) }
+consq : StoryEvent -> Choice -> Choice
+consq e c = { c | consequence = Just (Story.ActualEvent e) }
 
 
 parse : String -> List StoryEvent
@@ -102,4 +101,4 @@ parse config =
 
 
 parseEvent : String -> StoryEvent
-parseEvent s = blankEvent
+parseEvent s = newEvent
