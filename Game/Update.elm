@@ -2,8 +2,10 @@ module Game.Update exposing (..)
 
 import Time exposing(Time)
 
+import Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 
+import Game.Constants as Constants
 import Game.Model exposing(Model)
 import Game.GameState as GameState exposing(GameState)
 import Game.Story as Story exposing(StoryEvent, Choice, Consequence)
@@ -101,17 +103,29 @@ playStoryEvent event m =
 
 enqueueTextEvents : StoryEvent -> Model -> Model
 enqueueTextEvents event m =
-  List.foldl enqueueTextEvent m event.text 
+  case event.text of
+    [] -> m
+    (first::rest) ->
+      let 
+        m2 = enqueueTextEventWithDelay 
+              first Constants.firstMessageDelay m
+      in
+        List.foldl enqueueTextEvent m2 rest
 
 
 enqueueTextEvent : String -> Model -> Model
 enqueueTextEvent text m =
+  enqueueTextEventWithDelay text Constants.defaultMessageDelay m
+
+
+enqueueTextEventWithDelay : String -> Time -> Model -> Model
+enqueueTextEventWithDelay text delay m =
   let 
     textEvent = Event.DisplayText text
   in
     { m | eventQueue = TimedQueue.enqueue 
                           textEvent 
-                          (1 * Time.second) 
+                          delay
                           m.eventQueue 
     }
 
@@ -126,7 +140,7 @@ enqueueChoiceEvent event m =
       in
         { m | eventQueue = TimedQueue.enqueue 
                               choiceEvent
-                              (0.2 * Time.second)
+                              Constants.choiceButtonsDelay
                               m.eventQueue
         }
 
