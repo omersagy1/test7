@@ -15,10 +15,10 @@ dequeue : Queue a -> (Maybe a, Queue a)
 dequeue queue =
   case queue of
     -- Queue is empty, return nothing.
-    (Q [] []) -> (Nothing, (Q [] []))
+    Q [] [] -> (Nothing, (Q [] []))
 
     -- Front is empty, reverse the rear and return the first element.
-    (Q [] rear) -> 
+    Q [] rear -> 
       let 
         front = List.reverse rear
         rtn = List.head front
@@ -31,15 +31,15 @@ dequeue queue =
           Nothing -> (rtn, (Q [] []))
 
     -- Front is non-empty, return its first element.
-    (Q (x::xs) rear) -> (Just x, (Q xs rear))
+    Q (x::xs) rear -> (Just x, (Q xs rear))
 
 
 peek : Queue a -> Maybe a
 peek queue =
   case queue of
-    (Q [] []) -> Nothing
-    (Q [] rear) -> List.reverse rear |> List.head
-    (Q front rear) -> List.head front
+    Q [] [] -> Nothing
+    Q [] rear -> List.reverse rear |> List.head
+    Q front rear -> List.head front
 
 
 size : Queue a -> Int

@@ -91,7 +91,7 @@ playStoryEvents : List StoryEvent -> Model -> Model
 playStoryEvents events m =
   case events of
     [] -> m
-    (event::rest) ->
+    event::rest ->
       playStoryEvent event m |> (playStoryEvents rest)
 
 
@@ -105,7 +105,7 @@ enqueueTextEvents : StoryEvent -> Model -> Model
 enqueueTextEvents event m =
   case event.text of
     [] -> m
-    (first::rest) ->
+    first::rest ->
       let 
         m2 = enqueueTextEventWithDelay 
               first Constants.firstMessageDelay m
@@ -160,7 +160,7 @@ processEventQueue m =
   in
     case e of
       Nothing -> newModel
-      (Just event) -> processEvent event newModel
+      Just event -> processEvent event newModel
 
 
 processEvent : Event -> Model -> Model
@@ -222,7 +222,7 @@ getStoryEventByName name model =
       [] -> Nothing
       [e] -> Just e
       -- Only return the first match.
-      (e::others) -> Just e
+      e::others -> Just e
   
 
 
