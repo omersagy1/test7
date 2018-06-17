@@ -6,16 +6,16 @@ import Tuple
 type Queue a = Q (List a) (List a)
 
 newQueue : Queue a
-newQueue = (Q [] [])
+newQueue = Q [] []
 
 enqueue : a -> Queue a -> Queue a
-enqueue i (Q front rear) = (Q front (i::rear))
+enqueue x (Q front rear) = Q front (x::rear)
 
 dequeue : Queue a -> (Maybe a, Queue a)
 dequeue queue =
   case queue of
     -- Queue is empty, return nothing.
-    Q [] [] -> (Nothing, (Q [] []))
+    Q [] [] -> (Nothing, Q [] [])
 
     -- Front is empty, reverse the rear and return the first element.
     Q [] rear -> 
@@ -27,11 +27,11 @@ dequeue queue =
         -- TODO: This check should not be necessary since we know
         -- that 'rear' is not [].
         case remainingFront of
-          Just x -> (rtn, (Q x []))
-          Nothing -> (rtn, (Q [] []))
+          Just x -> (rtn, Q x [])
+          Nothing -> (rtn, Q [] [])
 
     -- Front is non-empty, return its first element.
-    Q (x::xs) rear -> (Just x, (Q xs rear))
+    Q (x::xs) rear -> (Just x, Q xs rear)
 
 
 peek : Queue a -> Maybe a
