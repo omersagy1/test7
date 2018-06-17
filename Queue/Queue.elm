@@ -27,8 +27,8 @@ dequeue queue =
         -- TODO: This check should not be necessary since we know
         -- that 'rear' is not [].
         case remainingFront of
-          Just x -> (rtn, Q x [])
           Nothing -> (rtn, Q [] [])
+          Just x -> (rtn, Q x [])
 
     -- Front is non-empty, return its first element.
     Q (x::xs) rear -> (Just x, Q xs rear)
