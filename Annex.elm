@@ -40,3 +40,10 @@ maybeToList m =
   case m of
     Nothing -> []
     Just x -> [x]
+
+
+concatMaybes : List (Maybe a) -> List a
+concatMaybes l =
+  List.map maybeToList l
+  |> List.concat
+      

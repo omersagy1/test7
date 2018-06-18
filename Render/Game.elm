@@ -3,9 +3,12 @@ module Render.Game exposing (view, navExtension)
 import Html exposing (Html, button, div, text, input)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (style, value)
+import Round
 
 import Annex exposing(..)
 
+import Game.Cooldown
+import Game.GameState exposing (GameState, Resource)
 import Game.Model exposing (Model)
 import Game.Update exposing (Message)
 import Game.Story exposing (Choice)
@@ -57,7 +60,10 @@ message msg = div [] [text msg]
 interactiveDisplay : Model -> Html Message
 interactiveDisplay m =
   div [style [("flex-grow", "1")]]
-      (choiceButtons m |> maybeToList)
+      (concatMaybes
+        [ choiceButtons m
+        , resourceMeters m.gameState
+        ])
 
 
 choiceButtons : Model -> Maybe (Html Message)
@@ -72,3 +78,22 @@ choiceButtons m =
 choiceButton : Choice -> Html Message
 choiceButton c =
   button [onClick (Game.Update.MakeChoice c)] [text c.text]
+
+
+resourceMeters : GameState -> Maybe (Html Message)
+resourceMeters s =
+  case s.resources of
+    [] -> Nothing
+    resources -> 
+      div [] (List.map resourceMeter resources)
+      |> Just
+
+
+resourceMeter : Resource -> Html Message
+resourceMeter r =
+  div [ onClick (Game.Update.CollectResource r) ]
+      [ Game.Cooldown.currentFraction r.cooldown 
+        |> Round.round 2
+        |> (++) (r.name ++ " ")
+        |> text
+      ]

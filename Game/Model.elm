@@ -4,9 +4,11 @@ import Time exposing(Time)
 
 import Queue.TimedQueue as TimedQueue
 
-import Game.Story exposing(StoryEvent, Trigger, Choice)
-import Game.GameState exposing(GameState)
-import Game.Event exposing(Event)
+import Game.Story exposing (StoryEvent, Trigger, Choice)
+import Game.GameState exposing (GameState)
+import Game.Event exposing (Event)
+import Game.Cooldown as Cooldown
+
 import Parser.Main
 
 
@@ -27,9 +29,11 @@ initialGameState =
   , resources = 
     [ { name = "gold"
       , amount = 0
+      , cooldown = Cooldown.new (30*Time.second)
       }
     , { name = "wood"
       , amount = 0
+      , cooldown = Cooldown.new (15*Time.second)
       }
     ]
   }

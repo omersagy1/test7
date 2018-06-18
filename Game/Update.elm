@@ -7,7 +7,7 @@ import Queue.TimedQueue as TimedQueue
 
 import Game.Constants as Constants
 import Game.Model exposing(Model)
-import Game.GameState as GameState exposing(GameState)
+import Game.GameState as GameState exposing(GameState, Resource)
 import Game.Story as Story exposing(StoryEvent, Choice, Consequence)
 import Game.Event as Event exposing(Event)
 
@@ -19,6 +19,7 @@ type Message = -- Messages to control the running of the game
                -- Messages sent in the normal course of play.
                | UpdateTime Time
                | MakeChoice Choice
+               | CollectResource Resource
 
 
 update : Message -> Model -> Model
@@ -32,6 +33,8 @@ update msg model =
     UpdateTime time -> updateGame time model
 
     MakeChoice choice -> makeChoice choice model
+
+    CollectResource resource -> collectResource resource model
 
 
 togglePause : Model -> Model
@@ -225,4 +228,5 @@ getStoryEventByName name model =
       e::others -> Just e
   
 
-
+collectResource : Resource -> Model -> Model
+collectResource r m = m

@@ -10,6 +10,10 @@ var _user$project$Annex$maybeToList = function (m) {
 		};
 	}
 };
+var _user$project$Annex$concatMaybes = function (l) {
+	return _elm_lang$core$List$concat(
+		A2(_elm_lang$core$List$map, _user$project$Annex$maybeToList, l));
+};
 var _user$project$Annex$isJust = function (m) {
 	var _p1 = m;
 	if (_p1.ctor === 'Nothing') {

@@ -42,5 +42,4 @@ manualOnly s = False
 type alias Mutator = GameState -> GameState
 
 mutateResource : String -> (Int -> Int) -> Mutator
-mutateResource name fn =
-  GameState.updateResource name fn
+mutateResource = GameState.mutateResource
