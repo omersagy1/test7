@@ -8,6 +8,7 @@ import Round
 import Annex exposing(..)
 
 import Game.Cooldown
+import Game.Fire exposing (Fire)
 import Game.GameState exposing (GameState, Resource)
 import Game.Model exposing (Model)
 import Game.Update exposing (Message)
@@ -62,6 +63,7 @@ interactiveDisplay m =
   div [style [("flex-grow", "1")]]
       (concatMaybes
         [ choiceButtons m
+        , fire m.gameState.fire |> Just
         , resourceMeters m.gameState
         ])
 
@@ -79,6 +81,14 @@ choiceButton : Choice -> Html Message
 choiceButton c =
   button [onClick (Game.Update.MakeChoice c)] [text c.text]
 
+
+fire : Fire -> Html Message
+fire f =
+  div [ onClick (Game.Update.StokeFire
+                 |> Game.Update.GameplayMessage)
+      ]
+      [text ("stoke fire: " ++ (Game.Fire.strength f 
+                                |> Round.round 2))]
 
 resourceMeters : GameState -> Maybe (Html Message)
 resourceMeters s =

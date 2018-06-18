@@ -30,14 +30,17 @@ initialGameState =
     [ { name = "gold"
       , amount = 0
       , harvestIncrement = 5
-      , cooldown = Cooldown.new (30*Time.second)
+      , cooldown = Cooldown.new (45*Time.second)
       }
     , { name = "wood"
       , amount = 0
       , harvestIncrement = 20
-      , cooldown = Cooldown.new (15*Time.second)
+      , cooldown = Cooldown.new (25*Time.second)
       }
     ]
+  , fire =
+    { cooldown = Cooldown.new (15*Time.second)
+    }
   }
 
 

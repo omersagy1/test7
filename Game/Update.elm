@@ -22,6 +22,7 @@ type Message = TogglePause
 
 -- Messages sent in the normal course of play.
 type GameplayMessage = HarvestResource Resource
+                       | StokeFire
 
 
 update : Message -> Model -> Model
@@ -45,7 +46,10 @@ processGameplayMessage msg state =
   case msg of 
 
     HarvestResource resource -> 
-      harvestResource resource state
+      GameState.harvestSingleResource resource state
+
+    StokeFire ->
+      GameState.stokeFire state
 
 
 togglePause : Model -> Model
@@ -237,13 +241,3 @@ getStoryEventByName name model =
       [e] -> Just e
       -- Only return the first match.
       e::others -> Just e
-  
-
-harvestResource : Resource -> GameState -> GameState
-harvestResource resource s = 
-  { s | resources = List.map (\r -> if r.name == resource.name then
-                                      GameState.harvestResource r
-                                    else r) 
-                             s.resources
-  }
-

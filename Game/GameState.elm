@@ -3,12 +3,14 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Game.Cooldown as Cooldown exposing (Cooldown)
+import Game.Fire as Fire exposing (Fire)
 
 
 type alias GameState =
   -- Time passed in the game so far.
   { gameTime : Time
   , resources : List Resource
+  , fire : Fire
   }
 
 
@@ -24,15 +26,16 @@ updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = 
   { s | gameTime = s.gameTime + t }
   |> (updateResourceCooldowns t)
+  |> (\s -> { s | fire = Fire.update t s.fire })
 
 
 updateResourceCooldowns : Time -> GameState -> GameState
 updateResourceCooldowns t s =
-  { s | resources = List.map (updateCooldown t) s.resources }
+  { s | resources = List.map (updateResourceCooldown t) s.resources }
 
 
-updateCooldown : Time -> Resource -> Resource
-updateCooldown t r =
+updateResourceCooldown : Time -> Resource -> Resource
+updateResourceCooldown t r =
   { r | cooldown = Cooldown.update t r.cooldown }
 
 
@@ -43,6 +46,16 @@ mutateResource name fn s =
                                     else r) 
                              s.resources}
 
+
+harvestSingleResource : Resource -> GameState -> GameState
+harvestSingleResource resource s = 
+  { s | resources = List.map (\r -> if r.name == resource.name then
+                                      harvestResource r
+                                    else r) 
+                             s.resources
+  }
+
+
 harvestResource : Resource -> Resource
 harvestResource r =
   if not (Cooldown.isCoolingDown r.cooldown) then
@@ -51,3 +64,8 @@ harvestResource r =
     }
   else
     r
+
+
+stokeFire : GameState -> GameState
+stokeFire s =
+  { s | fire = Fire.stoke s.fire }
