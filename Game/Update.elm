@@ -12,14 +12,16 @@ import Game.Story as Story exposing(StoryEvent, Choice, Consequence)
 import Game.Event as Event exposing(Event)
 
 
-type Message = -- Messages to control the running of the game
-               TogglePause
+-- Messages to control the running of the game
+type Message = TogglePause
                | Restart
-
-               -- Messages sent in the normal course of play.
                | UpdateTime Time
                | MakeChoice Choice
-               | HarvestResource Resource
+               | GameplayMessage GameplayMessage
+
+
+-- Messages sent in the normal course of play.
+type GameplayMessage = HarvestResource Resource
 
 
 update : Message -> Model -> Model
@@ -34,8 +36,16 @@ update msg model =
 
     MakeChoice choice -> makeChoice choice model
 
+    GameplayMessage msg -> 
+      { model | gameState = processGameplayMessage msg model.gameState }
+
+
+processGameplayMessage : GameplayMessage -> GameState -> GameState
+processGameplayMessage msg state =
+  case msg of 
+
     HarvestResource resource -> 
-      { model | gameState = harvestResource resource model.gameState }
+      harvestResource resource state
 
 
 togglePause : Model -> Model
