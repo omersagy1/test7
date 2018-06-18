@@ -15,6 +15,7 @@ type alias GameState =
 type alias Resource =
   { name : String
   , amount : Int 
+  , harvestIncrement : Int
   , cooldown : Cooldown
   }
 
@@ -41,3 +42,12 @@ mutateResource name fn s =
                                       {r | amount = (fn r.amount)}
                                     else r) 
                              s.resources}
+
+harvestResource : Resource -> Resource
+harvestResource r =
+  if not (Cooldown.isCoolingDown r.cooldown) then
+    { r | amount = r.amount + r.harvestIncrement
+        , cooldown = Cooldown.start r.cooldown
+    }
+  else
+    r

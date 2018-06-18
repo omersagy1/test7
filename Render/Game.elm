@@ -91,9 +91,9 @@ resourceMeters s =
 
 resourceMeter : Resource -> Html Message
 resourceMeter r =
-  div [ onClick (Game.Update.CollectResource r) ]
+  div [ onClick (Game.Update.HarvestResource r) ]
       [ Game.Cooldown.currentFraction r.cooldown 
         |> Round.round 2
-        |> (++) (r.name ++ " ")
+        |> (++) (r.name ++ " (" ++ (toString r.amount) ++ "): ")
         |> text
       ]

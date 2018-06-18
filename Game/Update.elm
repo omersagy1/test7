@@ -19,7 +19,7 @@ type Message = -- Messages to control the running of the game
                -- Messages sent in the normal course of play.
                | UpdateTime Time
                | MakeChoice Choice
-               | CollectResource Resource
+               | HarvestResource Resource
 
 
 update : Message -> Model -> Model
@@ -34,7 +34,8 @@ update msg model =
 
     MakeChoice choice -> makeChoice choice model
 
-    CollectResource resource -> collectResource resource model
+    HarvestResource resource -> 
+      { model | gameState = harvestResource resource model.gameState }
 
 
 togglePause : Model -> Model
@@ -228,5 +229,11 @@ getStoryEventByName name model =
       e::others -> Just e
   
 
-collectResource : Resource -> Model -> Model
-collectResource r m = m
+harvestResource : Resource -> GameState -> GameState
+harvestResource resource s = 
+  { s | resources = List.map (\r -> if r.name == resource.name then
+                                      GameState.harvestResource r
+                                    else r) 
+                             s.resources
+  }
+
