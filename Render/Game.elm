@@ -14,6 +14,7 @@ import Game.Model exposing (Model)
 import Game.Update exposing (Message)
 import Game.Story exposing (Choice)
 
+import Render.Meter as Meter
 
 -- TOP BAR NAV --
 
@@ -90,6 +91,7 @@ fire f =
       [text ("stoke fire: " ++ (Game.Fire.strength f 
                                 |> Round.round 2))]
 
+
 resourceMeters : GameState -> Maybe (Html Message)
 resourceMeters s =
   case s.resources of
@@ -108,4 +110,5 @@ resourceMeter r =
         |> Round.round 2
         |> (++) (r.name ++ " (" ++ (toString r.amount) ++ "): ")
         |> text
+      , Meter.meter (Game.Cooldown.currentFraction r.cooldown)
       ]
