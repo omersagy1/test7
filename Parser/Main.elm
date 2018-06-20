@@ -33,6 +33,12 @@ storyEventCorpus =
     newEvent
     |> name "squirrel-killed"
     |> ln "It's dead now."
+    |> ln "Weirdly, there was a bit of gold in its fur."
+    |> mutator (Story.mutateResource "gold" ((+) 10))
+  ,
+    newEvent
+    |> trigger (Story.resourceAbove "wood" 5)
+    |> ln "Looks like you've got some wood."
   ]
 
 

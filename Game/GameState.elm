@@ -66,6 +66,12 @@ harvestResource r =
     r
 
 
+getResourceNamed : String -> GameState -> Maybe Resource
+getResourceNamed name state =
+  List.filter (\r -> r.name == name) state.resources
+  |> List.head
+
+
 stokeFire : GameState -> GameState
 stokeFire s =
   { s | fire = Fire.stoke s.fire }

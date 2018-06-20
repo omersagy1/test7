@@ -130,6 +130,7 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event m = 
   enqueueTextEvents event m
   |> enqueueChoiceEvent event
+  |> runMutator event
 
 
 enqueueTextEvents : StoryEvent -> Model -> Model
@@ -174,6 +175,14 @@ enqueueChoiceEvent event m =
                               Constants.choiceButtonsDelay
                               m.eventQueue
         }
+
+
+runMutator : StoryEvent -> Model -> Model
+runMutator event m =
+  case event.mutator of
+    Nothing -> m
+    Just mutator ->
+      { m | gameState = mutator m.gameState }
 
 
 dequeueEvent : Model -> (Maybe Event, Model)
