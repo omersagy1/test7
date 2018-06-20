@@ -85,11 +85,14 @@ choiceButton c =
 
 fire : Fire -> Html Message
 fire f =
-  div [ onClick (Game.Update.StokeFire
-                 |> Game.Update.GameplayMessage)
-      ]
-      [text ("stoke fire: " ++ (Game.Fire.strength f 
-                                |> Round.round 2))]
+  let
+    labelText = 
+      ("stoke fire: " ++ (Game.Fire.strength f |> Round.round 2))
+  in
+    div [ onClick (Game.Update.StokeFire
+                   |> Game.Update.GameplayMessage)
+        ]
+        [ Meter.meter (Game.Fire.strength f) labelText]
 
 
 resourceMeters : GameState -> Maybe (Html Message)
@@ -103,12 +106,15 @@ resourceMeters s =
 
 resourceMeter : Resource -> Html Message
 resourceMeter r =
-  div [ onClick (Game.Update.HarvestResource r 
-                 |> Game.Update.GameplayMessage) 
-      ]
-      [ Game.Cooldown.currentFraction r.cooldown 
+  let
+    labelText = 
+        Game.Cooldown.currentFraction r.cooldown 
         |> Round.round 2
         |> (++) (r.name ++ " (" ++ (toString r.amount) ++ "): ")
-        |> text
-      , Meter.meter (Game.Cooldown.currentFraction r.cooldown)
-      ]
+  in
+    div [ onClick (Game.Update.HarvestResource r 
+                   |> Game.Update.GameplayMessage) 
+        ]
+        [ Meter.meter (Game.Cooldown.currentFraction r.cooldown)
+                      labelText
+        ]

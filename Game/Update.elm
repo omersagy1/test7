@@ -33,12 +33,33 @@ update msg model =
 
     Restart -> restart model.paused
 
-    UpdateTime time -> updateGame time model
+    MakeChoice choice -> 
+      if hardPaused model then model
+      else
+        makeChoice choice model
 
-    MakeChoice choice -> makeChoice choice model
+    UpdateTime time -> 
+      if gameplayPaused model then model
+      else
+        updateGame time model
 
     GameplayMessage msg -> 
-      { model | gameState = processGameplayMessage msg model.gameState }
+      if gameplayPaused model then model
+      else
+        { model | gameState = processGameplayMessage msg model.gameState }
+
+
+gameplayPaused : Model -> Bool
+gameplayPaused m =
+  hardPaused m || waitingOnChoice m
+
+
+hardPaused : Model -> Bool
+hardPaused m = m.paused
+
+
+waitingOnChoice : Model -> Bool
+waitingOnChoice m = m.activeChoices /= Nothing
 
 
 processGameplayMessage : GameplayMessage -> GameState -> GameState
@@ -66,17 +87,9 @@ restart paused =
 
 updateGame : Time -> Model -> Model
 updateGame t m =
-  case m.activeChoices of
-
-    Nothing ->
-      updateGameTime m t
-      |> triggerStoryEvents
-      |> processEventQueue
-
-    -- Game is soft-paused while we wait
-    -- for the player to make a choice.
-    other -> m
-
+  updateGameTime m t
+  |> triggerStoryEvents
+  |> processEventQueue
 
 updateGameTime : Model -> Time -> Model
 updateGameTime m t =
