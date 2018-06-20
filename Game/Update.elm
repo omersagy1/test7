@@ -6,10 +6,11 @@ import Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 
 import Game.Constants as Constants
-import Game.Model exposing(Model)
-import Game.GameState as GameState exposing(GameState, Resource)
-import Game.Story as Story exposing(StoryEvent, Choice, Consequence)
-import Game.Event as Event exposing(Event)
+import Game.Model exposing (Model)
+import Game.GameState as GameState exposing (GameState, Resource)
+import Game.Story as Story exposing (StoryEvent, Choice, Consequence,
+                                     Mutator)
+import Game.Event as Event exposing (Event)
 
 
 -- Messages to control the running of the game
@@ -130,7 +131,7 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event m = 
   enqueueTextEvents event m
   |> enqueueChoiceEvent event
-  |> runMutator event
+  |> enqueueMutator event
 
 
 enqueueTextEvents : StoryEvent -> Model -> Model
@@ -167,22 +168,23 @@ enqueueChoiceEvent event m =
   case event.choices of
     Nothing -> m
     Just choices ->
-      let
-        choiceEvent = Event.DisplayChoices choices
-      in
-        { m | eventQueue = TimedQueue.enqueue 
-                              choiceEvent
-                              Constants.choiceButtonsDelay
-                              m.eventQueue
-        }
+      { m | eventQueue = TimedQueue.enqueue 
+                            (Event.DisplayChoices choices)
+                            Constants.choiceButtonsDelay
+                            m.eventQueue
+      }
 
 
-runMutator : StoryEvent -> Model -> Model
-runMutator event m =
+enqueueMutator : StoryEvent -> Model -> Model
+enqueueMutator event m =
   case event.mutator of
     Nothing -> m
     Just mutator ->
-      { m | gameState = mutator m.gameState }
+      { m | eventQueue = TimedQueue.enqueue
+                            (Event.TriggerMutator mutator)
+                            Constants.mutatorDelay
+                            m.eventQueue
+      }
 
 
 dequeueEvent : Model -> (Maybe Event, Model)
@@ -212,6 +214,8 @@ processEvent e m =
       displayChoices choices m
     Event.TriggerStoryEvent name ->
       m
+    Event.TriggerMutator mutator ->
+      runMutator mutator m
 
 
 displayText : String -> Model -> Model
@@ -222,6 +226,11 @@ displayText text m =
 displayChoices : List Choice -> Model -> Model
 displayChoices choices m =
   { m | activeChoices = Just choices }
+
+
+runMutator : Mutator -> Model -> Model
+runMutator mutator model =
+  { model | gameState = mutator model.gameState }
 
 
 makeChoice : Choice -> Model -> Model

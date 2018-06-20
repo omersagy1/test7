@@ -20,3 +20,5 @@ choiceButtonsDelay = 0.35 * Time.second
 -- before the consequence record's message
 -- appears.
 postChoiceMessageDelay = 0.5 * Time.second
+
+mutatorDelay = 0.5 * Time.second
