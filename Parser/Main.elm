@@ -10,12 +10,6 @@ import Game.Story as Story exposing (
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> name "begin"
-    |> trigger (Story.gameTimePassed (1 * Time.second))
-    |> ln "hello world!"
-  ,
-    newEvent
-    |> name "mystery-man"
     |> trigger (Story.gameTimePassed (3 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
