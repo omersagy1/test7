@@ -14,33 +14,12 @@ import Parser.Main
 
 initialModel : Model
 initialModel = 
-  { gameState = initialGameState 
+  { gameState = Parser.Main.initialGameState 
   , messageHistory = []
   , eventQueue = TimedQueue.new
   , storyEventCorpus = Parser.Main.storyEventCorpus
   , paused = False
   , activeChoices = Nothing
-  }
-
-
-initialGameState : GameState
-initialGameState =
-  { gameTime = 0
-  , resources = 
-    [ { name = "gold"
-      , amount = 0
-      , harvestIncrement = 5
-      , cooldown = Cooldown.new (45*Time.second)
-      }
-    , { name = "wood"
-      , amount = 0
-      , harvestIncrement = 20
-      , cooldown = Cooldown.new (25*Time.second)
-      }
-    ]
-  , fire =
-    { cooldown = Cooldown.new (15*Time.second)
-    }
   }
 
 

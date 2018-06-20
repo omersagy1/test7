@@ -43,7 +43,7 @@ restartButton =
 -- MAIN GAME DISPLAY -- 
 
 view : Model -> Html Message
-view m = div [ style [("display", "flex")] ]
+view m = div [ style [("display", "flex"), ("padding", "30px")] ]
              [ messageHistory m.messageHistory
              , interactiveDisplay m
              ]
@@ -86,8 +86,7 @@ choiceButton c =
 fire : Fire -> Html Message
 fire f =
   let
-    labelText = 
-      ("stoke fire: " ++ (Game.Fire.strength f |> Round.round 2))
+    labelText = "stoke fire"
   in
     div [ onClick (Game.Update.StokeFire
                    |> Game.Update.GameplayMessage)
