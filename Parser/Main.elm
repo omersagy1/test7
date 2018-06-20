@@ -33,6 +33,7 @@ storyEventCorpus =
     newEvent
     |> trigger (Story.resourceAbove "wood" 5)
     |> ln "Looks like you've got some wood."
+    |> ln "Use it to keep the fire going."
   ]
 
 

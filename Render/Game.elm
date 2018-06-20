@@ -107,10 +107,7 @@ resourceMeters s =
 resourceMeter : Resource -> Html Message
 resourceMeter r =
   let
-    labelText = 
-        Game.Cooldown.currentFraction r.cooldown 
-        |> Round.round 2
-        |> (++) (r.name ++ " (" ++ (toString r.amount) ++ "): ")
+    labelText = r.name ++ ": " ++ (toString r.amount)
   in
     div [ onClick (Game.Update.HarvestResource r 
                    |> Game.Update.GameplayMessage) 
