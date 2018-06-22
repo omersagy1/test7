@@ -13,6 +13,14 @@ enumerate: List a -> List (Int, a)
 enumerate list = zip (List.range 0 (List.length list)) list
 
 
+-- e.g. 4.0 -> 6 -> [4.0, 3.2, 2.4, 1.6, .8, 0]
+rangeToZero : Float -> Int -> List Float
+rangeToZero initial len =
+  let step = initial / ((toFloat len) - 1)
+  in
+    List.map (\x -> initial - step * toFloat(x)) (List.range 0 (len - 1))
+
+
 -- Given a function guarateed to produce a value
 -- and an argument that might exist, produce a
 -- result that might exist.

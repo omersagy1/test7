@@ -3,7 +3,7 @@ module QueueTest exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
 
-import Queue exposing (..)
+import Queue.Queue exposing (..)
 import Annex exposing (..)
 import Tuple exposing (..)
 

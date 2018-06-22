@@ -50,13 +50,22 @@ view m = div [ style [("display", "flex"), ("padding", "30px")] ]
 
 messageHistory : List String -> Html a 
 messageHistory msgs =
-  div [style [("width", "350px"),
-              ("margin-right", "50px")]]
-      (List.map message msgs)
+  let 
+    displaySize = 8
+    msgsToDisplay = List.take displaySize msgs
+    opacities = rangeToZero 1 displaySize
+  in
+    div [style [("width", "350px"),
+                ("margin-right", "50px")]]
+        (List.map2 message msgsToDisplay opacities)
 
 
-message : String -> Html a
-message msg = div [] [text msg]
+message : String -> Float -> Html a
+message msg opacity = 
+  div [style [("margin-bottom", "10px"),
+              ("opacity", opacity |> toString)]
+      ] 
+      [text msg]
 
 
 interactiveDisplay : Model -> Html Message

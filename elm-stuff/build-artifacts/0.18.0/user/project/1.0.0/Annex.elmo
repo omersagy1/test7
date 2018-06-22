@@ -37,6 +37,16 @@ var _user$project$Annex$maybeChain = F2(
 				callback(_p2._0));
 		}
 	});
+var _user$project$Annex$rangeToZero = F2(
+	function (initial, len) {
+		var step = initial / (_elm_lang$core$Basics$toFloat(len) - 1);
+		return A2(
+			_elm_lang$core$List$map,
+			function (x) {
+				return initial - (step * _elm_lang$core$Basics$toFloat(x));
+			},
+			A2(_elm_lang$core$List$range, 0, len - 1));
+	});
 var _user$project$Annex$zip = _elm_lang$core$List$map2(
 	F2(
 		function (v0, v1) {
