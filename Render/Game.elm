@@ -19,8 +19,9 @@ import Render.Meter as Meter
 -- TOP BAR NAV --
 
 navExtension : Model -> List (Html Message)
-navExtension m = [togglePauseButton m.paused
-                 , restartButton]
+navExtension m = [ restartButton
+                 , togglePauseButton m.paused
+                 ]
 
 
 togglePauseButton : Bool -> Html Message
@@ -89,7 +90,17 @@ choiceButtons m =
 
 choiceButton : Choice -> Html Message
 choiceButton c =
-  button [onClick (Game.Update.MakeChoice c)] [text c.text]
+  button [ style [("width", "100px"),
+                  ("height", "40px"),
+                  ("background", "dimgray"),
+                  ("color", "white"),
+                  ("borderColor", "yellow"),
+                  ("borderWidth", "3px"),
+                  ("borderStyle", "solid"),
+                  ("fontSize", "16")
+                  ]
+         , onClick (Game.Update.MakeChoice c)] 
+         [text c.text]
 
 
 fire : Fire -> Html Message
