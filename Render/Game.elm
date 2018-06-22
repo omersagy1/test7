@@ -90,15 +90,15 @@ choiceButtons m =
 
 choiceButton : Choice -> Html Message
 choiceButton c =
-  button [ style [("width", "100px"),
-                  ("height", "40px"),
-                  ("background", "dimgray"),
-                  ("color", "white"),
-                  ("borderColor", "yellow"),
-                  ("borderWidth", "3px"),
-                  ("borderStyle", "solid"),
-                  ("fontSize", "16")
-                  ]
+  button [ style [ ("width", "100px")
+                 , ("height", "40px")
+                 , ("background", "dimgray")
+                 , ("color", "white")
+                 , ("borderColor", "yellow")
+                 , ("borderWidth", "3px")
+                 , ("borderStyle", "solid")
+                 , ("fontSize", "16")
+                 ]
          , onClick (Game.Update.MakeChoice c)] 
          [text c.text]
 
