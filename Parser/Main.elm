@@ -54,12 +54,21 @@ storyEventCorpus =
     newEvent
     |> name "squirrel-killed"
     |> ln "It's dead."
-    |> ln "Weirdly, there was a bit of gold in its fur."
-    |> ln "I guess you'll be hunting squirrels now."
+    |> ln "Strangely, there was a bit of gold in its fur..."
+    |> ln "Looks like you'll be hunting squirrels now."
     |> mutator (Mutators.addToResource "gold" 10)
   ,
     newEvent
     |> trigger (Triggers.resourceAbove "wood" 10)
-    |> ln "Looks like you've got some more wood."
+    |> ln "You've got some more wood."
     |> ln "Use it to keep the fire going."
+  ,
+    newEvent
+    |> trigger (Triggers.and 
+                  Triggers.fireExtinguished
+                  (Triggers.resourceActive "gold"))
+    |> ln "The fire is dead."
+    |> ln "When the light comes back..."
+    |> ln "Don't count on finding your gold."
+    |> mutator (Mutators.setResourceAmount "gold" 0)
   ]

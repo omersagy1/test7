@@ -25,5 +25,9 @@ subtractResource : String -> Int -> Mutator
 subtractResource name x = GameState.mutateResource name (\y -> y - x)
 
 
+setResourceAmount : String -> Int -> Mutator
+setResourceAmount name x = GameState.mutateResource name (\_ -> x)
+
+
 and : Mutator -> Mutator -> Mutator
 and m1 m2 = (\s -> s |> m1 |> m2)

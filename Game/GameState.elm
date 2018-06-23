@@ -106,3 +106,4 @@ stokeFire s =
   else
     { s | fire = Fire.stoke s.fire }
     |> subtractResource "wood" 1
+    
