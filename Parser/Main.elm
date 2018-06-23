@@ -17,19 +17,20 @@ initialGameState =
   
   GameState.init 
 
-  |> GameState.addResource
-     (Resource.init "gold" 
-      |> Resource.initialAmount 0 
-      |> Resource.harvestIncrement 5 
-      |> Resource.cooldown (45*Time.second))
+  |> GameState.setFireCooldown (15*Time.second)
 
   |> GameState.addResource
      (Resource.init "wood"
       |> Resource.initialAmount 5 
       |> Resource.harvestIncrement 20 
-      |> Resource.cooldown (25*Time.second))
+      |> Resource.cooldown (25*Time.second)
+      |> Resource.activate)
 
-  |> GameState.setFireCooldown (15*Time.second)
+  |> GameState.addResource
+     (Resource.init "gold" 
+      |> Resource.initialAmount 0 
+      |> Resource.harvestIncrement 5 
+      |> Resource.cooldown (45*Time.second))
 
 
 storyEventCorpus : List StoryEvent

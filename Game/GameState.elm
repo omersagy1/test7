@@ -46,6 +46,25 @@ updateResourceCooldowns t s =
   { s | resources = List.map (Resource.updateCooldown t) s.resources }
 
 
+activeResources : GameState -> List Resource
+activeResources s =
+  List.filter (\r -> r.active) s.resources
+
+
+resourceActive : String -> GameState -> Bool
+resourceActive name s =
+  List.member name (List.map .name (activeResources s))
+
+
+activateResource : String -> GameState -> GameState
+activateResource name s =
+  { s | resources = List.map (\r -> if r.name == name then
+                                      Resource.activate r 
+                                    else r)
+                             s.resources
+  }
+
+
 harvestResource : Resource -> GameState -> GameState
 harvestResource resource s = 
   { s | resources = List.map (\r -> if r.name == resource.name then

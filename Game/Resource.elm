@@ -10,6 +10,7 @@ type alias Resource =
   , amount : Int 
   , harvestIncrement : Int
   , cooldown : Cooldown
+  , active : Bool
   }
 
 
@@ -19,6 +20,7 @@ init name =
   , amount = 0 
   , harvestIncrement = 0
   , cooldown = Cooldown.new 0
+  , active = False
   }
 
 
@@ -36,7 +38,9 @@ cooldown t r = { r | cooldown = Cooldown.new t }
 
 updateCooldown : Time -> Resource -> Resource
 updateCooldown t r =
-  { r | cooldown = Cooldown.update t r.cooldown }
+  if not r.active then r
+  else
+    { r | cooldown = Cooldown.update t r.cooldown }
 
 
 harvest : Resource -> Resource
@@ -52,3 +56,12 @@ harvest r =
 mutate : (Int -> Int) -> Resource -> Resource
 mutate fn r =
   { r | amount = fn r.amount }
+
+
+activate : Resource -> Resource
+activate r = { r | active = True
+                 , cooldown = Cooldown.start r.cooldown }
+
+
+disable : Resource -> Resource
+disable r = { r | active = False }

@@ -53,7 +53,15 @@ mutateResource = GameState.mutateResource
 
 
 addToResource : String -> Int -> Mutator
-addToResource name x = GameState.mutateResource name ((+) x)
+addToResource name x = 
+  (\s ->
+    let stateWithActiveResource =
+      if not (GameState.resourceActive name s) then
+        GameState.activateResource name s
+      else
+        s
+    in
+      GameState.mutateResource name ((+) x) stateWithActiveResource)
 
 
 subtractResource : String -> Int -> Mutator

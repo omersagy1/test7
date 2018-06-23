@@ -117,7 +117,7 @@ fire f =
 
 resourceMeters : GameState -> Maybe (Html Message)
 resourceMeters s =
-  case s.resources of
+  case Game.GameState.activeResources s of
     [] -> Nothing
     resources -> 
       div [] (List.map resourceMeter resources)
