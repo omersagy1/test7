@@ -83,5 +83,7 @@ resourceAmount name s =
 
 stokeFire : GameState -> GameState
 stokeFire s =
-  { s | fire = Fire.stoke s.fire }
-  |> subtractResource "wood" 1
+  if (resourceAmount "wood" s) <= 0 then s
+  else
+    { s | fire = Fire.stoke s.fire }
+    |> subtractResource "wood" 1
