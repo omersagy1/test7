@@ -6,11 +6,12 @@ import Game.Cooldown as Cooldown exposing (Cooldown)
 
 
 type alias Fire = 
-  { cooldown : Cooldown }
+  { cooldown : Cooldown
+  }
 
 
 init : Time -> Fire
-init cooldown = { cooldown = Cooldown.new cooldown }
+init burnTime = { cooldown = Cooldown.new burnTime }
 
 
 update : Time -> Fire -> Fire

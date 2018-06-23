@@ -1,7 +1,8 @@
 module Parser.Build exposing(..)
 
-import Game.Story as Story exposing (
-  StoryEvent, Choice, Consequence, Trigger, Mutator)
+import Game.Mutators as Mutators exposing (Mutator)
+import Game.Triggers as Triggers exposing (Trigger)
+import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 
 -- Event with default values that can
@@ -9,7 +10,7 @@ import Game.Story as Story exposing (
 newEvent : StoryEvent
 newEvent =
   { name = ""
-  , trigger = Story.manualOnly
+  , trigger = Triggers.manualOnly
   , text = []
   , choices = Nothing
   , occursOnce = True

@@ -1,6 +1,7 @@
 module Game.Event exposing(..)
 
-import Game.Story exposing(Choice, Mutator)
+import Game.Mutators exposing (Mutator)
+import Game.Story exposing (Choice)
 
 
 type Event = DisplayText String

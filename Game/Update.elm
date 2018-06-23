@@ -1,17 +1,17 @@
 module Game.Update exposing (..)
 
-import Time exposing(Time)
+import Time exposing (Time)
 
 import Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 
 import Game.Constants as Constants
-import Game.Model exposing (Model)
-import Game.GameState as GameState exposing (GameState)
-import Game.Resource as Resource exposing (Resource)
-import Game.Story as Story exposing (StoryEvent, Choice, Consequence,
-                                     Mutator)
 import Game.Event as Event exposing (Event)
+import Game.GameState as GameState exposing (GameState)
+import Game.Model exposing (Model)
+import Game.Mutators exposing (Mutator)
+import Game.Resource as Resource exposing (Resource)
+import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 
 -- Messages to control the running of the game

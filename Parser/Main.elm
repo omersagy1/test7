@@ -5,11 +5,12 @@ import Time
 import Data.Config as Config
 import Game.Cooldown as Cooldown
 import Game.GameState as GameState exposing (GameState)
+import Game.Mutators as Mutators exposing (Mutator)
 import Game.Resource as Resource exposing (Resource)
-import Game.Story as Story exposing (
-  StoryEvent, Choice, Consequence, Trigger, Mutator)
+import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
+import Game.Triggers as Triggers exposing (Trigger)
 
-import Parser.Build exposing(..)
+import Parser.Build exposing (..)
 
 
 initialGameState : GameState
@@ -36,7 +37,7 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (Story.gameTimePassed (3 * Time.second))
+    |> trigger (Triggers.gameTimePassed (3 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
@@ -52,12 +53,13 @@ storyEventCorpus =
   ,
     newEvent
     |> name "squirrel-killed"
-    |> ln "It's dead now."
+    |> ln "It's dead."
     |> ln "Weirdly, there was a bit of gold in its fur."
-    |> mutator (Story.addToResource "gold" 10)
+    |> ln "I guess you'll be hunting squirrels now."
+    |> mutator (Mutators.addToResource "gold" 10)
   ,
     newEvent
-    |> trigger (Story.resourceAbove "wood" 10)
+    |> trigger (Triggers.resourceAbove "wood" 10)
     |> ln "Looks like you've got some more wood."
     |> ln "Use it to keep the fire going."
   ]

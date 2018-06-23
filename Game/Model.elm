@@ -4,10 +4,9 @@ import Time exposing(Time)
 
 import Queue.TimedQueue as TimedQueue
 
-import Game.Story exposing (StoryEvent, Trigger, Choice)
-import Game.GameState exposing (GameState)
 import Game.Event exposing (Event)
-import Game.Cooldown as Cooldown
+import Game.GameState exposing (GameState)
+import Game.Story exposing (StoryEvent, Choice)
 
 import Parser.Main
 
