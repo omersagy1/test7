@@ -50,3 +50,15 @@ type alias Mutator = GameState -> GameState
 
 mutateResource : String -> (Int -> Int) -> Mutator
 mutateResource = GameState.mutateResource
+
+
+addToResource : String -> Int -> Mutator
+addToResource name x = GameState.mutateResource name ((+) x)
+
+
+subtractResource : String -> Int -> Mutator
+subtractResource name x = GameState.mutateResource name (\y -> y - x)
+
+
+and : Mutator -> Mutator -> Mutator
+and m1 m2 = (\s -> s |> m1 |> m2)
