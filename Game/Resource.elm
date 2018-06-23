@@ -47,3 +47,8 @@ harvest r =
     }
   else
     r
+
+
+mutate : (Int -> Int) -> Resource -> Resource
+mutate fn r =
+  { r | amount = fn r.amount }

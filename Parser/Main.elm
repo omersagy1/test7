@@ -14,6 +14,7 @@ import Parser.Build exposing(..)
 
 initialGameState : GameState
 initialGameState =
+  
   GameState.init 
 
   |> GameState.addResource

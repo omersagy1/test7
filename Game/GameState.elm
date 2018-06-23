@@ -2,6 +2,7 @@ module Game.GameState exposing(..)
 
 import Time exposing (Time)
 
+import Annex exposing (..)
 import Game.Cooldown as Cooldown exposing (Cooldown)
 import Game.Resource as Resource exposing (Resource)
 import Game.Fire as Fire exposing (Fire)
@@ -63,11 +64,24 @@ getResourceNamed name state =
 mutateResource : String -> (Int -> Int) -> GameState -> GameState
 mutateResource name fn s =
   { s | resources = List.map (\r -> if r.name == name then
-                                      {r | amount = (fn r.amount)}
+                                      Resource.mutate fn r
                                     else r) 
                              s.resources}
+
+
+subtractResource : String -> Int -> GameState -> GameState
+subtractResource name x state = 
+  mutateResource name (\y -> y - x) state
+
+
+resourceAmount : String -> GameState -> Int
+resourceAmount name s =
+  getResourceNamed name s
+  |> maybeChain .amount
+  |> Maybe.withDefault 0
 
 
 stokeFire : GameState -> GameState
 stokeFire s =
   { s | fire = Fire.stoke s.fire }
+  |> subtractResource "wood" 1
