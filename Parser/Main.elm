@@ -5,6 +5,7 @@ import Time
 import Data.Config as Config
 import Game.Cooldown as Cooldown
 import Game.GameState as GameState exposing (GameState)
+import Game.Resource as Resource exposing (Resource)
 import Game.Story as Story exposing (
   StoryEvent, Choice, Consequence, Trigger, Mutator)
 
@@ -15,16 +16,15 @@ initialGameState : GameState
 initialGameState =
   { gameTime = 0
   , resources = 
-    [ { name = "gold"
-      , amount = 0
-      , harvestIncrement = 5
-      , cooldown = Cooldown.new (45*Time.second)
-      }
-    , { name = "wood"
-      , amount = 5
-      , harvestIncrement = 20
-      , cooldown = Cooldown.new (25*Time.second)
-      }
+    [ Resource.init "gold" 
+      |> Resource.initialAmount 0 
+      |> Resource.harvestIncrement 5 
+      |> Resource.cooldown (45*Time.second)
+
+    , Resource.init "wood"
+      |> Resource.initialAmount 5 
+      |> Resource.harvestIncrement 20 
+      |> Resource.cooldown (25*Time.second)
     ]
   , fire =
     { cooldown = Cooldown.new (15*Time.second)

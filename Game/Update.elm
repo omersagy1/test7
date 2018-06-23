@@ -7,7 +7,8 @@ import Queue.TimedQueue as TimedQueue
 
 import Game.Constants as Constants
 import Game.Model exposing (Model)
-import Game.GameState as GameState exposing (GameState, Resource)
+import Game.GameState as GameState exposing (GameState)
+import Game.Resource as Resource exposing (Resource)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence,
                                      Mutator)
 import Game.Event as Event exposing (Event)
@@ -68,7 +69,7 @@ processGameplayMessage msg state =
   case msg of 
 
     HarvestResource resource -> 
-      GameState.harvestSingleResource resource state
+      GameState.harvestResource resource state
 
     StokeFire ->
       GameState.stokeFire state

@@ -9,8 +9,9 @@ import Annex exposing(..)
 
 import Game.Cooldown
 import Game.Fire exposing (Fire)
-import Game.GameState exposing (GameState, Resource)
+import Game.GameState exposing (GameState)
 import Game.Model exposing (Model)
+import Game.Resource exposing (Resource)
 import Game.Update exposing (Message)
 import Game.Story exposing (Choice)
 
