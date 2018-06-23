@@ -14,22 +14,21 @@ import Parser.Build exposing(..)
 
 initialGameState : GameState
 initialGameState =
-  { gameTime = 0
-  , resources = 
-    [ Resource.init "gold" 
+  GameState.init 
+
+  |> GameState.addResource
+     (Resource.init "gold" 
       |> Resource.initialAmount 0 
       |> Resource.harvestIncrement 5 
-      |> Resource.cooldown (45*Time.second)
+      |> Resource.cooldown (45*Time.second))
 
-    , Resource.init "wood"
+  |> GameState.addResource
+     (Resource.init "wood"
       |> Resource.initialAmount 5 
       |> Resource.harvestIncrement 20 
-      |> Resource.cooldown (25*Time.second)
-    ]
-  , fire =
-    { cooldown = Cooldown.new (15*Time.second)
-    }
-  }
+      |> Resource.cooldown (25*Time.second))
+
+  |> GameState.setFireCooldown (15*Time.second)
 
 
 storyEventCorpus : List StoryEvent

@@ -15,6 +15,24 @@ type alias GameState =
   }
 
 
+init : GameState
+init =
+  { gameTime = 0
+  , resources = []
+  , fire = Fire.init 0
+  }
+
+
+addResource : Resource -> GameState -> GameState
+addResource r s =
+  { s | resources = s.resources ++ [r] }
+
+
+setFireCooldown : Time -> GameState -> GameState
+setFireCooldown t s =
+  { s | fire = Fire.init t }
+
+
 updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = 
   { s | gameTime = s.gameTime + t }

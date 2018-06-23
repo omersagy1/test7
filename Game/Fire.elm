@@ -9,6 +9,10 @@ type alias Fire =
   { cooldown : Cooldown }
 
 
+init : Time -> Fire
+init cooldown = { cooldown = Cooldown.new cooldown }
+
+
 update : Time -> Fire -> Fire
 update t f =
   { f | cooldown = Cooldown.update t f.cooldown }
