@@ -1,26 +1,27 @@
 module Render.Meter exposing (meter)
 
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style, value)
+import Css exposing (..)
+import Css.Colors as Colors
+import Html.Styled exposing (Html, button, div, text, input)
+import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Attributes exposing (style, value, css)
 
 
-width = 200
-height = 30
+w = 200
+h = 30
 margin = 5
 
-px : Int -> String 
-px n = (toString n) ++ "px"
-
+toPx : Float -> String
+toPx = toString >> (\s -> s ++ "px")
 
 meter : Float -> String -> Html a
 meter fractionFilled labelText = 
-  div [style [ ("width", width |> px)
-             , ("height", height |> px)
-             , ("background-color", "black")
-             , ("margin-top", margin |> px)
-             , ("margin-bottom", margin |> px)
-             ]
+  div [css [ width (px w)
+           , height (px h)
+           , backgroundColor Colors.black
+           , marginTop (px margin)
+           , marginBottom (px margin)
+           ]
       ] 
       [ bar fractionFilled
       , label labelText
@@ -29,19 +30,19 @@ meter fractionFilled labelText =
 
 bar : Float -> Html a
 bar fractionFilled =
-  div [style [ ("width", toFloat(width) * fractionFilled |> round |> px)
-             , ("height", height |> px)
-             , ("background-color", "grey")
-             , ("position", "absolute")
-             ]
+  div [css [ width (px (toFloat(w) * fractionFilled))
+           , height (px h)
+           , backgroundColor Colors.gray
+           , position absolute
+           ]
       ]
       []
 
 
 label : String -> Html a
 label t =
-  div [style [ ("width", width |> px)
-             , ("height", height |> px)
+  div [style [ ("width", w |> toPx)
+             , ("height", h |> toPx)
              , ("position", "absolute")
              , ("display", "flex")
              , ("align-items", "center")

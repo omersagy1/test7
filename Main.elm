@@ -1,5 +1,5 @@
 import AnimationFrame
-import Html exposing (Html, button, div, text, input)
+import Html.Styled exposing (Html, button, div, text, input)
 import Time exposing (Time, second)
 
 import Annex exposing(zip, enumerate)
@@ -14,7 +14,7 @@ import Game.Subs
 
 
 main =
-  Html.program
+  Html.Styled.program
     { init = init
     , view = Render.App.view
     , update = update

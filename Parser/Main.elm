@@ -71,4 +71,8 @@ storyEventCorpus =
     |> ln "When the light comes back..."
     |> ln "Don't count on finding your gold."
     |> mutator (Mutators.setResourceAmount "gold" 0)
+  ,
+    newEvent
+    |> name "stoke-fire"
+    |> ln "The fire is roaring."
   ]

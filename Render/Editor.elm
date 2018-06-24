@@ -1,8 +1,8 @@
 module Render.Editor exposing (editorView)
 
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style, value)
+import Html.Styled exposing (Html, button, div, text, input)
+import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Attributes exposing (style, value)
 
 import Annex exposing(zip, enumerate)
 import Model exposing(..)

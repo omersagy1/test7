@@ -1,8 +1,9 @@
 module Render.Game exposing (view, navExtension)
 
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style, value)
+import Css exposing (..)
+import Html.Styled exposing (Html, button, div, text, input)
+import Html.Styled.Attributes exposing (style, value, css)
+import Html.Styled.Events exposing (onClick, onInput)
 import Round
 
 import Annex exposing(..)
@@ -37,7 +38,7 @@ togglePauseButton paused =
 
 restartButton : Html Message
 restartButton = 
-  button [ style [("margin", "5px")]
+  button [ css [ margin (px 5) ]
          , onClick Game.Update.Restart]
          [text "RESTART"]
 

@@ -1,8 +1,8 @@
 module Render.App exposing (view)
 
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (style, value)
+import Html.Styled exposing (Html, button, div, text, input)
+import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Attributes exposing (style, value)
 
 import Annex exposing(zip, enumerate)
 import Model exposing(..)
@@ -16,10 +16,10 @@ view model =
   let mainPage =
     case model.currentPage of
 
-      EditorPage -> Html.map EditorMessage 
+      EditorPage -> Html.Styled.map EditorMessage 
                       (Render.Editor.editorView model.editorModel)
 
-      GamePage -> Html.map GameMessage 
+      GamePage -> Html.Styled.map GameMessage 
                     (Render.Game.view model.gameModel)
   in
     div [] [ navBar model
@@ -39,7 +39,7 @@ navExtension : Model -> List (Html Message)
 navExtension m =
   case m.currentPage of
     GamePage ->
-      (List.map (\h -> Html.map GameMessage h) 
+      (List.map (\h -> Html.Styled.map GameMessage h) 
                 (Render.Game.navExtension m.gameModel))
     other ->
       []
