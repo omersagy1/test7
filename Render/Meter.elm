@@ -11,8 +11,6 @@ w = 200
 h = 30
 margin = 5
 
-toPx : Float -> String
-toPx = toString >> (\s -> s ++ "px")
 
 meter : Float -> String -> Html a
 meter fractionFilled labelText = 
@@ -41,12 +39,13 @@ bar fractionFilled =
 
 label : String -> Html a
 label t =
-  div [style [ ("width", w |> toPx)
-             , ("height", h |> toPx)
-             , ("position", "absolute")
-             , ("display", "flex")
-             , ("align-items", "center")
-             , ("justify-content", "center")
-             , ("color", "white")
-             ]]
+  div [css [ width (px w)
+           , height (px h)
+           , position absolute 
+           , displayFlex
+           , alignItems center
+           , justifyContent center
+           , color Colors.white
+           ]
+      ]
       [text t]

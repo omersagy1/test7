@@ -1,6 +1,7 @@
 module Render.Game exposing (view, navExtension)
 
 import Css exposing (..)
+import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
@@ -31,7 +32,7 @@ togglePauseButton paused =
   let
     buttonText = if paused then "PLAY" else "PAUSE"
   in
-    button [ style [("margin", "5px")]
+    button [ css [ margin (px 5) ]
            , onClick Game.Update.TogglePause]
            [text buttonText]
 
@@ -46,7 +47,7 @@ restartButton =
 -- MAIN GAME DISPLAY -- 
 
 view : Model -> Html Message
-view m = div [ style [("display", "flex"), ("padding", "30px")] ]
+view m = div [ css [ displayFlex , padding (px 30)] ]
              [ messageHistory m.messageHistory
              , interactiveDisplay m
              ]
@@ -58,22 +59,25 @@ messageHistory msgs =
     msgsToDisplay = List.take displaySize msgs
     opacities = rangeToZero 1 displaySize
   in
-    div [style [("width", "350px"),
-                ("margin-right", "50px")]]
+    div [css [ width (px 350)
+             , marginRight (px 50)
+             ]
+        ]
         (List.map2 message msgsToDisplay opacities)
 
 
 message : String -> Float -> Html a
-message msg opacity = 
-  div [style [("margin-bottom", "10px"),
-              ("opacity", opacity |> toString)]
+message msg opacityValue = 
+  div [ css [ marginBottom (px 10)
+            , opacity (num opacityValue)
+            ]
       ] 
       [text msg]
 
 
 interactiveDisplay : Model -> Html Message
 interactiveDisplay m =
-  div [style [("flex-grow", "1")]]
+  div [ css [flexGrow (num 1)]]
       (concatMaybes
         [ choiceButtons m
         , fire m.gameState.fire |> Just
@@ -92,15 +96,15 @@ choiceButtons m =
 
 choiceButton : Choice -> Html Message
 choiceButton c =
-  button [ style [ ("width", "100px")
-                 , ("height", "40px")
-                 , ("background", "dimgray")
-                 , ("color", "white")
-                 , ("borderColor", "yellow")
-                 , ("borderWidth", "3px")
-                 , ("borderStyle", "solid")
-                 , ("fontSize", "16")
-                 ]
+  button [ css [ width (px 100)
+               , height (px 40)
+               , backgroundColor Colors.black
+               , color Colors.white
+               , borderColor Colors.yellow
+               , borderWidth (px 3)
+               , borderStyle solid
+               , fontSize (px 16)
+               ]
          , onClick (Game.Update.MakeChoice c)] 
          [text c.text]
 
