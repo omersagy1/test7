@@ -7,15 +7,15 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value, css)
 
 
-w = 200
-h = 30
+meterLength = 200
+meterHeight = 30
 margin = 5
 
 
 meter : Float -> String -> Html a
 meter fractionFilled labelText = 
-  div [css [ width (px w)
-           , height (px h)
+  div [css [ width (px meterLength)
+           , height (px meterHeight)
            , backgroundColor Colors.black
            , marginTop (px margin)
            , marginBottom (px margin)
@@ -28,8 +28,8 @@ meter fractionFilled labelText =
 
 bar : Float -> Html a
 bar fractionFilled =
-  div [css [ width (px (toFloat(w) * fractionFilled))
-           , height (px h)
+  div [css [ width (px (toFloat(meterLength) * fractionFilled))
+           , height (px meterHeight)
            , backgroundColor Colors.gray
            , position absolute
            ]
@@ -39,8 +39,8 @@ bar fractionFilled =
 
 label : String -> Html a
 label t =
-  div [css [ width (px w)
-           , height (px h)
+  div [css [ width (px meterLength)
+           , height (px meterHeight)
            , position absolute 
            , displayFlex
            , alignItems center

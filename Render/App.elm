@@ -54,7 +54,8 @@ switchPageButton currentPage =
         GamePage -> "GO TO EDITOR"
   in    
     button [ style [("margin", "5px")]
-             , onClick SwitchPage] 
+           , onClick SwitchPage
+           ] 
            [ text buttonText ]
 
 
