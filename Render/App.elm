@@ -9,6 +9,7 @@ import Model exposing(..)
 
 import Render.Game
 import Render.Editor
+import Render.NavBar
 
 
 view : Model -> Html Message
@@ -40,7 +41,7 @@ navExtension m =
   case m.currentPage of
     GamePage ->
       (List.map (\h -> Html.Styled.map GameMessage h) 
-                (Render.Game.navExtension m.gameModel))
+                (Render.NavBar.navExtension m.gameModel))
     other ->
       []
 

@@ -4,10 +4,10 @@ import Time
 
 
 -- Default delay for enqueued messages.
-defaultMessageDelay = 1 * Time.second
+defaultMessageDelay = 1.3 * Time.second
 
 -- Delay for the first message in an event.
-firstMessageDelay = 0  
+firstMessageDelay = 0.3 * Time.second
 
 -- Delay before the appearance of choice
 -- buttons. This is in between the message
@@ -21,4 +21,6 @@ choiceButtonsDelay = 0.35 * Time.second
 -- appears.
 postChoiceMessageDelay = 0.5 * Time.second
 
+-- Delay before running the effect of an
+-- event.
 mutatorDelay = 0.5 * Time.second

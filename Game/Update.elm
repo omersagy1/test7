@@ -69,7 +69,7 @@ processGameplayMessage msg state =
   case msg of 
 
     HarvestResource resource -> 
-      GameState.harvestResource resource state
+      GameState.applyToResource resource.name Resource.harvest state
 
     StokeFire ->
       GameState.stokeFire state

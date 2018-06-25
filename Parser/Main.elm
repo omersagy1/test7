@@ -37,6 +37,10 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
+    |> trigger Triggers.fireStoked
+    |> ln "The fire is roaring."
+  ,
+    newEvent
     |> trigger (Triggers.gameTimePassed (3 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
@@ -71,8 +75,4 @@ storyEventCorpus =
     |> ln "When the light comes back..."
     |> ln "Don't count on finding your gold."
     |> mutator (Mutators.setResourceAmount "gold" 0)
-  ,
-    newEvent
-    |> name "stoke-fire"
-    |> ln "The fire is roaring."
   ]

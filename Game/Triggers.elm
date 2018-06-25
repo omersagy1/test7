@@ -29,6 +29,9 @@ resourceAbove name amount =
       Just r -> r.amount >= amount)
 
 
+fireStoked : Trigger
+fireStoked s = False
+
 fireExtinguished : Trigger
 fireExtinguished s = Fire.isExtinguished s.fire
 

@@ -56,41 +56,18 @@ resourceActive name s =
   List.member name (List.map .name (activeResources s))
 
 
-activateResource : String -> GameState -> GameState
-activateResource name s =
-  { s | resources = List.map (\r -> if r.name == name then
-                                      Resource.activate r 
-                                    else r)
-                             s.resources
-  }
-
-
-harvestResource : Resource -> GameState -> GameState
-harvestResource resource s = 
-  { s | resources = List.map (\r -> if r.name == resource.name then
-                                      Resource.harvest r
-                                    else r) 
-                             s.resources
-  }
-
-
 getResourceNamed : String -> GameState -> Maybe Resource
 getResourceNamed name state =
   List.filter (\r -> r.name == name) state.resources
   |> List.head
 
 
-mutateResource : String -> (Int -> Int) -> GameState -> GameState
-mutateResource name fn s =
+applyToResource : String -> (Resource -> Resource) -> GameState -> GameState
+applyToResource name fn s =
   { s | resources = List.map (\r -> if r.name == name then
-                                      Resource.mutate fn r
+                                      fn r
                                     else r) 
                              s.resources}
-
-
-subtractResource : String -> Int -> GameState -> GameState
-subtractResource name x state = 
-  mutateResource name (\y -> y - x) state
 
 
 resourceAmount : String -> GameState -> Int
@@ -105,6 +82,6 @@ stokeFire s =
   if (resourceAmount "wood" s) <= 0 then s
   else
     { s | fire = Fire.stoke s.fire }
-    |> subtractResource "wood" 1
+    |> applyToResource "wood" (Resource.subtract 1)
 
     

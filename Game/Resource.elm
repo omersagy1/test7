@@ -58,9 +58,22 @@ mutate fn r =
   { r | amount = fn r.amount }
 
 
+add : Int -> Resource -> Resource
+add x r = mutate ((+) x) r
+
+
+subtract : Int -> Resource -> Resource
+subtract x r = mutate (\y -> y - x) r
+
+
+activateWithCooldown : Resource -> Resource
+activateWithCooldown r = 
+  { r | active = True
+      , cooldown = Cooldown.start r.cooldown }
+
+
 activate : Resource -> Resource
-activate r = { r | active = True
-                 , cooldown = Cooldown.start r.cooldown }
+activate r = { r | active = True }
 
 
 disable : Resource -> Resource

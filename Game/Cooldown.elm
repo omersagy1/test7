@@ -11,7 +11,7 @@ type alias Cooldown =
 
 new : Time -> Cooldown
 new duration =
-  { timeRemaining = duration
+  { timeRemaining = 0
   , duration = duration
   }
 
