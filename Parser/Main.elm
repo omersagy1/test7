@@ -38,6 +38,7 @@ storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
     |> trigger Triggers.fireStoked
+    |> reoccurring
     |> ln "The fire is roaring."
   ,
     newEvent

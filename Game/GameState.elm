@@ -3,7 +3,7 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Annex exposing (..)
-import Game.Cooldown as Cooldown exposing (Cooldown)
+import Game.Action as Action exposing (ActionHistory, Action)
 import Game.Resource as Resource exposing (Resource)
 import Game.Fire as Fire exposing (Fire)
 
@@ -13,6 +13,10 @@ type alias GameState =
   { gameTime : Time
   , resources : List Resource
   , fire : Fire
+  -- List of actions performed since the last update.
+  -- Read by triggers to decide whether to trigger a
+  -- StoryEvent.
+  , actionHistory : ActionHistory
   }
 
 
@@ -21,6 +25,7 @@ init =
   { gameTime = 0
   , resources = []
   , fire = Fire.init 0
+  , actionHistory = Action.newHistory
   }
 
 
@@ -83,5 +88,19 @@ stokeFire s =
   else
     { s | fire = Fire.stoke s.fire }
     |> applyToResource "wood" (Resource.subtract 1)
+    |> addAction Action.StokeFire
 
-    
+
+addAction : Action -> GameState -> GameState
+addAction a s = 
+    { s | actionHistory = 
+            Action.addAction Action.StokeFire s.actionHistory}
+
+
+actionPerformed : Action -> GameState -> Bool
+actionPerformed a s = Action.hasAction a s.actionHistory
+
+
+clearActions : GameState -> GameState
+clearActions s = 
+  { s | actionHistory = Action.clearActions s.actionHistory }

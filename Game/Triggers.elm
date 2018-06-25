@@ -2,6 +2,7 @@ module Game.Triggers exposing (..)
 
 import Time exposing (Time)
 
+import Game.Action as Action exposing (Action)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)
 
@@ -29,13 +30,18 @@ resourceAbove name amount =
       Just r -> r.amount >= amount)
 
 
-fireStoked : Trigger
-fireStoked s = False
+resourceActive : String -> Trigger
+resourceActive name =
+  (\s -> GameState.resourceActive name s)
+
 
 fireExtinguished : Trigger
 fireExtinguished s = Fire.isExtinguished s.fire
 
 
-resourceActive : String -> Trigger
-resourceActive name =
-  (\s -> GameState.resourceActive name s)
+fireStoked : Trigger
+fireStoked = actionPerformed Action.StokeFire
+
+
+actionPerformed : Action -> Trigger
+actionPerformed a = (\s -> GameState.actionPerformed a s)

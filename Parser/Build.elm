@@ -38,8 +38,8 @@ choice c e =
     Nothing -> choices [c] e
     Just cs -> choices (cs ++ [c]) e
 
-occursOnce : Bool -> StoryEvent -> StoryEvent
-occursOnce o e = { e | occursOnce = o }
+reoccurring : StoryEvent -> StoryEvent
+reoccurring e = { e | occursOnce = False }
 
 mutator : Mutator -> StoryEvent -> StoryEvent
 mutator m e = { e | mutator = Just m }

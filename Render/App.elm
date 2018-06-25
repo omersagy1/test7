@@ -28,7 +28,7 @@ view model =
            ]
 
 navBar : Model -> Html Message
-navBar model = div [ style [ ("background-color", "blue")
+navBar model = div [ style [ ("background-color", "black")
                            , ("text-color", "white")
                            ] 
                    ] 

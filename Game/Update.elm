@@ -92,12 +92,17 @@ updateGame t m =
   updateGameTime m t
   |> triggerStoryEvents
   |> processEventQueue
+  |> clearActions 
 
 updateGameTime : Model -> Time -> Model
 updateGameTime m t =
   { m | gameState = GameState.updateGameTime t m.gameState
       , eventQueue = TimedQueue.update t m.eventQueue 
   }
+
+
+clearActions : Model -> Model
+clearActions m = { m | gameState = GameState.clearActions m.gameState }
 
 
 triggerStoryEvents : Model -> Model

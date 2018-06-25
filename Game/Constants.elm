@@ -1,12 +1,14 @@
 module Game.Constants exposing (..)
 
-import Time
+import Time exposing (Time)
 
 
 -- Default delay for enqueued messages.
+defaultMessageDelay : Time
 defaultMessageDelay = 1.3 * Time.second
 
 -- Delay for the first message in an event.
+firstMessageDelay : Time
 firstMessageDelay = 0.3 * Time.second
 
 -- Delay before the appearance of choice
@@ -14,13 +16,17 @@ firstMessageDelay = 0.3 * Time.second
 -- hinting to the user a choice might be made,
 -- and the availability of the choice buttons
 -- themselves.
+choiceButtonsDelay : Time
 choiceButtonsDelay = 0.35 * Time.second
 
 -- The delay after the user makes a choice,
 -- before the consequence record's message
 -- appears.
+-- TODO: This is not being used yet.
+postChoiceMessageDelay : Time
 postChoiceMessageDelay = 0.5 * Time.second
 
 -- Delay before running the effect of an
 -- event.
+mutatorDelay : Time
 mutatorDelay = 0.5 * Time.second

@@ -2,7 +2,6 @@ module Queue.TimedQueue exposing (..)
 
 import Queue.Queue as Queue
 import Time exposing (Time)
-import Tuple
 import Annex exposing (..)
 
 
