@@ -4,7 +4,6 @@ import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value)
 
-import Annex exposing(zip, enumerate)
 import Model exposing(..)
 
 import Render.Game
@@ -28,7 +27,7 @@ view model =
         , mainPage ]
 
 navBar : Model -> Html Message
-navBar model = div [ style [ ("background-color", "black")
+navBar model = div [ style [ ("background-color", "grey")
                            , ("text-color", "white")
                            ] 
                    ] 
@@ -58,5 +57,3 @@ switchPageButton currentPage =
            , onClick SwitchPage
            ] 
            [ text buttonText ]
-
-

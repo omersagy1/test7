@@ -20,27 +20,38 @@ initialGameState =
 
   |> GameState.addResource
      (Resource.init "wood"
-      |> Resource.initialAmount 5 
-      |> Resource.harvestIncrement 20 
-      |> Resource.cooldown (25*Time.second)
-      |> Resource.activate)
+      |> Resource.initialAmount 0 
+      |> Resource.harvestIncrement 10 
+      |> Resource.cooldown (25*Time.second))
 
   |> GameState.addResource
      (Resource.init "gold" 
       |> Resource.initialAmount 0 
-      |> Resource.harvestIncrement 5 
+      |> Resource.harvestIncrement 2
       |> Resource.cooldown (45*Time.second))
 
 
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
+    |> trigger (Triggers.gameTimePassed (1 * Time.second))
+    |> ln "You are cold..."
+    |> ln "And starving."
+    |> ln "Go search for some wood."
+    |> mutator (Mutators.activateResource "wood")
+  ,
+    newEvent
+    |> trigger (Triggers.resourceAbove "wood" 10)
+    |> ln "Outside, you find a small heap of dry twigs."
+    |> ln "Use them to start a fire."
+  ,
+    newEvent
     |> trigger Triggers.fireStoked
     |> reoccurring
     |> ln "The fire is roaring."
   ,
     newEvent
-    |> trigger (Triggers.gameTimePassed (3 * Time.second))
+    |> trigger (Triggers.gameTimePassed (30 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
@@ -61,11 +72,6 @@ storyEventCorpus =
     |> ln "Looks like you'll be hunting squirrels now."
     |> mutator (Mutators.and (Mutators.addToResource "gold" 10)
                              (Mutators.setMilestone "first-squirrel"))
-  ,
-    newEvent
-    |> trigger (Triggers.resourceAbove "wood" 10)
-    |> ln "You've got some more wood."
-    |> ln "Use it to keep the fire going."
   ,
     newEvent
     |> trigger (Triggers.and 

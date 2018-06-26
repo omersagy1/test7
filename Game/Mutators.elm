@@ -6,6 +6,9 @@ import Game.Resource as Resource
 
 type alias Mutator = GameState -> GameState
 
+activateResource : String -> Mutator
+activateResource name =
+  (\s -> GameState.applyToResource name (Resource.activate) s)
 
 addToResource : String -> Int -> Mutator
 addToResource name x = 

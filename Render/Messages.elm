@@ -1,17 +1,15 @@
 module Render.Messages exposing (messageHistory)
 
 import Css exposing (..)
-import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
-import Html.Styled.Events exposing (onClick, onInput)
 
 import Annex exposing(..)
 
 
-displaySize = 8
+displaySize = 12
 displayWidth = (px 350)
-spaceBetweenMessages = (px 10)
+spaceBetweenMessages = (px 12)
 rightMargin = (px 50)
 
 

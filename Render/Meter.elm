@@ -3,12 +3,16 @@ module Render.Meter exposing (meter)
 import Css exposing (..)
 import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
-import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value, css)
 
 
+meterLength : Float
 meterLength = 200
+
+meterHeight : Float
 meterHeight = 30
+
+margin : Float
 margin = 5
 
 
@@ -19,6 +23,9 @@ meter fractionFilled labelText =
            , backgroundColor Colors.black
            , marginTop (px margin)
            , marginBottom (px margin)
+           , borderColor Colors.yellow
+           , borderWidth (px 3)
+           , borderStyle solid
            ]
       ] 
       [ bar fractionFilled
@@ -28,7 +35,7 @@ meter fractionFilled labelText =
 
 bar : Float -> Html a
 bar fractionFilled =
-  div [css [ width (px (toFloat(meterLength) * fractionFilled))
+  div [css [ width (px <| meterLength * fractionFilled)
            , height (px meterHeight)
            , backgroundColor Colors.gray
            , position absolute
