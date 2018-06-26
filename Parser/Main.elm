@@ -2,8 +2,6 @@ module Parser.Main exposing (..)
 
 import Time
 
-import Data.Config as Config
-import Game.Cooldown as Cooldown
 import Game.GameState as GameState exposing (GameState)
 import Game.Mutators as Mutators exposing (Mutator)
 import Game.Resource as Resource exposing (Resource)
@@ -18,7 +16,7 @@ initialGameState =
   
   GameState.init 
 
-  |> GameState.setFireCooldown (15*Time.second)
+  |> GameState.initFire (30*Time.second) (10*Time.second)
 
   |> GameState.addResource
      (Resource.init "wood"

@@ -24,7 +24,7 @@ init : GameState
 init =
   { gameTime = 0
   , resources = []
-  , fire = Fire.init 0
+  , fire = Fire.init 0 0
   , actionHistory = Action.newHistory
   }
 
@@ -34,9 +34,9 @@ addResource r s =
   { s | resources = s.resources ++ [r] }
 
 
-setFireCooldown : Time -> GameState -> GameState
-setFireCooldown t s =
-  { s | fire = Fire.init t }
+initFire : Time -> Time -> GameState -> GameState
+initFire burnTime stokeCooldown s =
+  { s | fire = Fire.init burnTime stokeCooldown }
 
 
 updateGameTime : Time -> GameState -> GameState
@@ -85,6 +85,7 @@ resourceAmount name s =
 stokeFire : GameState -> GameState
 stokeFire s =
   if (resourceAmount "wood" s) <= 0 then s
+  else if not (Fire.canStoke s.fire) then s
   else
     { s | fire = Fire.stoke s.fire }
     |> applyToResource "wood" (Resource.subtract 1)

@@ -6,26 +6,41 @@ import Game.Cooldown as Cooldown exposing (Cooldown)
 
 
 type alias Fire = 
-  { cooldown : Cooldown
+  { strength : Cooldown,
+    stokeCooldown : Cooldown
   }
 
 
-init : Time -> Fire
-init burnTime = { cooldown = Cooldown.new burnTime }
+init : Time -> Time -> Fire
+init burnTime stokeCooldown = 
+  { strength = Cooldown.new burnTime 
+  , stokeCooldown = Cooldown.new stokeCooldown
+  }
 
 
 update : Time -> Fire -> Fire
 update t f =
-  { f | cooldown = Cooldown.update t f.cooldown }
+  { f | strength = Cooldown.update t f.strength 
+      , stokeCooldown = Cooldown.update t f.stokeCooldown
+  }
+
+
+canStoke : Fire -> Bool
+canStoke f = not (Cooldown.isCoolingDown f.stokeCooldown)
 
 
 stoke : Fire -> Fire
-stoke f = { cooldown = Cooldown.start f.cooldown }
+stoke f = 
+  if not (canStoke f) then f
+  else
+    { strength = Cooldown.start f.strength 
+    , stokeCooldown = Cooldown.start f.stokeCooldown
+    }
 
 
 strength : Fire -> Float
-strength f = Cooldown.currentFraction f.cooldown
+strength f = Cooldown.currentFraction f.strength
 
 
 isExtinguished : Fire -> Bool
-isExtinguished f = not (Cooldown.isCoolingDown f.cooldown)
+isExtinguished f = not (Cooldown.isCoolingDown f.strength)

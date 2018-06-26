@@ -2,7 +2,6 @@ module Game.Update exposing (..)
 
 import Time exposing (Time)
 
-import Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 
 import Game.Constants as Constants
