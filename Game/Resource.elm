@@ -43,9 +43,13 @@ updateCooldown t r =
     { r | cooldown = Cooldown.update t r.cooldown }
 
 
+canHarvest : Resource -> Bool
+canHarvest r = not (Cooldown.isCoolingDown r.cooldown)
+
+
 harvest : Resource -> Resource
 harvest r =
-  if not (Cooldown.isCoolingDown r.cooldown) then
+  if canHarvest r then
     { r | amount = r.amount + r.harvestIncrement
         , cooldown = Cooldown.start r.cooldown
     }

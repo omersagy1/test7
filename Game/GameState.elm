@@ -85,10 +85,14 @@ resourceAmount name s =
   |> Maybe.withDefault 0
 
 
+canStokeFire : GameState -> Bool
+canStokeFire s =
+  (Fire.canStoke s.fire) && (resourceAmount "wood" s > 0)
+
+
 stokeFire : GameState -> GameState
 stokeFire s =
-  if (resourceAmount "wood" s) <= 0 then s
-  else if not (Fire.canStoke s.fire) then s
+  if not (canStokeFire s) then s
   else
     { s | fire = Fire.stoke s.fire }
     |> applyToResource "wood" (Resource.subtract 1)

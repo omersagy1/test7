@@ -40,20 +40,25 @@ interactiveDisplay m =
   div [ css [flexGrow (num 1)]]
       (concatMaybes
         [ Choice.choiceButtons m
-        , fire m.gameState.fire |> Just
+        , fire m.gameState |> Just
         , resourceMeters m.gameState
         ])
 
 
-fire : Fire -> Html Message
-fire f =
+fire : GameState -> Html Message
+fire s =
   let
+    f = s.fire
     labelText = "stoke fire"
   in
     div [ onClick (Game.Action.StokeFire
                    |> Game.Update.GameplayMessage)
         ]
-        [ Meter.meter (Game.Fire.strength f) labelText]
+        [ Meter.meter (Game.Fire.strength f) 
+                      labelText 
+                      (Game.GameState.canStokeFire s)
+        ]
+
 
 
 resourceMeters : GameState -> Maybe (Html Message)
@@ -75,4 +80,5 @@ resourceMeter r =
         ]
         [ Meter.meter (Game.Cooldown.currentFraction r.cooldown)
                       labelText
+                      (Game.Resource.canHarvest r)
         ]

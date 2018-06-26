@@ -13,24 +13,33 @@ meterHeight : Float
 meterHeight = 30
 
 margin : Float
-margin = 5
+margin = 12
+
+activeBorderColor : Color
+activeBorderColor = Colors.yellow
+
+inactiveBorderColor : Color
+inactiveBorderColor = (rgb 60 60 60)
 
 
-meter : Float -> String -> Html a
-meter fractionFilled labelText = 
-  div [css [ width (px meterLength)
-           , height (px meterHeight)
-           , backgroundColor Colors.black
-           , marginTop (px margin)
-           , marginBottom (px margin)
-           , borderColor Colors.yellow
-           , borderWidth (px 3)
-           , borderStyle solid
-           ]
-      ] 
-      [ bar fractionFilled
-      , label labelText
-      ]
+meter : Float -> String -> Bool -> Html a
+meter fractionFilled labelText isActive = 
+  let
+    borderC = if isActive then activeBorderColor else inactiveBorderColor
+  in
+    div [css [ width (px meterLength)
+            , height (px meterHeight)
+            , backgroundColor Colors.black
+            , marginTop (px margin)
+            , marginBottom (px margin)
+            , borderColor borderC
+            , borderWidth (px 3)
+            , borderStyle solid
+            ]
+        ] 
+        [ bar fractionFilled
+        , label labelText
+        ]
 
 
 bar : Float -> Html a

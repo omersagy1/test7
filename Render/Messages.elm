@@ -8,7 +8,7 @@ import Annex exposing(..)
 
 
 displaySize : Int
-displaySize = 12
+displaySize = 14
 
 displayWidth : Px
 displayWidth = (px 350)
