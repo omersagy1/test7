@@ -31,8 +31,8 @@ navBar model = div [ style [ ("background-color", "grey")
                            , ("text-color", "white")
                            ] 
                    ] 
-                   ([switchPageButton model.currentPage] 
-                    ++ (navExtension model))
+                   -- ([switchPageButton model.currentPage] 
+                   (navExtension model)
 
 
 navExtension : Model -> List (Html Message)
