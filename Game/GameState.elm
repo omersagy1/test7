@@ -4,6 +4,7 @@ import Time exposing (Time)
 
 import Annex exposing (..)
 import Game.Action as Action exposing (ActionHistory, Action)
+import Game.Milestones as Milestones exposing (Milestones)
 import Game.Resource as Resource exposing (Resource)
 import Game.Fire as Fire exposing (Fire)
 
@@ -17,6 +18,7 @@ type alias GameState =
   -- Read by triggers to decide whether to trigger a
   -- StoryEvent.
   , actionHistory : ActionHistory
+  , milestones : Milestones
   }
 
 
@@ -26,6 +28,7 @@ init =
   , resources = []
   , fire = Fire.init 0 0
   , actionHistory = Action.newHistory
+  , milestones = Milestones.init
   }
 
 
@@ -105,3 +108,12 @@ actionPerformed a s = Action.hasAction a s.actionHistory
 clearActions : GameState -> GameState
 clearActions s = 
   { s | actionHistory = Action.clearActions s.actionHistory }
+
+
+setMilestoneReached : String -> GameState -> GameState
+setMilestoneReached name s =
+  { s | milestones = Milestones.setReached name s.gameTime s.milestones }
+
+
+timeSince : String -> GameState -> Maybe Time
+timeSince name s = Milestones.timeSince name s.gameTime s.milestones

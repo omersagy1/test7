@@ -32,3 +32,8 @@ setResourceAmount name x =
 
 and : Mutator -> Mutator -> Mutator
 and m1 m2 = (\s -> s |> m1 |> m2)
+
+
+setMilestone : String -> Mutator
+setMilestone name =
+  (\s -> GameState.setMilestoneReached name s)

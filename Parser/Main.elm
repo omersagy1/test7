@@ -59,7 +59,8 @@ storyEventCorpus =
     |> ln "It's dead."
     |> ln "Strangely, there was a bit of gold in its fur..."
     |> ln "Looks like you'll be hunting squirrels now."
-    |> mutator (Mutators.addToResource "gold" 10)
+    |> mutator (Mutators.and (Mutators.addToResource "gold" 10)
+                             (Mutators.setMilestone "first-squirrel"))
   ,
     newEvent
     |> trigger (Triggers.resourceAbove "wood" 10)
@@ -74,4 +75,9 @@ storyEventCorpus =
     |> ln "When the light comes back..."
     |> ln "Don't count on finding your gold."
     |> mutator (Mutators.setResourceAmount "gold" 0)
+  ,
+    newEvent
+    |> trigger (Triggers.timePassedSince "first-squirrel" (10*Time.second))
+    |> ln "Suddenly, you feel very cold."
+    |> ln "Maybe murdering that squirrel is getting to you..."
   ]

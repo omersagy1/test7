@@ -45,3 +45,13 @@ fireStoked = actionPerformed Action.StokeFire
 
 actionPerformed : Action -> Trigger
 actionPerformed a = (\s -> GameState.actionPerformed a s)
+
+
+timePassedSince : String -> Time -> Trigger
+timePassedSince name target = 
+  (\s -> 
+    let t = GameState.timeSince name s 
+    in
+      case t of
+        Nothing -> False
+        Just passed -> passed > target)
