@@ -5,7 +5,7 @@ import Time exposing (Time)
 
 -- Default delay for enqueued messages.
 defaultMessageDelay : Time
-defaultMessageDelay = 1.3 * Time.second
+defaultMessageDelay = 1.5 * Time.second
 
 -- Delay for the first message in an event.
 firstMessageDelay : Time

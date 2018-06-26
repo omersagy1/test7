@@ -7,9 +7,16 @@ import Html.Styled.Attributes exposing (style, value, css)
 import Annex exposing(..)
 
 
+displaySize : Int
 displaySize = 12
+
+displayWidth : Px
 displayWidth = (px 350)
+
+spaceBetweenMessages : Px
 spaceBetweenMessages = (px 12)
+
+rightMargin : Px
 rightMargin = (px 50)
 
 
