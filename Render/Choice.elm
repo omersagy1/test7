@@ -9,6 +9,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Game.Model exposing (Model)
 import Game.Story exposing (Choice)
 import Game.Update exposing (Message)
+import Render.Constants as Constants
 
 
 choiceButtons : Model -> Maybe (Html Message)
@@ -22,14 +23,16 @@ choiceButtons m =
 
 choiceButton : Choice -> Html Message
 choiceButton c =
-  button [ css [ width (px 100)
-               , height (px 40)
-               , backgroundColor Colors.black
+  button [ css [ width (px Constants.choiceButtonLength)
+               , height (px Constants.choiceButtonHeight)
+               , backgroundColor (rgb 60 60 60)
                , color Colors.white
                , borderColor Colors.yellow
-               , borderWidth (px 3)
+               , borderWidth (px Constants.borderWidth)
                , borderStyle solid
                , fontSize (px 16)
+               , marginRight (px Constants.choiceButtonMargin)
+               , padding (px 0)
                ]
          , onClick (Game.Update.MakeChoice c)] 
          [text c.text]

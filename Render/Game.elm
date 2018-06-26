@@ -37,13 +37,13 @@ view m = div [ css [ displayFlex
 
 interactiveDisplay : Model -> Html Message
 interactiveDisplay m =
-  let paused = Game.Update.gameplayPaused m
+  let softPaused = Game.Update.waitingOnChoice m
   in
     div [ css [flexGrow (num 1)]]
         (concatMaybes
           [ Choice.choiceButtons m
-          , fire m.gameState paused |> Just
-          , resourceMeters m.gameState paused
+          , fire m.gameState softPaused |> Just
+          , resourceMeters m.gameState softPaused
           ])
 
 
