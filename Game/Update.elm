@@ -4,6 +4,7 @@ import Time exposing (Time)
 
 import Queue.TimedQueue as TimedQueue
 
+import Game.Action as Action exposing (Action)
 import Game.Constants as Constants
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
@@ -18,12 +19,7 @@ type Message = TogglePause
                | Restart
                | UpdateTime Time
                | MakeChoice Choice
-               | GameplayMessage GameplayMessage
-
-
--- Messages sent in the normal course of play.
-type GameplayMessage = HarvestResource Resource
-                       | StokeFire
+               | GameplayMessage Action
 
 
 update : Message -> Model -> Model
@@ -44,10 +40,10 @@ update msg model =
       else
         updateGame time model
 
-    GameplayMessage msg -> 
+    GameplayMessage action -> 
       if gameplayPaused model then model
       else
-        { model | gameState = processGameplayMessage msg model.gameState }
+        { model | gameState = processUserAction action model.gameState }
 
 
 gameplayPaused : Model -> Bool
@@ -63,14 +59,14 @@ waitingOnChoice : Model -> Bool
 waitingOnChoice m = m.activeChoices /= Nothing
 
 
-processGameplayMessage : GameplayMessage -> GameState -> GameState
-processGameplayMessage msg state =
+processUserAction : Action -> GameState -> GameState
+processUserAction msg state =
   case msg of 
 
-    HarvestResource resource -> 
+    Action.HarvestResource resource -> 
       GameState.applyToResource resource.name Resource.harvest state
 
-    StokeFire ->
+    Action.StokeFire ->
       GameState.stokeFire state
 
 

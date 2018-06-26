@@ -1,20 +1,19 @@
 module Render.Game exposing (view)
 
 import Css exposing (..)
-import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
 import Annex exposing(..)
 
+import Game.Action
 import Game.Cooldown
 import Game.Fire exposing (Fire)
 import Game.GameState exposing (GameState)
 import Game.Model exposing (Model)
 import Game.Resource exposing (Resource)
 import Game.Update exposing (Message)
-import Game.Story exposing (Choice)
 
 import Render.Choice as Choice
 import Render.Messages as Messages
@@ -44,7 +43,7 @@ fire f =
   let
     labelText = "stoke fire"
   in
-    div [ onClick (Game.Update.StokeFire
+    div [ onClick (Game.Action.StokeFire
                    |> Game.Update.GameplayMessage)
         ]
         [ Meter.meter (Game.Fire.strength f) labelText]
@@ -64,7 +63,7 @@ resourceMeter r =
   let
     labelText = r.name ++ ": " ++ (toString r.amount)
   in
-    div [ onClick (Game.Update.HarvestResource r 
+    div [ onClick (Game.Action.HarvestResource r 
                    |> Game.Update.GameplayMessage) 
         ]
         [ Meter.meter (Game.Cooldown.currentFraction r.cooldown)

@@ -1,8 +1,12 @@
 module Game.Action exposing (..)
 
+import Game.Resource exposing (Resource)
+
+
 type alias ActionHistory = List Action
 
 type Action = StokeFire
+              | HarvestResource Resource
 
 newHistory : ActionHistory
 newHistory = []
