@@ -34,7 +34,7 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (Triggers.gameTimePassed (20 * Time.second))
+    |> trigger (Triggers.gameTimePassed (2 * Time.second))
     |> ln "You are cold..."
     |> ln "And starving."
     |> ln "Go search for some wood."
@@ -51,7 +51,7 @@ storyEventCorpus =
     |> ln "The fire is roaring."
   ,
     newEvent
-    |> trigger (Triggers.gameTimePassed (2 * Time.second))
+    |> trigger (Triggers.gameTimePassed (20 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
