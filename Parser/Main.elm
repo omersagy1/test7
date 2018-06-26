@@ -34,9 +34,9 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (Triggers.gameTimePassed (2 * Time.second))
+    |> trigger (Triggers.gameTimePassed (1 * Time.second))
     |> ln "You are cold..."
-    |> ln "And starving."
+    |> ln "..."
     |> ln "Go search for some wood."
     |> mutator (Mutators.activateResource "wood")
   ,

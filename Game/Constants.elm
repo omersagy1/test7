@@ -11,6 +11,14 @@ defaultMessageDelay = 1.5 * Time.second
 firstMessageDelay : Time
 firstMessageDelay = 0.3 * Time.second
 
+-- Delay for the first message if there are
+-- already other events waiting in the queue
+-- to be executed. This is long in order to
+-- space out events so they don't feel jumbled 
+-- together.
+firstMessageNonEmptyQueueDelay : Time
+firstMessageNonEmptyQueueDelay = 2 * Time.second
+
 -- Delay before the appearance of choice
 -- buttons. This is in between the message
 -- hinting to the user a choice might be made,

@@ -141,8 +141,11 @@ enqueueTextEvents event m =
     [] -> m
     first::rest ->
       let 
+        firstMessageDelay = 
+          if eventQueueEmpty m then Constants.firstMessageDelay
+          else Constants.firstMessageNonEmptyQueueDelay
         m2 = enqueueTextEventWithDelay 
-              first Constants.firstMessageDelay m
+              first firstMessageDelay m
       in
         List.foldl enqueueTextEvent m2 rest
 
@@ -150,6 +153,10 @@ enqueueTextEvents event m =
 enqueueTextEvent : String -> Model -> Model
 enqueueTextEvent text m =
   enqueueTextEventWithDelay text Constants.defaultMessageDelay m
+
+
+eventQueueEmpty : Model -> Bool
+eventQueueEmpty m = (TimedQueue.size m.eventQueue) == 0
 
 
 enqueueTextEventWithDelay : String -> Time -> Model -> Model
