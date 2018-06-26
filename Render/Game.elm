@@ -37,16 +37,18 @@ view m = div [ css [ displayFlex
 
 interactiveDisplay : Model -> Html Message
 interactiveDisplay m =
-  div [ css [flexGrow (num 1)]]
-      (concatMaybes
-        [ Choice.choiceButtons m
-        , fire m.gameState |> Just
-        , resourceMeters m.gameState
-        ])
+  let paused = Game.Update.gameplayPaused m
+  in
+    div [ css [flexGrow (num 1)]]
+        (concatMaybes
+          [ Choice.choiceButtons m
+          , fire m.gameState paused |> Just
+          , resourceMeters m.gameState paused
+          ])
 
 
-fire : GameState -> Html Message
-fire s =
+fire : GameState -> Bool -> Html Message
+fire s paused =
   let
     f = s.fire
     labelText = "stoke fire"
@@ -56,22 +58,22 @@ fire s =
         ]
         [ Meter.meter (Game.Fire.strength f) 
                       labelText 
-                      (Game.GameState.canStokeFire s)
+                      ((Game.GameState.canStokeFire s) && not paused)
         ]
 
 
 
-resourceMeters : GameState -> Maybe (Html Message)
-resourceMeters s =
+resourceMeters : GameState -> Bool -> Maybe (Html Message)
+resourceMeters s paused =
   case Game.GameState.activeResources s of
     [] -> Nothing
     resources -> 
-      div [] (List.map resourceMeter resources)
+      div [] (List.map (resourceMeter paused) resources)
       |> Just
 
 
-resourceMeter : Resource -> Html Message
-resourceMeter r =
+resourceMeter : Bool -> Resource -> Html Message
+resourceMeter paused r =
   let
     labelText = r.name ++ ": " ++ (toString r.amount)
   in
@@ -80,5 +82,5 @@ resourceMeter r =
         ]
         [ Meter.meter (Game.Cooldown.currentFraction r.cooldown)
                       labelText
-                      (Game.Resource.canHarvest r)
+                      ((Game.Resource.canHarvest r) && not paused)
         ]
