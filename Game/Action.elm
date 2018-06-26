@@ -8,6 +8,7 @@ type alias ActionHistory = List Action
 type Action = StokeFire
               | HarvestResource Resource
 
+
 newHistory : ActionHistory
 newHistory = []
 

@@ -23,9 +23,9 @@ view model =
       GamePage -> Html.Styled.map GameMessage 
                     (Render.Game.view model.gameModel)
   in
-    div [] [ navBar model
-           , mainPage
-           ]
+    div [style [("height", "100%")]] 
+        [ navBar model 
+        , mainPage ]
 
 navBar : Model -> Html Message
 navBar model = div [ style [ ("background-color", "black")

@@ -1,6 +1,7 @@
 module Render.Game exposing (view)
 
 import Css exposing (..)
+import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
@@ -21,7 +22,13 @@ import Render.Meter as Meter
 
 
 view : Model -> Html Message
-view m = div [ css [ displayFlex , padding (px 30)] ]
+view m = div [ css [ displayFlex 
+                   , height (pct 100)
+                   , padding (px 30)
+                   , backgroundColor Colors.black
+                   , color Colors.white
+                   ] 
+             ]
              [ Messages.messageHistory m.messageHistory
              , interactiveDisplay m
              ]
