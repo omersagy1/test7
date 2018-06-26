@@ -55,7 +55,7 @@ storyEventCorpus =
     |> mutator (Mutators.setMilestone "fire-set-once")
   ,
     newEvent
-    |> trigger (Triggers.timePassedSince "fire-set-once" (5*Time.second))
+    |> trigger (Triggers.timePassedSince "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."
   ,

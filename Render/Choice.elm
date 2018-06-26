@@ -17,7 +17,8 @@ choiceButtons m =
   case m.activeChoices of
     Nothing -> Nothing
     Just choices ->
-      div [] (List.map choiceButton choices) 
+      div [ css [ marginBottom (px 25) ] ] 
+          (List.map choiceButton choices) 
       |> Just
 
 
