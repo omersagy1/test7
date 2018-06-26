@@ -47,6 +47,10 @@ actionPerformed : Action -> Trigger
 actionPerformed a = (\s -> GameState.actionPerformed a s)
 
 
+milestoneReached : String -> Trigger
+milestoneReached name = GameState.milestoneReached name
+
+
 timePassedSince : String -> Time -> Trigger
 timePassedSince name target = 
   (\s -> 

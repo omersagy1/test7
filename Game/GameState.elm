@@ -114,6 +114,10 @@ clearActions s =
   { s | actionHistory = Action.clearActions s.actionHistory }
 
 
+milestoneReached : String -> GameState -> Bool
+milestoneReached name s = Milestones.hasReached name s.milestones
+
+
 setMilestoneReached : String -> GameState -> GameState
 setMilestoneReached name s =
   { s | milestones = Milestones.setReached name s.gameTime s.milestones }

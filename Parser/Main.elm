@@ -51,7 +51,22 @@ storyEventCorpus =
     |> ln "The fire is roaring."
   ,
     newEvent
-    |> trigger (Triggers.gameTimePassed (20 * Time.second))
+    |> trigger Triggers.fireStoked
+    |> mutator (Mutators.setMilestone "fire-set-once")
+  ,
+    newEvent
+    |> trigger (Triggers.timePassedSince "fire-set-once" (5*Time.second))
+    |> ln "In the flames you see a warmth long forgotten..."
+    |> ln "Don't let the fire go out."
+  ,
+    newEvent
+    |> trigger (Triggers.and (Triggers.fireStoked)
+                             (Triggers.milestoneReached "fire-set-once"))
+    |> ln "You hear the hooting of the forest over the crackling flame."
+    |> ln "You huddle close to the fire."
+  ,
+    newEvent
+    |> trigger (Triggers.gameTimePassed (45 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
@@ -79,7 +94,7 @@ storyEventCorpus =
                   (Triggers.resourceActive "gold"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
-    |> ln "Don't count on finding your gold."
+    |> ln "Don't expect to find your gold."
     |> mutator (Mutators.setResourceAmount "gold" 0)
   ,
     newEvent
