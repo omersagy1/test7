@@ -17,6 +17,7 @@ applyEffect e s =
     Effect.SetResourceAmount name x -> (setResourceAmount name x) s
     Effect.SetMilestoneReached name -> (setMilestoneReached name) s
     Effect.Compound effects -> List.foldl applyEffect s effects
+    Effect.Compound2 e1 e2 -> List.foldl applyEffect s [e1, e2]
 
 
 activateResource : String -> Mutator

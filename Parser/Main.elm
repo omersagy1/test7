@@ -57,10 +57,14 @@ storyEventCorpus =
     |> effect (SetMilestoneReached "fire-set-once")
   ,
     newEvent
-    |> trigger (TimeSinceMilestone 
-                  "fire-set-once" (3*Time.second))
+    |> trigger (TimeSinceMilestone "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."
+  ,
+    newEvent
+    |> trigger (And FireStoked (MilestoneReached "fire-set-once"))
+    |> ln "The flames are strong..."
+    |> ln "But you're afraid, that you might get too used to the warmth."
   ,
     newEvent
     |> trigger (And FireStoked (MilestoneReached "fire-set-once"))
