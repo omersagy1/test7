@@ -1,12 +1,12 @@
 module Game.Story exposing(..)
 
 import Game.Effect as Effect exposing (Effect)
-import Game.Triggers as Triggers exposing (Trigger)
+import Game.Condition as Condition exposing (Condition)
 
 
 type alias StoryEvent = 
   { name: String
-  , trigger: Trigger 
+  , trigger: Condition 
   , text: List String 
   , choices: Maybe (List Choice)
   , occursOnce: Bool

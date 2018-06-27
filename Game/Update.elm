@@ -112,7 +112,7 @@ triggeredStoryEvents events state =
   List.filter (\e -> e.trigger state) events
 
 
--- Remove triggered events that can only be triggered once.
+-- Remove Conditioned events that can only be Conditioned once.
 removeStoryEvents : Model -> Model
 removeStoryEvents m =
   { m | storyEventCorpus =
@@ -221,7 +221,7 @@ processEvent e m =
       displayText text m
     Event.DisplayChoices choices ->
       displayChoices choices m
-    Event.TriggerStoryEvent name ->
+    Event.ConditionStoryEvent name ->
       m
     Event.ApplyEffect e ->
       applyEffect e m

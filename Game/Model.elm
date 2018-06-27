@@ -33,7 +33,7 @@ type alias Model =
   -- Events waiting to be executed.
   , eventQueue : TimedQueue Event
 
-  -- All story events that could be triggered.
+  -- All story events that could be Conditioned.
   , storyEventCorpus : List StoryEvent
 
   -- Whether the game receives update time events.

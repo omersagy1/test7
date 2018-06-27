@@ -16,7 +16,7 @@ type alias GameState =
   , resources : List Resource
   , fire : Fire
   -- List of actions performed since the last update.
-  -- Read by triggers to decide whether to trigger a
+  -- Read by Condition to decide whether to Condition a
   -- StoryEvent.
   , actionHistory : ActionHistory
   , milestones : Milestones

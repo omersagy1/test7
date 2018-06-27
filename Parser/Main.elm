@@ -6,7 +6,7 @@ import Game.Effect as Effect
 import Game.GameState as GameState exposing (GameState)
 import Game.Resource as Resource
 import Game.Story as Story exposing (StoryEvent)
-import Game.Triggers as Triggers
+import Game.Condition as Condition
 
 import Parser.Build exposing (..)
 
@@ -38,39 +38,39 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (Triggers.gameTimePassed (1 * Time.second))
+    |> trigger (Condition.gameTimePassed (1 * Time.second))
     |> ln "You are cold..."
     |> ln "..."
     |> ln "Go search for some wood."
     |> effect (Effect.ActivateResource "wood")
   ,
     newEvent
-    |> trigger (Triggers.resourceAbove "wood" 10)
+    |> trigger (Condition.resourceAbove "wood" 10)
     |> ln "Outside, you find a small heap of dry twigs."
     |> ln "Use them to start a fire."
   ,
     newEvent
-    |> trigger Triggers.fireStoked
+    |> trigger Condition.fireStoked
     |> reoccurring
     |> ln "The fire is roaring."
   ,
     newEvent
-    |> trigger Triggers.fireStoked
+    |> trigger Condition.fireStoked
     |> effect (Effect.SetMilestoneReached "fire-set-once")
   ,
     newEvent
-    |> trigger (Triggers.timePassedSince "fire-set-once" (3*Time.second))
+    |> trigger (Condition.timePassedSince "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."
   ,
     newEvent
-    |> trigger (Triggers.and (Triggers.fireStoked)
-                             (Triggers.milestoneReached "fire-set-once"))
+    |> trigger (Condition.and (Condition.fireStoked)
+                              (Condition.milestoneReached "fire-set-once"))
     |> ln "You hear the hooting of the forest over the crackling flame."
     |> ln "You huddle close to the fire."
   ,
     newEvent
-    |> trigger (Triggers.gameTimePassed (45 * Time.second))
+    |> trigger (Condition.gameTimePassed (45 * Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
@@ -95,16 +95,16 @@ storyEventCorpus =
                ])
   ,
     newEvent
-    |> trigger (Triggers.and 
-                  Triggers.fireExtinguished
-                  (Triggers.resourceActive "gold"))
+    |> trigger (Condition.and 
+                Condition.fireExtinguished
+                (Condition.resourceActive "gold"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
     |> ln "Don't expect to find your gold."
     |> effect (Effect.SetResourceAmount "gold" 0)
   ,
     newEvent
-    |> trigger (Triggers.timePassedSince "first-squirrel" (10*Time.second))
+    |> trigger (Condition.timePassedSince "first-squirrel" (10*Time.second))
     |> ln "Suddenly, you feel very cold."
     |> ln "Maybe murdering that squirrel is getting to you..."
   ]

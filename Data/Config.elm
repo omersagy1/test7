@@ -4,20 +4,20 @@ module Data.Config exposing (config)
 config = """
 
 name: fakeEvent
-trigger: time >= 2s
+Condition: time >= 2s
 text:
   first line
   second line
-consequence: mantriggered
+consequence: manConditioned
 
 
-name: mantriggered
+name: manConditioned
 text:
-  consequence triggered!
+  consequence Conditioned!
 
 
 name: fakeEvent2
-trigger: time >= 10s
+Condition: time >= 10s
 text: 
   at least ten seconds passed!
 
