@@ -10,7 +10,7 @@ import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 newEvent : StoryEvent
 newEvent =
   { name = ""
-  , trigger = Condition.manualOnly
+  , trigger = Condition.Never
   , text = []
   , choices = Nothing
   , occursOnce = True

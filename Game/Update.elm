@@ -5,6 +5,7 @@ import Time exposing (Time)
 import Queue.TimedQueue as TimedQueue
 
 import Game.Action as Action exposing (Action)
+import Game.Condition as Condition
 import Game.Constants as Constants
 import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
@@ -112,14 +113,16 @@ triggerStoryEvents m =
 
 triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
 triggeredStoryEvents events state =
-  List.filter (\e -> e.trigger state) events
+  List.filter (\e -> Condition.conditionFn(e.trigger) state) events
 
 
 -- Remove Conditioned events that can only be Conditioned once.
 removeStoryEvents : Model -> Model
 removeStoryEvents m =
   { m | storyEventCorpus =
-          List.filter (\e -> not ((e.trigger m.gameState) && e.occursOnce)) 
+          List.filter (\e -> not ((Condition.conditionFn(e.trigger) 
+                                    m.gameState) 
+                                  && e.occursOnce)) 
                       m.storyEventCorpus
   }
 
@@ -224,7 +227,7 @@ processEvent e m =
       displayText text m
     Event.DisplayChoices choices ->
       displayChoices choices m
-    Event.ConditionStoryEvent name ->
+    Event.TriggerStoryEvent name ->
       m
     Event.ApplyEffect e ->
       applyEffect e m
