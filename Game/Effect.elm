@@ -7,3 +7,4 @@ type Effect = ActivateResource String
               | SetResourceAmount String Int
               | SetMilestoneReached String
               | Compound (List Effect)
+              | Compound2 Effect Effect
