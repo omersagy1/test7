@@ -1,6 +1,6 @@
 module Parser.Build exposing(..)
 
-import Game.Mutators as Mutators exposing (Mutator)
+import Game.Effect as Effect exposing (Effect)
 import Game.Triggers as Triggers exposing (Trigger)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
@@ -14,7 +14,7 @@ newEvent =
   , text = []
   , choices = Nothing
   , occursOnce = True
-  , mutator = Nothing
+  , effect = Nothing
   } 
 
 name : String -> StoryEvent -> StoryEvent
@@ -41,8 +41,8 @@ choice c e =
 reoccurring : StoryEvent -> StoryEvent
 reoccurring e = { e | occursOnce = False }
 
-mutator : Mutator -> StoryEvent -> StoryEvent
-mutator m e = { e | mutator = Just m }
+effect : Effect -> StoryEvent -> StoryEvent
+effect effect event = { event | effect = Just effect }
 
 
 newChoice : Choice

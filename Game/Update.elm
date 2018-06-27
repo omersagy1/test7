@@ -6,10 +6,11 @@ import Queue.TimedQueue as TimedQueue
 
 import Game.Action as Action exposing (Action)
 import Game.Constants as Constants
+import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model exposing (Model)
-import Game.Mutators exposing (Mutator)
+import Game.Mutators as Mutators exposing (Mutator)
 import Game.Resource as Resource exposing (Resource)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
@@ -185,11 +186,11 @@ enqueueChoiceEvent event m =
 
 enqueueMutator : StoryEvent -> Model -> Model
 enqueueMutator event m =
-  case event.mutator of
+  case event.effect of
     Nothing -> m
     Just mutator ->
       { m | eventQueue = TimedQueue.enqueue
-                            (Event.TriggerMutator mutator)
+                            (Event.ApplyEffect mutator)
                             Constants.mutatorDelay
                             m.eventQueue
       }
@@ -222,8 +223,8 @@ processEvent e m =
       displayChoices choices m
     Event.TriggerStoryEvent name ->
       m
-    Event.TriggerMutator mutator ->
-      runMutator mutator m
+    Event.ApplyEffect e ->
+      applyEffect e m
 
 
 displayText : String -> Model -> Model
@@ -236,9 +237,9 @@ displayChoices choices m =
   { m | activeChoices = Just choices }
 
 
-runMutator : Mutator -> Model -> Model
-runMutator mutator model =
-  { model | gameState = mutator model.gameState }
+applyEffect : Effect -> Model -> Model
+applyEffect effect model =
+  { model | gameState = Mutators.applyEffect effect model.gameState }
 
 
 makeChoice : Choice -> Model -> Model

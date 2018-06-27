@@ -1,10 +1,6 @@
 module Game.Story exposing(..)
 
-import List
-import Time exposing (Time)
-
-import Game.GameState as GameState exposing (GameState)
-import Game.Mutators as Mutators exposing (Mutator)
+import Game.Effect as Effect exposing (Effect)
 import Game.Triggers as Triggers exposing (Trigger)
 
 
@@ -14,7 +10,7 @@ type alias StoryEvent =
   , text: List String 
   , choices: Maybe (List Choice)
   , occursOnce: Bool
-  , mutator : Maybe Mutator
+  , effect : Maybe Effect
   }
 
 

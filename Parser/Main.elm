@@ -2,11 +2,11 @@ module Parser.Main exposing (..)
 
 import Time
 
+import Game.Effect as Effect
 import Game.GameState as GameState exposing (GameState)
-import Game.Mutators as Mutators exposing (Mutator)
-import Game.Resource as Resource exposing (Resource)
-import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
-import Game.Triggers as Triggers exposing (Trigger)
+import Game.Resource as Resource
+import Game.Story as Story exposing (StoryEvent)
+import Game.Triggers as Triggers
 
 import Parser.Build exposing (..)
 
@@ -25,6 +25,14 @@ initialGameState =
       |> Resource.initialAmount 0 
       |> Resource.harvestIncrement 2
       |> Resource.cooldown (45*Time.second))
+  -- |> GameState.addCustomAction
+  --    (Action.init "hunt squirrels"
+  --     |> Action.eff (Effect.chance 
+  --                     .5 
+  --                     (Effect.AddResource "gold" 5)
+  --                     "You find a squirrel with gold-flaked fur..."
+  --                     "Just an ordinary squirrel...")
+  --     |> Action.eff (Effect.DampenFire .8))
 
 
 storyEventCorpus : List StoryEvent
@@ -34,7 +42,7 @@ storyEventCorpus =
     |> ln "You are cold..."
     |> ln "..."
     |> ln "Go search for some wood."
-    |> mutator (Mutators.activateResource "wood")
+    |> effect (Effect.ActivateResource "wood")
   ,
     newEvent
     |> trigger (Triggers.resourceAbove "wood" 10)
@@ -48,7 +56,7 @@ storyEventCorpus =
   ,
     newEvent
     |> trigger Triggers.fireStoked
-    |> mutator (Mutators.setMilestone "fire-set-once")
+    |> effect (Effect.SetMilestoneReached "fire-set-once")
   ,
     newEvent
     |> trigger (Triggers.timePassedSince "fire-set-once" (3*Time.second))
@@ -81,8 +89,10 @@ storyEventCorpus =
     |> ln "It's dead."
     |> ln "Strangely, there was a bit of gold in its fur..."
     |> ln "Looks like you'll be hunting squirrels now."
-    |> mutator (Mutators.and (Mutators.addToResource "gold" 10)
-                             (Mutators.setMilestone "first-squirrel"))
+    |> effect (Effect.Compound
+               [ Effect.AddToResource "gold" 10
+               , Effect.SetMilestoneReached "first-squirrel"
+               ])
   ,
     newEvent
     |> trigger (Triggers.and 
@@ -91,7 +101,7 @@ storyEventCorpus =
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
     |> ln "Don't expect to find your gold."
-    |> mutator (Mutators.setResourceAmount "gold" 0)
+    |> effect (Effect.SetResourceAmount "gold" 0)
   ,
     newEvent
     |> trigger (Triggers.timePassedSince "first-squirrel" (10*Time.second))
