@@ -3,8 +3,9 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Annex exposing (..)
-import Game.Action as Action exposing (Action)
+import Game.Action as Action exposing (Action, CustomAction)
 import Game.ActionHistory as ActionHistory exposing (ActionHistory)
+import Game.Effect as Effect exposing (Effect)
 import Game.Milestones as Milestones exposing (Milestones)
 import Game.Resource as Resource exposing (Resource)
 import Game.Fire as Fire exposing (Fire)
@@ -20,6 +21,7 @@ type alias GameState =
   -- StoryEvent.
   , actionHistory : ActionHistory
   , milestones : Milestones
+  , customActions : List CustomAction
   }
 
 
@@ -30,6 +32,7 @@ init =
   , fire = Fire.init 0 0
   , actionHistory = ActionHistory.newHistory
   , milestones = Milestones.init
+  , customActions = []
   }
 
 
@@ -126,3 +129,78 @@ setMilestoneReached name s =
 
 timeSince : String -> GameState -> Maybe Time
 timeSince name s = Milestones.timeSince name s.gameTime s.milestones
+
+
+addCustomAction : CustomAction -> GameState -> GameState
+addCustomAction a s = { s | customActions = a::s.customActions }
+
+
+applyToAction : String -> (CustomAction -> CustomAction) -> GameState -> GameState
+applyToAction name fn s =
+  { s | customActions = List.map (\a -> if a.name == name then
+                                      fn a else a) 
+                             s.customActions
+  }
+
+
+performCustomAction : CustomAction -> GameState -> GameState
+performCustomAction a s = s
+
+
+type alias Mutator = GameState -> GameState
+
+applyEffect : Effect -> GameState -> GameState
+applyEffect e s =
+  case e of
+    Effect.NoEffect -> s
+    Effect.ActivateResource name -> (activateResource name) s
+    Effect.AddToResource name x -> (addToResource name x) s
+    Effect.SubtractResource name x -> (subtractResource name x) s
+    Effect.SetResourceAmount name x -> (setResourceAmount name x) s
+    Effect.SetMilestoneReached name -> setMilestoneReached name s
+    Effect.ActivateAction name -> (activateAction name) s
+    Effect.DeactivateAction name -> (deactivateAction name) s
+    Effect.Compound effects -> List.foldl applyEffect s effects
+    Effect.Compound2 e1 e2 -> List.foldl applyEffect s [e1, e2]
+
+
+activateResource : String -> Mutator
+activateResource name =
+  (\s -> applyToResource name (Resource.activate) s)
+
+
+addToResource : String -> Int -> Mutator
+addToResource name x = 
+  (\s ->
+    let stateWithActiveResource =
+      if not (resourceActive name s) then
+        applyToResource name (Resource.activateWithCooldown) s
+      else
+        s
+    in
+      applyToResource 
+        name (Resource.add x) stateWithActiveResource)
+
+
+subtractResource : String -> Int -> Mutator
+subtractResource name x = 
+  applyToResource name (Resource.subtract x)
+
+
+setResourceAmount : String -> Int -> Mutator
+setResourceAmount name x = 
+  applyToResource name (Resource.mutate (\_ -> x))
+
+
+and : Mutator -> Mutator -> Mutator
+and m1 m2 = (\s -> s |> m1 |> m2)
+
+
+activateAction : String -> Mutator
+activateAction name =
+  (\s -> applyToAction name (Action.activate) s)
+
+
+deactivateAction : String -> Mutator
+deactivateAction name =
+  (\s -> applyToAction name (Action.deactivate) s)

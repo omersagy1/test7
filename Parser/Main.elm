@@ -2,6 +2,7 @@ module Parser.Main exposing (..)
 
 import Time
 
+import Game.Action as Action
 import Game.Effect as Effect exposing (..)
 import Game.GameState as GameState exposing (GameState)
 import Game.Resource as Resource
@@ -25,12 +26,9 @@ initialGameState =
       |> Resource.initialAmount 0 
       |> Resource.harvestIncrement 2
       |> Resource.cooldown (45*Time.second))
-  -- |> GameState.addCustomAction
-  --    (Action.init "hunt squirrels"
-  --     |> Action.eff (Effect.chance 
-  --                     .5 
-  --                     (Effect.AddResource "gold" 5))
-  --     |> Action.eff (Effect.DampenFire .8))
+  |> GameState.addCustomAction
+      (Action.init "hunt squirrels"
+        |> Action.effect (AddToResource "gold" 5))
 
 
 storyEventCorpus : List StoryEvent

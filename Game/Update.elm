@@ -11,7 +11,6 @@ import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model exposing (Model)
-import Game.Mutators as Mutators exposing (Mutator)
 import Game.Resource as Resource exposing (Resource)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
@@ -71,8 +70,8 @@ processUserAction msg state =
     Action.StokeFire ->
       GameState.stokeFire state
     
-    Action.CustomAction effects ->
-      state
+    Action.CA customAction ->
+      GameState.applyEffect customAction.effect state 
 
 
 togglePause : Model -> Model
@@ -245,7 +244,7 @@ displayChoices choices m =
 
 applyEffect : Effect -> Model -> Model
 applyEffect effect model =
-  { model | gameState = Mutators.applyEffect effect model.gameState }
+  { model | gameState = GameState.applyEffect effect model.gameState }
 
 
 makeChoice : Choice -> Model -> Model
