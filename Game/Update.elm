@@ -69,6 +69,9 @@ processUserAction msg state =
 
     Action.StokeFire ->
       GameState.stokeFire state
+    
+    Action.CustomAction effects ->
+      state
 
 
 togglePause : Model -> Model

@@ -29,16 +29,14 @@ initialGameState =
   --    (Action.init "hunt squirrels"
   --     |> Action.eff (Effect.chance 
   --                     .5 
-  --                     (Effect.AddResource "gold" 5)
-  --                     "You find a squirrel with gold-flaked fur..."
-  --                     "Just an ordinary squirrel...")
+  --                     (Effect.AddResource "gold" 5))
   --     |> Action.eff (Effect.DampenFire .8))
 
 
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (Condition.gameTimePassed (1 * Time.second))
+    |> trigger (Condition.gameTimePassed (1*Time.second))
     |> ln "You are cold..."
     |> ln "..."
     |> ln "Go search for some wood."
@@ -70,7 +68,7 @@ storyEventCorpus =
     |> ln "You huddle close to the fire."
   ,
     newEvent
-    |> trigger (Condition.gameTimePassed (45 * Time.second))
+    |> trigger (Condition.gameTimePassed (45*Time.second))
     |> ln "A mysterious squirrel has appeared."
     |> ln "What do you want to do?"
     |> choice
