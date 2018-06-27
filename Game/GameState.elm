@@ -3,7 +3,8 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Annex exposing (..)
-import Game.Action as Action exposing (ActionHistory, Action)
+import Game.Action as Action exposing (Action)
+import Game.ActionHistory as ActionHistory exposing (ActionHistory)
 import Game.Milestones as Milestones exposing (Milestones)
 import Game.Resource as Resource exposing (Resource)
 import Game.Fire as Fire exposing (Fire)
@@ -27,7 +28,7 @@ init =
   { gameTime = 0
   , resources = []
   , fire = Fire.init 0 0
-  , actionHistory = Action.newHistory
+  , actionHistory = ActionHistory.newHistory
   , milestones = Milestones.init
   }
 
@@ -102,16 +103,16 @@ stokeFire s =
 addAction : Action -> GameState -> GameState
 addAction a s = 
     { s | actionHistory = 
-            Action.addAction Action.StokeFire s.actionHistory}
+            ActionHistory.addAction Action.StokeFire s.actionHistory}
 
 
 actionPerformed : Action -> GameState -> Bool
-actionPerformed a s = Action.hasAction a s.actionHistory
+actionPerformed a s = ActionHistory.hasAction a s.actionHistory
 
 
 clearActions : GameState -> GameState
 clearActions s = 
-  { s | actionHistory = Action.clearActions s.actionHistory }
+  { s | actionHistory = ActionHistory.clearActions s.actionHistory }
 
 
 milestoneReached : String -> GameState -> Bool

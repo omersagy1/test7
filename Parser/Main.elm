@@ -13,17 +13,13 @@ import Parser.Build exposing (..)
 
 initialGameState : GameState
 initialGameState =
-  
   GameState.init 
-
   |> GameState.initFire (30*Time.second) (10*Time.second)
-
   |> GameState.addResource
      (Resource.init "wood"
       |> Resource.initialAmount 0 
       |> Resource.harvestIncrement 10 
       |> Resource.cooldown (25*Time.second))
-
   |> GameState.addResource
      (Resource.init "gold" 
       |> Resource.initialAmount 0 
