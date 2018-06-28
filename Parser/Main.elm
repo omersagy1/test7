@@ -47,6 +47,13 @@ storyEventCorpus =
     |> trigger (CustomActionPerformed "search for wood")
     |> ln "Outside, you find a small heap of dry twigs."
     |> ln "Use them to start a fire."
+    |> effect (SetMilestoneReached "wood-searched-once")
+  ,
+    newEvent
+    |> trigger (And (CustomActionPerformed "search for wood")
+                    (MilestoneReached "wood-searched-once"))
+    |> reoccurring
+    |> ln "A few more twigs for the fire..."
   ,
     newEvent
     |> trigger FireStoked
