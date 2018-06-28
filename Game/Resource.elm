@@ -1,60 +1,23 @@
 module Game.Resource exposing (..)
 
-import Time exposing (Time)
-
-import Game.Cooldown as Cooldown exposing (Cooldown)
-
 
 type alias Resource =
   { name : String
   , amount : Int 
-  , harvestIncrement : Int
-  , cooldown : Cooldown
   , active : Bool
   }
 
 
-init : String -> Resource
-init name =
+init : String -> Int -> Resource
+init name amount =
   { name = name
-  , amount = 0 
-  , harvestIncrement = 0
-  , cooldown = Cooldown.new 0
+  , amount = amount
   , active = False
   }
 
 
 initialAmount : Int -> Resource -> Resource
 initialAmount x r = { r | amount = x }
-
-
-harvestIncrement : Int -> Resource -> Resource
-harvestIncrement x r = { r | harvestIncrement = x }
-
-
-cooldown : Time -> Resource -> Resource
-cooldown t r = { r | cooldown = Cooldown.new t }
-
-
-updateCooldown : Time -> Resource -> Resource
-updateCooldown t r =
-  if not r.active then r
-  else
-    { r | cooldown = Cooldown.update t r.cooldown }
-
-
-canHarvest : Resource -> Bool
-canHarvest r = not (Cooldown.isCoolingDown r.cooldown)
-
-
-harvest : Resource -> Resource
-harvest r =
-  if canHarvest r then
-    { r | amount = r.amount + r.harvestIncrement
-        , cooldown = Cooldown.start r.cooldown
-    }
-  else
-    r
 
 
 mutate : (Int -> Int) -> Resource -> Resource
@@ -70,15 +33,9 @@ subtract : Int -> Resource -> Resource
 subtract x r = mutate (\y -> y - x) r
 
 
-activateWithCooldown : Resource -> Resource
-activateWithCooldown r = 
-  { r | active = True
-      , cooldown = Cooldown.start r.cooldown }
-
-
 activate : Resource -> Resource
 activate r = { r | active = True }
 
 
-disable : Resource -> Resource
-disable r = { r | active = False }
+deactivate : Resource -> Resource
+deactivate r = { r | active = False }

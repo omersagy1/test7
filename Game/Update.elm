@@ -64,9 +64,6 @@ processUserAction : Action -> GameState -> GameState
 processUserAction msg state =
   case msg of 
 
-    Action.HarvestResource resource -> 
-      GameState.applyToResource resource.name Resource.harvest state
-
     Action.StokeFire ->
       GameState.stokeFire state
     

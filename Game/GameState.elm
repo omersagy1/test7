@@ -49,14 +49,8 @@ initFire burnTime stokeCooldown s =
 updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = 
   { s | gameTime = s.gameTime + t }
-  |> (updateResourceCooldowns t)
   |> (updateActionCooldowns t)
   |> (\s -> { s | fire = Fire.update t s.fire })
-
-
-updateResourceCooldowns : Time -> GameState -> GameState
-updateResourceCooldowns t s =
-  { s | resources = List.map (Resource.updateCooldown t) s.resources }
 
 
 updateActionCooldowns : Time -> GameState -> GameState
@@ -186,7 +180,7 @@ addToResource name x =
   (\s ->
     let stateWithActiveResource =
       if not (resourceActive name s) then
-        applyToResource name (Resource.activateWithCooldown) s
+        applyToResource name (Resource.activate) s
       else
         s
     in

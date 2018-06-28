@@ -4,11 +4,9 @@ import Time exposing (Time)
 
 import Game.Cooldown as Cooldown exposing (Cooldown)
 import Game.Effect as Effect exposing (Effect)
-import Game.Resource exposing (Resource)
 
 
 type Action = StokeFire
-              | HarvestResource Resource
               | CA CustomAction
 
 
