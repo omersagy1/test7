@@ -21,7 +21,7 @@ initialGameState =
   |> GameState.addResource (Resource.init "gold" 0)
   |> GameState.addCustomAction
       (Action.init "search for wood"
-        |> Action.cooldown (3*Time.second)
+        |> Action.cooldown (10*Time.second)
         |> Action.effect (AddToResource "wood" 15))
   |> GameState.addCustomAction
       (Action.init "catch rats"
@@ -52,13 +52,16 @@ storyEventCorpus =
     newEvent
     |> trigger (And (CustomActionPerformed "search for wood")
                     (And (MilestoneReached "wood-searched")
-                         (Not (MilestoneAtCount "wood-searched" 3))))
+                         (Not (MilestoneAtCount "wood-searched" 2))))
     |> reoccurring
     |> ln "A few more twigs for the fire..."
+    |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
-    |> trigger (MilestoneAtCount "wood-searched" 3)
+    |> trigger (And (CustomActionPerformed "search for wood")
+                    (MilestoneAtCount "wood-searched" 2))
     |> ln "You've searched for wood three times..."
+    |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
     |> trigger FireStoked
