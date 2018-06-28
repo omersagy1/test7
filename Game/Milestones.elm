@@ -10,6 +10,7 @@ type alias Milestones = Dict String Milestone
 type alias Milestone =
   { name : String
   , timeReached : Time
+  , counter : Int
   }
 
 
@@ -31,6 +32,7 @@ newMilestone : String -> Time -> Milestone
 newMilestone name timeReached = 
   { name = name
   , timeReached = timeReached
+  , counter = 0
   }
 
 
@@ -39,3 +41,17 @@ timeSince name currentTime milestones =
   Dict.get name milestones
   |> maybeChain .timeReached
   |> maybeChain (\t -> currentTime - t)
+
+
+increment : String -> Milestones -> Milestones
+increment name milestones = 
+  Dict.update name (\m -> case m of 
+                            Nothing -> Nothing
+                            Just ms -> 
+                              Just { ms | counter = ms.counter + 1}) 
+              milestones
+
+counter : String -> Milestones -> Maybe Int
+counter name milestones =
+  Dict.get name milestones 
+  |> maybeChain .counter

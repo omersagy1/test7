@@ -2,6 +2,7 @@ module Game.Condition exposing (..)
 
 import Time exposing (Time)
 
+import Annex exposing (..)
 import Game.Action as Action exposing (Action)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)
@@ -18,6 +19,7 @@ type Condition = And Condition Condition
                  | CustomActionPerformed String
                  | MilestoneReached String
                  | TimeSinceMilestone String Time
+                 | MilestoneAtCount String Int
 
 
 conditionFn : Condition -> ConditionFn
@@ -34,6 +36,8 @@ conditionFn c =
     CustomActionPerformed name -> customActionPerformed name
     MilestoneReached name -> milestoneReached name
     TimeSinceMilestone name t -> timePassedSince name t
+    MilestoneAtCount name x -> milestoneAtCount name x
+      
 
 
 type alias ConditionFn = GameState -> Bool
@@ -86,8 +90,12 @@ milestoneReached name = GameState.milestoneReached name
 timePassedSince : String -> Time -> ConditionFn
 timePassedSince name target = 
   (\s -> 
-    let t = GameState.timeSince name s 
-    in
-      case t of
-        Nothing -> False
-        Just passed -> passed > target)
+    GameState.timeSince name s 
+    |> maybePred ((<=) target))
+
+
+milestoneAtCount : String -> Int -> ConditionFn
+milestoneAtCount name target =
+  (\s ->
+    GameState.milestoneCounter name s
+    |> maybePred ((==) target))

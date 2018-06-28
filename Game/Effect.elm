@@ -7,6 +7,7 @@ type Effect = NoEffect
               | SubtractResource String Int
               | SetResourceAmount String Int
               | SetMilestoneReached String
+              | IncrementMilestone String
               | ActivateAction String
               | DeactivateAction String
               | Compound (List Effect)

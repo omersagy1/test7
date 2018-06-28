@@ -55,3 +55,9 @@ concatMaybes l =
   List.map maybeToList l
   |> List.concat
       
+
+maybePred : (a -> Bool) -> Maybe a -> Bool
+maybePred pred m =
+  case m of
+    Nothing -> False
+    Just x -> pred x

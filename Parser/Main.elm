@@ -21,7 +21,7 @@ initialGameState =
   |> GameState.addResource (Resource.init "gold" 0)
   |> GameState.addCustomAction
       (Action.init "search for wood"
-        |> Action.cooldown (25*Time.second)
+        |> Action.cooldown (3*Time.second)
         |> Action.effect (AddToResource "wood" 15))
   |> GameState.addCustomAction
       (Action.init "catch rats"
@@ -47,13 +47,19 @@ storyEventCorpus =
     |> trigger (CustomActionPerformed "search for wood")
     |> ln "Outside, you find a small heap of dry twigs."
     |> ln "Use them to start a fire."
-    |> effect (SetMilestoneReached "wood-searched-once")
+    |> effect (Compound2 (SetMilestoneReached "wood-searched")
+                         (IncrementMilestone "wood-searched"))
   ,
     newEvent
     |> trigger (And (CustomActionPerformed "search for wood")
-                    (MilestoneReached "wood-searched-once"))
+                    (MilestoneReached "wood-searched"))
     |> reoccurring
     |> ln "A few more twigs for the fire..."
+    |> effect (IncrementMilestone "wood-searched")
+  ,
+    newEvent
+    |> trigger (MilestoneAtCount "wood-searched" 3)
+    |> ln "You've searched for wood three times..."
   ,
     newEvent
     |> trigger FireStoked
@@ -68,11 +74,6 @@ storyEventCorpus =
     |> trigger (TimeSinceMilestone "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."
-  ,
-    newEvent
-    |> trigger (And FireStoked (MilestoneReached "fire-set-once"))
-    |> ln "You hear the hooting of the forest over the crackling flame."
-    |> ln "You huddle close to the fire."
   ,
     newEvent
     |> trigger (GameTimePassed (45*Time.second))

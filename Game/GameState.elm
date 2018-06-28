@@ -135,6 +135,14 @@ setMilestoneReached name s =
   { s | milestones = Milestones.setReached name s.gameTime s.milestones }
 
 
+incrementMilestone : String -> GameState -> GameState
+incrementMilestone name s =
+  { s | milestones = Milestones.increment name s.milestones }
+
+milestoneCounter : String -> GameState -> Maybe Int
+milestoneCounter name s = Milestones.counter name s.milestones
+
+
 timeSince : String -> GameState -> Maybe Time
 timeSince name s = Milestones.timeSince name s.gameTime s.milestones
 
@@ -170,6 +178,7 @@ applyEffect e s =
     Effect.SubtractResource name x -> (subtractResource name x) s
     Effect.SetResourceAmount name x -> (setResourceAmount name x) s
     Effect.SetMilestoneReached name -> setMilestoneReached name s
+    Effect.IncrementMilestone name -> incrementMilestone name s
     Effect.ActivateAction name -> (activateAction name) s
     Effect.DeactivateAction name -> (deactivateAction name) s
     Effect.Compound effects -> List.foldl applyEffect s effects
