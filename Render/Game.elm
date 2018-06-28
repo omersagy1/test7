@@ -43,8 +43,8 @@ interactiveDisplay m =
         (concatMaybes
           [ Choice.choiceButtons m
           , fire m.gameState softPaused |> Just
-          , resources m.gameState 
           , actionMeters m.gameState softPaused
+          , resources m.gameState 
           ])
 
 
@@ -78,7 +78,7 @@ resource r =
   let
     labelText = r.name ++ ": " ++ (toString r.amount)
   in
-    div []
+    div [css [marginBottom (px 10)]]
         [text labelText]
 
 

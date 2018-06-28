@@ -20,7 +20,8 @@ initialGameState =
   |> GameState.addResource (Resource.init "gold" 0)
   |> GameState.addCustomAction
       (Action.init "hunt squirrels"
-        |> Action.effect (AddToResource "gold" 5))
+        |> Action.effect (AddToResource "gold" 5)
+        |> Action.cooldown (50*Time.second))
   |> GameState.addCustomAction
       (Action.init "search for wood"
         |> Action.cooldown (25*Time.second)
@@ -30,7 +31,7 @@ initialGameState =
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
-    |> trigger (GameTimePassed (1*Time.second))
+    |> trigger (GameTimePassed (1.5*Time.second))
     |> ln "You are cold..."
     |> ln "..."
     |> ln "Go search for some wood."
@@ -57,11 +58,6 @@ storyEventCorpus =
   ,
     newEvent
     |> trigger (And FireStoked (MilestoneReached "fire-set-once"))
-    |> ln "The flames are strong..."
-    |> ln "But you're afraid, that you might get too used to the warmth."
-  ,
-    newEvent
-    |> trigger (And FireStoked (MilestoneReached "fire-set-once"))
     |> ln "You hear the hooting of the forest over the crackling flame."
     |> ln "You huddle close to the fire."
   ,
@@ -85,9 +81,10 @@ storyEventCorpus =
     |> ln "It's dead."
     |> ln "Strangely, there was a bit of gold in its fur..."
     |> ln "Looks like you'll be hunting squirrels now."
-    |> effect (Compound2
-               (AddToResource "gold" 10)
-               (SetMilestoneReached "first-squirrel"))
+    |> effect (Compound
+               [ AddToResource "gold" 10
+               , SetMilestoneReached "first-squirrel"
+               , ActivateAction "hunt squirrels" ])
   ,
     newEvent
     |> trigger (And FireExtinguished (ResourceActive "gold"))
