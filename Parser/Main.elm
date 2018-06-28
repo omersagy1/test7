@@ -29,6 +29,10 @@ initialGameState =
   |> GameState.addCustomAction
       (Action.init "hunt squirrels"
         |> Action.effect (AddToResource "gold" 5))
+  |> GameState.addCustomAction
+      (Action.init "search for wood"
+        |> Action.cooldown (25*Time.second)
+        |> Action.effect (AddToResource "wood" 15))
 
 
 storyEventCorpus : List StoryEvent
@@ -38,7 +42,7 @@ storyEventCorpus =
     |> ln "You are cold..."
     |> ln "..."
     |> ln "Go search for some wood."
-    |> effect (ActivateResource "wood")
+    |> effect (ActivateAction "search for wood")
   ,
     newEvent
     |> trigger (ResourceAmountAbove "wood" 10)

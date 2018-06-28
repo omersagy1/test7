@@ -50,6 +50,7 @@ updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = 
   { s | gameTime = s.gameTime + t }
   |> (updateResourceCooldowns t)
+  |> (updateActionCooldowns t)
   |> (\s -> { s | fire = Fire.update t s.fire })
 
 
@@ -58,10 +59,18 @@ updateResourceCooldowns t s =
   { s | resources = List.map (Resource.updateCooldown t) s.resources }
 
 
+updateActionCooldowns : Time -> GameState -> GameState
+updateActionCooldowns t s =
+  { s | customActions = List.map (Action.updateCooldown t) s.customActions }
+
+
 activeResources : GameState -> List Resource
 activeResources s =
   List.filter (\r -> r.active) s.resources
 
+activeActions : GameState -> List CustomAction
+activeActions s =
+  List.filter (\a -> a.active) s.customActions
 
 resourceActive : String -> GameState -> Bool
 resourceActive name s =
@@ -138,13 +147,16 @@ addCustomAction a s = { s | customActions = a::s.customActions }
 applyToAction : String -> (CustomAction -> CustomAction) -> GameState -> GameState
 applyToAction name fn s =
   { s | customActions = List.map (\a -> if a.name == name then
-                                      fn a else a) 
+                                          fn a 
+                                        else a) 
                              s.customActions
   }
 
 
 performCustomAction : CustomAction -> GameState -> GameState
-performCustomAction a s = s
+performCustomAction a s =
+  applyToAction a.name Action.performAction s
+  |> applyEffect a.effect
 
 
 type alias Mutator = GameState -> GameState

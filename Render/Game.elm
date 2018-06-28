@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 import Annex exposing(..)
 
-import Game.Action
+import Game.Action exposing (CustomAction)
 import Game.Cooldown
 import Game.Fire exposing (Fire)
 import Game.GameState exposing (GameState)
@@ -43,7 +43,8 @@ interactiveDisplay m =
         (concatMaybes
           [ Choice.choiceButtons m
           , fire m.gameState softPaused |> Just
-          , resourceMeters m.gameState softPaused
+          , resources m.gameState 
+          , actionMeters m.gameState softPaused
           ])
 
 
@@ -63,24 +64,42 @@ fire s paused =
 
 
 
-resourceMeters : GameState -> Bool -> Maybe (Html Message)
-resourceMeters s paused =
+resources : GameState -> Maybe (Html Message)
+resources s =
   case Game.GameState.activeResources s of
     [] -> Nothing
-    resources -> 
-      div [] (List.map (resourceMeter paused) resources)
+    rs -> 
+      div [] (List.map resource rs)
       |> Just
 
 
-resourceMeter : Bool -> Resource -> Html Message
-resourceMeter paused r =
+resource : Resource -> Html a
+resource r =
   let
     labelText = r.name ++ ": " ++ (toString r.amount)
   in
-    div [ onClick (Game.Action.HarvestResource r 
+    div []
+        [text labelText]
+
+
+actionMeters : GameState -> Bool -> Maybe (Html Message)
+actionMeters s paused =
+  case Game.GameState.activeActions s of
+    [] -> Nothing
+    actions -> 
+      div [] (List.map (actionMeter paused) actions)
+      |> Just
+
+
+actionMeter : Bool -> CustomAction -> Html Message
+actionMeter paused a =
+  let
+    labelText = a.name
+  in
+    div [ onClick (Game.Action.CA a
                    |> Game.Update.GameplayMessage) 
         ]
-        [ Meter.meter (Game.Cooldown.currentFraction r.cooldown)
+        [ Meter.meter (Game.Cooldown.currentFraction a.cooldown)
                       labelText
-                      ((Game.Resource.canHarvest r) && not paused)
+                      ((Game.Action.canPerform a) && not paused)
         ]

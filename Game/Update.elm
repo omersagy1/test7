@@ -71,7 +71,7 @@ processUserAction msg state =
       GameState.stokeFire state
     
     Action.CA customAction ->
-      GameState.applyEffect customAction.effect state 
+      GameState.performCustomAction customAction state
 
 
 togglePause : Model -> Model
