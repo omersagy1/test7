@@ -47,15 +47,14 @@ storyEventCorpus =
     |> trigger (CustomActionPerformed "search for wood")
     |> ln "Outside, you find a small heap of dry twigs."
     |> ln "Use them to start a fire."
-    |> effect (Compound2 (SetMilestoneReached "wood-searched")
-                         (IncrementMilestone "wood-searched"))
+    |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
     |> trigger (And (CustomActionPerformed "search for wood")
-                    (MilestoneReached "wood-searched"))
+                    (And (MilestoneReached "wood-searched")
+                         (Not (MilestoneAtCount "wood-searched" 3))))
     |> reoccurring
     |> ln "A few more twigs for the fire..."
-    |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
     |> trigger (MilestoneAtCount "wood-searched" 3)

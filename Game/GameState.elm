@@ -137,7 +137,7 @@ setMilestoneReached name s =
 
 incrementMilestone : String -> GameState -> GameState
 incrementMilestone name s =
-  { s | milestones = Milestones.increment name s.milestones }
+  { s | milestones = Milestones.increment name s.gameTime s.milestones }
 
 milestoneCounter : String -> GameState -> Maybe Int
 milestoneCounter name s = Milestones.counter name s.milestones

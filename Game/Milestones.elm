@@ -43,10 +43,13 @@ timeSince name currentTime milestones =
   |> maybeChain (\t -> currentTime - t)
 
 
-increment : String -> Milestones -> Milestones
-increment name milestones = 
+increment : String -> Time -> Milestones -> Milestones
+increment name time milestones = 
   Dict.update name (\m -> case m of 
-                            Nothing -> Nothing
+                            Nothing ->
+                              newMilestone name time
+                              |> (\m -> { m | counter = 1 })
+                              |> Just
                             Just ms -> 
                               Just { ms | counter = ms.counter + 1}) 
               milestones

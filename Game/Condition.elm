@@ -9,6 +9,7 @@ import Game.GameState as GameState exposing (GameState)
 
 
 type Condition = And Condition Condition
+                 | Not Condition
                  | GameTimePassed Time
                  | Never
                  | ResourceAmountAbove String Int 
@@ -26,6 +27,7 @@ conditionFn : Condition -> ConditionFn
 conditionFn c =
   case c of
     And c1 c2 -> and (conditionFn c1) (conditionFn c2)
+    Not c -> notFn (conditionFn c)
     GameTimePassed t -> gameTimePassed t
     Never -> manualOnly
     ResourceAmountAbove name val -> resourceAbove name val
@@ -46,6 +48,8 @@ type alias ConditionFn = GameState -> Bool
 and : ConditionFn -> ConditionFn -> ConditionFn
 and t1 t2 = (\s -> (t1 s) && (t2 s))
 
+notFn : ConditionFn -> ConditionFn
+notFn c = (\s -> not (c s))
 
 gameTimePassed : Time -> ConditionFn
 gameTimePassed t = (\s -> s.gameTime >= t)
