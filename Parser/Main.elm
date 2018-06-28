@@ -17,28 +17,34 @@ initialGameState =
   GameState.init 
   |> GameState.initFire (30*Time.second) (10*Time.second)
   |> GameState.addResource (Resource.init "wood" 0)
+  |> GameState.addResource (Resource.init "rats" 0)
   |> GameState.addResource (Resource.init "gold" 0)
-  |> GameState.addCustomAction
-      (Action.init "hunt squirrels"
-        |> Action.effect (AddToResource "gold" 5)
-        |> Action.cooldown (50*Time.second))
   |> GameState.addCustomAction
       (Action.init "search for wood"
         |> Action.cooldown (25*Time.second)
         |> Action.effect (AddToResource "wood" 15))
+  |> GameState.addCustomAction
+      (Action.init "catch rats"
+        |> Action.effect (AddToResource "rats" 2)
+        |> Action.cooldown (40*Time.second))
+  |> GameState.addCustomAction
+      (Action.init "hunt squirrels"
+        |> Action.effect (AddToResource "gold" 5)
+        |> Action.cooldown (70*Time.second))
 
 
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
   [ newEvent
     |> trigger (GameTimePassed (1.5*Time.second))
-    |> ln "You are cold..."
+    |> ln "The fire is dead."
+    |> ln "The room is freezing."
     |> ln "..."
-    |> ln "Go search for some wood."
+    |> ln "You need to find wood."
     |> effect (ActivateAction "search for wood")
   ,
     newEvent
-    |> trigger (ResourceAmountAbove "wood" 10)
+    |> trigger (CustomActionPerformed "search for wood")
     |> ln "Outside, you find a small heap of dry twigs."
     |> ln "Use them to start a fire."
   ,

@@ -15,3 +15,12 @@ clearActions h = []
 
 hasAction : Action -> ActionHistory -> Bool
 hasAction a h = List.member a h
+
+hasCustomAction : String -> ActionHistory -> Bool
+hasCustomAction name h = 
+  let
+    nameFn = (\a -> case a of
+                      Action.CA customAction -> customAction.name
+                      other -> "")
+  in
+    List.member name (List.filter ((/=) "") (List.map nameFn h))

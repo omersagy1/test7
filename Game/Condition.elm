@@ -15,6 +15,7 @@ type Condition = And Condition Condition
                  | FireExtinguished
                  | FireStoked
                  | ActionPerformed Action
+                 | CustomActionPerformed String
                  | MilestoneReached String
                  | TimeSinceMilestone String Time
 
@@ -30,6 +31,7 @@ conditionFn c =
     FireExtinguished -> fireExtinguished
     FireStoked -> fireStoked
     ActionPerformed action -> actionPerformed action
+    CustomActionPerformed name -> customActionPerformed name
     MilestoneReached name -> milestoneReached name
     TimeSinceMilestone name t -> timePassedSince name t
 
@@ -73,6 +75,9 @@ fireStoked = actionPerformed Action.StokeFire
 actionPerformed : Action -> ConditionFn
 actionPerformed a = (\s -> GameState.actionPerformed a s)
 
+customActionPerformed : String -> ConditionFn
+customActionPerformed name = 
+  (\s -> GameState.customActionPerformed name s)
 
 milestoneReached : String -> ConditionFn
 milestoneReached name = GameState.milestoneReached name

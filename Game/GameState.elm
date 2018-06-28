@@ -49,7 +49,7 @@ initFire burnTime stokeCooldown s =
 updateGameTime : Time -> GameState -> GameState
 updateGameTime t s = 
   { s | gameTime = s.gameTime + t }
-  |> (updateActionCooldowns t)
+  |> updateActionCooldowns t
   |> (\s -> { s | fire = Fire.update t s.fire })
 
 
@@ -109,11 +109,16 @@ stokeFire s =
 addAction : Action -> GameState -> GameState
 addAction a s = 
     { s | actionHistory = 
-            ActionHistory.addAction Action.StokeFire s.actionHistory}
+            ActionHistory.addAction a s.actionHistory}
 
 
 actionPerformed : Action -> GameState -> Bool
 actionPerformed a s = ActionHistory.hasAction a s.actionHistory
+
+
+customActionPerformed : String -> GameState -> Bool
+customActionPerformed name s = 
+  ActionHistory.hasCustomAction name s.actionHistory
 
 
 clearActions : GameState -> GameState
@@ -151,6 +156,7 @@ performCustomAction : CustomAction -> GameState -> GameState
 performCustomAction a s =
   applyToAction a.name Action.performAction s
   |> applyEffect a.effect
+  |> addAction (Action.CA a)
 
 
 type alias Mutator = GameState -> GameState
