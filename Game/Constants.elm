@@ -41,4 +41,4 @@ mutatorDelay = 0.5 * Time.second
 
 
 triggerStoryEventDelay : Time
-triggerStoryEventDelay = 0.7 * Time.second
+triggerStoryEventDelay = 1.0 * Time.second
