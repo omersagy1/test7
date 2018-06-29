@@ -11,6 +11,7 @@ type alias StoryEvent =
   , choices: Maybe (List Choice)
   , occursOnce: Bool
   , effect : Maybe Effect
+  , goto : Maybe Consequence
   }
 
 

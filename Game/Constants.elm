@@ -38,3 +38,7 @@ postChoiceMessageDelay = 0.5 * Time.second
 -- event.
 mutatorDelay : Time
 mutatorDelay = 0.5 * Time.second
+
+
+triggerStoryEventDelay : Time
+triggerStoryEventDelay = 0

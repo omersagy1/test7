@@ -21,16 +21,12 @@ initialGameState =
   |> GameState.addResource (Resource.init "gold" 0)
   |> GameState.addCustomAction
       (Action.init "search for wood"
-        |> Action.cooldown (10*Time.second)
-        |> Action.effect (AddToResource "wood" 15))
+        |> Action.cooldown (30*Time.second)
+        |> Action.effect (AddToResource "wood" 5))
   |> GameState.addCustomAction
-      (Action.init "catch rats"
+      (Action.init "hunt rats"
         |> Action.effect (AddToResource "rats" 2)
-        |> Action.cooldown (40*Time.second))
-  |> GameState.addCustomAction
-      (Action.init "hunt squirrels"
-        |> Action.effect (AddToResource "gold" 5)
-        |> Action.cooldown (70*Time.second))
+        |> Action.cooldown (60*Time.second))
 
 
 storyEventCorpus : List StoryEvent
@@ -60,7 +56,8 @@ storyEventCorpus =
     newEvent
     |> trigger (And (CustomActionPerformed "search for wood")
                     (MilestoneAtCount "wood-searched" 2))
-    |> ln "You've searched for wood three times..."
+    |> ln "The infinite murmur of the forest envelops you..."
+    |> ln "You hear the sound of a gay deer in the distance." 
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
@@ -78,36 +75,41 @@ storyEventCorpus =
     |> ln "Don't let the fire go out."
   ,
     newEvent
-    |> trigger (GameTimePassed (45*Time.second))
-    |> ln "A mysterious squirrel has appeared."
-    |> ln "What do you want to do?"
-    |> choice
-        (newChoice 
-         |> text "Wait"
-         |> consq 
-             (newEvent
-              |> ln "nothing happens..."))
-    |> choice
-        (newChoice
-         |> text "Kill it"
-         |> consqName "squirrel-killed")
-  ,
-    newEvent
-    |> name "squirrel-killed"
-    |> ln "It's dead."
-    |> ln "Strangely, there was a bit of gold in its fur..."
-    |> ln "Looks like you'll be hunting squirrels now."
-    |> effect (Compound
-               [ AddToResource "gold" 10
-               , SetMilestoneReached "first-squirrel"
-               , ActivateAction "hunt squirrels" ])
-  ,
-    newEvent
     |> trigger (And FireExtinguished (ResourceActive "gold"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
-    |> ln "Don't expect to find your gold."
+    |> ln "You will only find an empty room."
+    |> effect (SetResourceAmount "wood" 0)
+    |> effect (SetResourceAmount "rats" 0)
     |> effect (SetResourceAmount "gold" 0)
+    ,
+    newEvent
+    |> trigger (GameTimePassed (35*Time.second))
+    |> ln "Your belly rolls with hunger."
+    |> ln "And in the corner, you find a dead rat."
+    |> choice
+        (newChoice 
+         |> text "Eat it"
+         |> consq 
+             (newEvent
+              |> ln "You hold it over the flame..."
+              |> ln "And bite into it just as its skin begins to sizzle."
+              |> ln "There is something holy about its taste."
+              |> ln "You want more."))
+    |> choice
+        (newChoice
+         |> text "Keep it "
+         |> consqName "rat-kept")
+  ,
+    newEvent
+    |> name "rat-kept"
+    |> ln "You hold the rat tight in your hand..."
+    |> ln "A greed overtakes you."
+    |> ln "You need more rats."
+    |> effect (Compound
+               [ AddToResource "rats" 1
+               , SetMilestoneReached "first-rat"
+               , ActivateAction "hunt rats" ])
   ,
     newEvent
     |> trigger (TimeSinceMilestone "first-squirrel" (10*Time.second))

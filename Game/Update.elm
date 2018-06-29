@@ -11,7 +11,6 @@ import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model exposing (Model)
-import Game.Resource as Resource exposing (Resource)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 
@@ -136,6 +135,16 @@ playStoryEvent event m =
   enqueueTextEvents event m
   |> enqueueChoiceEvent event
   |> enqueueMutator event
+  |> enqueueGoto event
+
+
+enqueueEvent : Event -> Time -> Model -> Model
+enqueueEvent event delay m =
+    { m | eventQueue = TimedQueue.enqueue 
+                          event 
+                          delay
+                          m.eventQueue 
+    }
 
 
 enqueueTextEvents : StoryEvent -> Model -> Model
@@ -147,31 +156,20 @@ enqueueTextEvents event m =
         firstMessageDelay = 
           if eventQueueEmpty m then Constants.firstMessageDelay
           else Constants.firstMessageNonEmptyQueueDelay
-        m2 = enqueueTextEventWithDelay 
-              first firstMessageDelay m
+        m2 = enqueueEvent
+              (Event.DisplayText first) firstMessageDelay m
       in
         List.foldl enqueueTextEvent m2 rest
 
 
 enqueueTextEvent : String -> Model -> Model
 enqueueTextEvent text m =
-  enqueueTextEventWithDelay text Constants.defaultMessageDelay m
+  enqueueEvent
+    (Event.DisplayText text) Constants.defaultMessageDelay m
 
 
 eventQueueEmpty : Model -> Bool
 eventQueueEmpty m = (TimedQueue.size m.eventQueue) == 0
-
-
-enqueueTextEventWithDelay : String -> Time -> Model -> Model
-enqueueTextEventWithDelay text delay m =
-  let 
-    textEvent = Event.DisplayText text
-  in
-    { m | eventQueue = TimedQueue.enqueue 
-                          textEvent 
-                          delay
-                          m.eventQueue 
-    }
 
 
 enqueueChoiceEvent : StoryEvent -> Model -> Model
@@ -179,11 +177,10 @@ enqueueChoiceEvent event m =
   case event.choices of
     Nothing -> m
     Just choices ->
-      { m | eventQueue = TimedQueue.enqueue 
-                            (Event.DisplayChoices choices)
-                            Constants.choiceButtonsDelay
-                            m.eventQueue
-      }
+      enqueueEvent 
+        (Event.DisplayChoices choices)
+        Constants.choiceButtonsDelay
+        m
 
 
 enqueueMutator : StoryEvent -> Model -> Model
@@ -191,11 +188,26 @@ enqueueMutator event m =
   case event.effect of
     Nothing -> m
     Just mutator ->
-      { m | eventQueue = TimedQueue.enqueue
-                            (Event.ApplyEffect mutator)
-                            Constants.mutatorDelay
-                            m.eventQueue
-      }
+      enqueueEvent 
+        (Event.ApplyEffect mutator)
+        Constants.mutatorDelay
+        m
+
+
+enqueueGoto : StoryEvent -> Model -> Model
+enqueueGoto event m =
+  case event.goto of
+    Nothing -> m
+    Just goto ->
+      let 
+        name = case goto of
+                  Story.EventName n -> n
+                  Story.ActualEvent e -> e.name
+      in
+        enqueueEvent
+          (Event.TriggerStoryEvent name)
+          Constants.triggerStoryEventDelay
+          m
 
 
 dequeueEvent : Model -> (Maybe Event, Model)

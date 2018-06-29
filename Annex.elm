@@ -61,3 +61,11 @@ maybePred pred m =
   case m of
     Nothing -> False
     Just x -> pred x
+
+
+-- TODO: figure out how to use this idea properly.
+maybeMutate : (a -> b -> b) -> Maybe a -> b -> b
+maybeMutate mutateFn maybeArg struct =
+  case maybeArg of
+    Nothing -> struct
+    Just arg -> mutateFn arg struct

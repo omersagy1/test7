@@ -15,6 +15,7 @@ newEvent =
   , choices = Nothing
   , occursOnce = True
   , effect = Nothing
+  , goto = Nothing
   } 
 
 name : String -> StoryEvent -> StoryEvent
@@ -43,6 +44,9 @@ reoccurring e = { e | occursOnce = False }
 
 effect : Effect -> StoryEvent -> StoryEvent
 effect effect event = { event | effect = Just effect }
+
+goto : String -> StoryEvent -> StoryEvent
+goto name e = { e | goto = Just (Story.EventName name) }
 
 
 newChoice : Choice
