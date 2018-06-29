@@ -9,6 +9,7 @@ import Game.GameState as GameState exposing (GameState)
 
 
 type Condition = And Condition Condition
+                 | Or Condition Condition
                  | Not Condition
                  | GameTimePassed Time
                  | Never
@@ -21,12 +22,14 @@ type Condition = And Condition Condition
                  | MilestoneReached String
                  | TimeSinceMilestone String Time
                  | MilestoneAtCount String Int
+                 | MilestoneGreaterThan String Int
 
 
 conditionFn : Condition -> ConditionFn
 conditionFn c =
   case c of
     And c1 c2 -> and (conditionFn c1) (conditionFn c2)
+    Or c1 c2 -> or (conditionFn c1) (conditionFn c2)
     Not c -> notFn (conditionFn c)
     GameTimePassed t -> gameTimePassed t
     Never -> manualOnly
@@ -39,6 +42,7 @@ conditionFn c =
     MilestoneReached name -> milestoneReached name
     TimeSinceMilestone name t -> timePassedSince name t
     MilestoneAtCount name x -> milestoneAtCount name x
+    MilestoneGreaterThan name x -> milestoneGreaterThan name x
       
 
 
@@ -47,6 +51,9 @@ type alias ConditionFn = GameState -> Bool
 
 and : ConditionFn -> ConditionFn -> ConditionFn
 and t1 t2 = (\s -> (t1 s) && (t2 s))
+
+or : ConditionFn -> ConditionFn -> ConditionFn
+or t1 t2 = (\s -> (t1 s) || (t2 s))
 
 notFn : ConditionFn -> ConditionFn
 notFn c = (\s -> not (c s))
@@ -103,3 +110,10 @@ milestoneAtCount name target =
   (\s ->
     GameState.milestoneCounter name s
     |> maybePred ((==) target))
+
+
+milestoneGreaterThan : String -> Int -> ConditionFn
+milestoneGreaterThan name target =
+  (\s ->
+    GameState.milestoneCounter name s
+    |> maybePred ((<) target))

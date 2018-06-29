@@ -39,6 +39,7 @@ postChoiceMessageDelay = 0.5 * Time.second
 mutatorDelay : Time
 mutatorDelay = 0.5 * Time.second
 
-
+-- Delay before a story event triggered 
+-- by a goto statement.
 triggerStoryEventDelay : Time
 triggerStoryEventDelay = 1.0 * Time.second

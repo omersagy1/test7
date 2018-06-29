@@ -75,7 +75,7 @@ storyEventCorpus =
     |> ln "Don't let the fire go out."
   ,
     newEvent
-    |> trigger (And FireExtinguished (ResourceActive "gold"))
+    |> trigger (And FireExtinguished (MilestoneReached "fire-set-once"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
     |> ln "Expect the worst."
@@ -88,7 +88,7 @@ storyEventCorpus =
     newEvent
     |> trigger (GameTimePassed (30*Time.second))
     |> ln "Your belly rolls with hunger."
-    |> ln "And in the corner, you find a dead rat."
+    |> ln "In the corner, you find a dead rat."
     |> choice
         (newChoice 
          |> text "Eat it"
@@ -97,6 +97,7 @@ storyEventCorpus =
               |> ln "You hold it over the flame..."
               |> ln "And bite into it just as its skin begins to sizzle."
               |> ln "There is something holy about its taste."
+              |> effect (SetMilestoneReached "first-rat-eaten")
               |> goto "more-rats"))
     |> choice
         (newChoice
@@ -118,7 +119,24 @@ storyEventCorpus =
                , ActivateAction "hunt rats" ])
   ,
     newEvent
-    |> trigger (TimeSinceMilestone "first-squirrel" (10*Time.second))
-    |> ln "Suddenly, you feel very cold."
-    |> ln "Maybe murdering that squirrel is getting to you..."
+    |> trigger (CustomActionPerformed "hunt rats")
+    |> ln "You scramble in the firelight, and feel sick with yourself."
+    |> effect (IncrementMilestone "hunting-rats")
+  ,
+    newEvent
+    |> trigger (And (CustomActionPerformed "hunt rats")
+                    (MilestoneAtCount "hunting-rats" 1))
+    |> ln "You find you no longer need to close your eyes when you smash their skulls."
+    |> effect (IncrementMilestone "hunting-rats")
+  ,
+    newEvent
+    |> trigger (And (CustomActionPerformed "hunt rats")
+                    (MilestoneGreaterThan "hunting-rats" 1))
+    |> ln "You catch the rodents quietly and automatically."
+    |> effect (IncrementMilestone "hunting-rats")
+  ,
+    newEvent
+    |> trigger (TimeSinceMilestone "first-rat-eaten" (20*Time.second))
+    |> ln "You feel very cold..."
+    |> ln "From your mouth comes a glob of vomit speckled with rat bones."
   ]
