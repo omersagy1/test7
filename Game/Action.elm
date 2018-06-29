@@ -10,6 +10,10 @@ type Action = StokeFire
               | CA CustomAction
 
 
+-- Custom Actions are defined in the configuraton
+-- that defines the game. There is also room for
+-- the possibility that they coudl be dynamically
+-- created during the running of the game.
 type alias CustomAction =
   { name : String
   , active: Bool

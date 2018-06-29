@@ -57,7 +57,7 @@ storyEventCorpus =
     |> trigger (And (CustomActionPerformed "search for wood")
                     (MilestoneAtCount "wood-searched" 2))
     |> ln "The infinite murmur of the forest envelops you..."
-    |> ln "You hear the sound of a gay deer in the distance." 
+    |> ln "In the distance, you can hear the sound of a gay deer." 
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
@@ -78,13 +78,15 @@ storyEventCorpus =
     |> trigger (And FireExtinguished (ResourceActive "gold"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
-    |> ln "You will only find an empty room."
-    |> effect (SetResourceAmount "wood" 0)
-    |> effect (SetResourceAmount "rats" 0)
-    |> effect (SetResourceAmount "gold" 0)
+    |> ln "Expect the worst."
+    |> effect (Compound 
+                [ SetResourceAmount "wood" 0
+                , SetResourceAmount "rats" 0
+                , SetResourceAmount "gold" 0
+                ])
     ,
     newEvent
-    |> trigger (GameTimePassed (35*Time.second))
+    |> trigger (GameTimePassed (30*Time.second))
     |> ln "Your belly rolls with hunger."
     |> ln "And in the corner, you find a dead rat."
     |> choice
@@ -95,7 +97,7 @@ storyEventCorpus =
               |> ln "You hold it over the flame..."
               |> ln "And bite into it just as its skin begins to sizzle."
               |> ln "There is something holy about its taste."
-              |> ln "You want more."))
+              |> goto "more-rats"))
     |> choice
         (newChoice
          |> text "Keep it "
@@ -105,6 +107,10 @@ storyEventCorpus =
     |> name "rat-kept"
     |> ln "You hold the rat tight in your hand..."
     |> ln "A greed overtakes you."
+    |> goto "more-rats"
+  ,
+    newEvent
+    |> name "more-rats"
     |> ln "You need more rats."
     |> effect (Compound
                [ AddToResource "rats" 1

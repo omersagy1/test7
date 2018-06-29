@@ -162,9 +162,11 @@ applyToAction name fn s =
 
 performCustomAction : CustomAction -> GameState -> GameState
 performCustomAction a s =
-  applyToAction a.name Action.performAction s
-  |> applyEffect a.effect
-  |> addAction (Action.CA a)
+  if not (Action.canPerform a) then s
+  else
+    applyToAction a.name Action.performAction s
+    |> applyEffect a.effect
+    |> addAction (Action.CA a)
 
 
 type alias Mutator = GameState -> GameState

@@ -2,8 +2,8 @@ module Game.Update exposing (..)
 
 import Time exposing (Time)
 
+import Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
-
 import Game.Action as Action exposing (Action)
 import Game.Condition as Condition
 import Game.Constants as Constants
@@ -204,7 +204,7 @@ enqueueGoto event m =
                   Story.EventName n -> n
                   Story.ActualEvent e -> e.name
       in
-        enqueueEvent
+        enqueueEvent 
           (Event.TriggerStoryEvent name)
           Constants.triggerStoryEventDelay
           m
@@ -236,7 +236,7 @@ processEvent e m =
     Event.DisplayChoices choices ->
       displayChoices choices m
     Event.TriggerStoryEvent name ->
-      m
+      (maybePerform playStoryEvent) (getStoryEventByName name m) m
     Event.ApplyEffect e ->
       applyEffect e m
 
@@ -259,9 +259,7 @@ applyEffect effect model =
 makeChoice : Choice -> Model -> Model
 makeChoice choice m =
   clearActiveChoices <|
-  case choice.consequence of
-    Nothing -> m
-    Just c -> playConsequence c m
+  (maybePerform playConsequence) choice.consequence m
 
 
 clearActiveChoices : Model -> Model

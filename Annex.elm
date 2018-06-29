@@ -64,8 +64,8 @@ maybePred pred m =
 
 
 -- TODO: figure out how to use this idea properly.
-maybeMutate : (a -> b -> b) -> Maybe a -> b -> b
-maybeMutate mutateFn maybeArg struct =
+maybePerform : (a -> b -> b) -> Maybe a -> b -> b
+maybePerform mutateFn maybeArg struct =
   case maybeArg of
     Nothing -> struct
     Just arg -> mutateFn arg struct
