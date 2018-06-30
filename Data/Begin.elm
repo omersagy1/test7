@@ -43,11 +43,13 @@ corpus =
     |> trigger FireStoked
     |> ln "A spark turns to flame, and you sit back as your body thaws."
     |> ln "The fire is roaring."
+    |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent
-    |> trigger (And FireStoked (MilestoneGreaterThan "fire-stoked" 1))
+    |> trigger (And FireStoked (MilestoneGreaterThan "fire-stoked" 0))
     |> reoccurring
     |> ln "The fire is roaring."
+    |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent
     |> trigger (TimeSinceMilestone "fire-set-once" (3*Time.second))
@@ -66,7 +68,7 @@ corpus =
                 ])
     ,
     newEvent
-    |> trigger (GameTimePassed (30*Time.second))
+    |> trigger (TimeSinceMilestone "fire-stoked" (25*Time.second))
     |> ln "Your belly rolls with hunger."
     |> ln "In the corner, you find a dead rat."
     |> choice
@@ -106,7 +108,7 @@ corpus =
     newEvent
     |> trigger (And (ActionPerformed "hunt rats")
                     (MilestoneAtCount "hunting-rats" 1))
-    |> ln "You find you no longer need to close your eyes when you smash their skulls."
+    |> ln "You no longer close your eyes when you smash their skulls."
     |> effect (IncrementMilestone "hunting-rats")
   ,
     newEvent

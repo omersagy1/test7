@@ -91,9 +91,16 @@ updateGame t m =
 
 updateGameTime : Model -> Time -> Model
 updateGameTime m t =
-  { m | gameState = GameState.updateGameTime t m.gameState
-      , eventQueue = TimedQueue.update t m.eventQueue 
-  }
+  let
+    timePassed : Time
+    timePassed = case m.lastFrameTime of
+                   Nothing -> 0
+                   Just lastFrame -> t - lastFrame
+  in
+    { m | gameState = GameState.updateGameTime timePassed m.gameState
+        , eventQueue = TimedQueue.update timePassed m.eventQueue 
+        , lastFrameTime = Just t
+    }
 
 
 clearActions : Model -> Model

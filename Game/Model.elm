@@ -1,5 +1,6 @@
 module Game.Model exposing(..)
 
+import Time exposing (Time)
 import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 
 import Game.Event exposing (Event)
@@ -10,7 +11,8 @@ import Parser.Main
 
 initialModel : Model
 initialModel = 
-  { gameState = Parser.Main.initialGameState 
+  { lastFrameTime = Nothing
+  , gameState = Parser.Main.initialGameState 
   , messageHistory = []
   , eventQueue = TimedQueue.new
   , storyEventCorpus = Parser.Main.storyEventCorpus
@@ -21,11 +23,12 @@ initialModel =
 
 type alias Model = 
 
+  { lastFrameTime : Maybe Time
   -- State of the game on a semantic level; i.e.
   -- gameState only contains things relevant to
   -- the conceptual understanding of the game, not
   -- the state of the machinery.
-  { gameState : GameState
+  , gameState : GameState
 
   -- Messages to be displayed on-screen.
   , messageHistory : List String 

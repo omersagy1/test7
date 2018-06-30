@@ -10,4 +10,4 @@ subscriptions : Model -> Sub Message
 subscriptions model = 
   case model.paused of
     True -> Sub.none
-    False -> AnimationFrame.diffs Update.UpdateTime
+    False -> AnimationFrame.times Update.UpdateTime
