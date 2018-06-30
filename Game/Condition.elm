@@ -17,8 +17,7 @@ type Condition = And Condition Condition
                  | ResourceActive String
                  | FireExtinguished
                  | FireStoked
-                 | ActionPerformed Action
-                 | CustomActionPerformed String
+                 | ActionPerformed String
                  | MilestoneReached String
                  | TimeSinceMilestone String Time
                  | MilestoneAtCount String Int
@@ -36,9 +35,8 @@ conditionFn c =
     ResourceAmountAbove name val -> resourceAbove name val
     ResourceActive name -> resourceActive name
     FireExtinguished -> fireExtinguished
-    FireStoked -> fireStoked
-    ActionPerformed action -> actionPerformed action
-    CustomActionPerformed name -> customActionPerformed name
+    FireStoked -> actionPerformed Action.StokeFire
+    ActionPerformed action -> customActionPerformed action
     MilestoneReached name -> milestoneReached name
     TimeSinceMilestone name t -> timePassedSince name t
     MilestoneAtCount name x -> milestoneAtCount name x
@@ -83,10 +81,6 @@ fireExtinguished : ConditionFn
 fireExtinguished s = Fire.isExtinguished s.fire
 
 
-fireStoked : ConditionFn
-fireStoked = actionPerformed Action.StokeFire
-
-
 actionPerformed : Action -> ConditionFn
 actionPerformed a = (\s -> GameState.actionPerformed a s)
 
@@ -109,11 +103,11 @@ milestoneAtCount : String -> Int -> ConditionFn
 milestoneAtCount name target =
   (\s ->
     GameState.milestoneCounter name s
-    |> maybePred ((==) target))
+    |> (==) target)
 
 
 milestoneGreaterThan : String -> Int -> ConditionFn
 milestoneGreaterThan name target =
   (\s ->
     GameState.milestoneCounter name s
-    |> maybePred ((<) target))
+    |> (<) target)

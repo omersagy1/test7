@@ -18,6 +18,10 @@ init : Milestones
 init = Dict.empty
 
 
+inc : Milestone -> Milestone
+inc m = { m | counter = m.counter + 1 }
+
+
 hasReached : String -> Milestones -> Bool
 hasReached name milestones =
   Dict.member name milestones
@@ -25,7 +29,7 @@ hasReached name milestones =
 
 setReached : String -> Time -> Milestones -> Milestones
 setReached name currentTime milestones =
-  Dict.insert name (newMilestone name currentTime) milestones
+  Dict.insert name (newMilestone name currentTime |> inc) milestones
 
 
 newMilestone : String -> Time -> Milestone
@@ -45,16 +49,15 @@ timeSince name currentTime milestones =
 
 increment : String -> Time -> Milestones -> Milestones
 increment name time milestones = 
-  Dict.update name (\m -> case m of 
-                            Nothing ->
-                              newMilestone name time
-                              |> (\m -> { m | counter = 1 })
-                              |> Just
-                            Just ms -> 
-                              Just { ms | counter = ms.counter + 1}) 
+  Dict.update name (\maybem -> case maybem of 
+                                Nothing ->
+                                  newMilestone name time |> inc |> Just
+                                Just m -> 
+                                  Just (inc m))
               milestones
 
-counter : String -> Milestones -> Maybe Int
+counter : String -> Milestones -> Int
 counter name milestones =
   Dict.get name milestones 
   |> maybeChain .counter
+  |> Maybe.withDefault 0
