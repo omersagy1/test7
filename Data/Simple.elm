@@ -15,4 +15,8 @@ corpus =
   [ newEvent
     |> trigger (GameTimePassed (0*Time.second))
     |> ln "builds!"
+    |> randlns [ "#1"
+               , "#2"
+               , "#3"
+               ]
   ]

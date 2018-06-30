@@ -25,10 +25,13 @@ trigger : Condition -> StoryEvent -> StoryEvent
 trigger t e = { e | trigger = t }
 
 setText : List String -> StoryEvent -> StoryEvent
-setText t e = { e | text = t }
+setText t e = { e | text = List.map Story.FixedLine t }
 
 ln : String -> StoryEvent -> StoryEvent
-ln t e = { e | text = e.text ++ [t] }
+ln t e = { e | text = e.text ++ [Story.FixedLine t] }
+
+randlns : List String -> StoryEvent -> StoryEvent
+randlns lns e = { e | text = e.text ++ [Story.RandomLines lns] }
 
 choices : List Choice -> StoryEvent -> StoryEvent
 choices c e = { e | choices = Just c }

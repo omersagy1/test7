@@ -1,38 +1,61 @@
+var _user$project$Annex$foldingMutate = F3(
+	function (mutateFn, argList, struct) {
+		var _p0 = argList;
+		if (_p0.ctor === '[]') {
+			return {
+				ctor: '_Tuple2',
+				_0: {ctor: '[]'},
+				_1: struct
+			};
+		} else {
+			var _p1 = A2(mutateFn, _p0._0, struct);
+			var result = _p1._0;
+			var nextStruct = _p1._1;
+			var _p2 = A3(_user$project$Annex$foldingMutate, mutateFn, _p0._1, nextStruct);
+			var restResults = _p2._0;
+			var finalStruct = _p2._1;
+			return {
+				ctor: '_Tuple2',
+				_0: {ctor: '::', _0: result, _1: restResults},
+				_1: finalStruct
+			};
+		}
+	});
 var _user$project$Annex_ops = _user$project$Annex_ops || {};
 _user$project$Annex_ops['!!'] = F2(
 	function (l, i) {
 		return _elm_lang$core$List$head(
 			A2(
 				_elm_lang$core$List$drop,
-				i - 1,
-				A2(_elm_lang$core$List$take, i, l)));
+				i,
+				A2(_elm_lang$core$List$take, i + 1, l)));
 	});
 var _user$project$Annex$maybePerform = F3(
 	function (mutateFn, maybeArg, struct) {
-		var _p0 = maybeArg;
-		if (_p0.ctor === 'Nothing') {
+		var _p3 = maybeArg;
+		if (_p3.ctor === 'Nothing') {
 			return struct;
 		} else {
-			return A2(mutateFn, _p0._0, struct);
+			return A2(mutateFn, _p3._0, struct);
 		}
 	});
 var _user$project$Annex$maybePred = F2(
 	function (pred, m) {
-		var _p1 = m;
-		if (_p1.ctor === 'Nothing') {
+		var _p4 = m;
+		if (_p4.ctor === 'Nothing') {
 			return false;
 		} else {
-			return pred(_p1._0);
+			return pred(_p4._0);
 		}
 	});
 var _user$project$Annex$maybeToList = function (m) {
-	var _p2 = m;
-	if (_p2.ctor === 'Nothing') {
+	var _p5 = m;
+	if (_p5.ctor === 'Nothing') {
 		return {ctor: '[]'};
 	} else {
 		return {
 			ctor: '::',
-			_0: _p2._0,
+			_0: _p5._0,
 			_1: {ctor: '[]'}
 		};
 	}
@@ -42,8 +65,8 @@ var _user$project$Annex$concatMaybes = function (l) {
 		A2(_elm_lang$core$List$map, _user$project$Annex$maybeToList, l));
 };
 var _user$project$Annex$isJust = function (m) {
-	var _p3 = m;
-	if (_p3.ctor === 'Nothing') {
+	var _p6 = m;
+	if (_p6.ctor === 'Nothing') {
 		return false;
 	} else {
 		return true;
@@ -56,12 +79,12 @@ var _user$project$Annex$ignoreResult = F2(
 	});
 var _user$project$Annex$maybeChain = F2(
 	function (callback, maybe) {
-		var _p4 = maybe;
-		if (_p4.ctor === 'Nothing') {
+		var _p7 = maybe;
+		if (_p7.ctor === 'Nothing') {
 			return _elm_lang$core$Maybe$Nothing;
 		} else {
 			return _elm_lang$core$Maybe$Just(
-				callback(_p4._0));
+				callback(_p7._0));
 		}
 	});
 var _user$project$Annex$rangeToZero = F2(

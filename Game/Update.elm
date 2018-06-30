@@ -3,7 +3,7 @@ module Game.Update exposing (..)
 import Time exposing (Time)
 
 import Annex exposing (..)
-import Randomizer
+import Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
 import Game.Condition as Condition
@@ -173,10 +173,33 @@ enqueueTextEvents event m =
         firstMessageDelay = 
           if eventQueueEmpty m then Constants.firstMessageDelay
           else Constants.firstMessageNonEmptyQueueDelay
-        m2 = enqueueEvent
-              (Event.DisplayText first) firstMessageDelay m
+        (txt, m2) = getText first m
+        m3 = enqueueEvent
+              (Event.DisplayText txt) firstMessageDelay m2
+        (textLines, m4) = 
+          foldingMutate getText rest m3
       in
-        List.foldl enqueueTextEvent m2 rest
+        List.foldl enqueueTextEvent m4 textLines
+
+
+getText : Story.Line -> Model -> (String, Model)
+getText ln m =
+  case m.randomizer of
+    Nothing ->
+      -- Randomizer is not initialized. This is an error.
+      ("randomizer is not initialized!", m)
+    Just rnd ->
+      let
+        (txt, newRandomizer) = Story.getText ln rnd
+      in
+        ( Maybe.withDefault "randomizer code is broken!" txt
+        , updateRandomizer newRandomizer m
+        )
+
+
+updateRandomizer : Randomizer -> Model -> Model
+updateRandomizer randomizer m =
+  { m | randomizer = Just randomizer}
 
 
 enqueueTextEvent : String -> Model -> Model

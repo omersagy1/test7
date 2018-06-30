@@ -72,6 +72,22 @@ maybePerform mutateFn maybeArg struct =
 
 
 (!!) : List a -> Int -> Maybe a
-(!!) l i = List.take i l 
-           |> List.drop (i - 1)
+(!!) l i = List.take (i+1) l 
+           |> List.drop i
            |> List.head
+
+
+-- Apply a series of mutations to a struct, and collect the
+-- extra results of those mutations in a list.
+foldingMutate : (a -> c -> (b, c)) -> List a -> c -> (List b, c)
+foldingMutate mutateFn argList struct =
+  case argList of
+    [] -> 
+      ([], struct)
+    first::rest ->
+      let 
+        (result, nextStruct) = mutateFn first struct
+        (restResults, finalStruct) = 
+          foldingMutate mutateFn rest nextStruct
+      in
+        (result::restResults, finalStruct)
