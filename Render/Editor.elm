@@ -5,10 +5,10 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value)
 
 import Annex exposing(zip, enumerate)
-import Model exposing(..)
+import Editor.Main exposing(..)
 
 
-editorView : EditorModel -> Html EditorMessage
+editorView : Model -> Html Message
 editorView model = div []
                  [ corpusHeader
                  , renderCorpus model.corpus
@@ -33,7 +33,7 @@ renderCorpus l =
     div [style [("margin", "5px")]] lineDivs
 
 
-renderAddText : String -> Html EditorMessage
+renderAddText : String -> Html Message
 renderAddText draft = 
   div [ style[("margin", "5px")] ]
       [ input [ onInput SaveDraft
@@ -44,21 +44,21 @@ renderAddText draft =
       ]
 
 
-renderPlay : Html EditorMessage
+renderPlay : Html Message
 renderPlay = div [style[("margin", "5px")]] 
                  [button [style [("margin-right", "5px")]
                          ,onClick Play] 
                          [text "PLAY"]
                  ,button [onClick Pause] [text "PAUSE"]]
 
-renderPausedStatus : Bool -> Html EditorMessage
+renderPausedStatus : Bool -> Html Message
 renderPausedStatus paused =
   let msg = if paused then "PAUSED" else "PLAYING"
   in
     div [style [("margin", "5px")]] 
         [text msg]
 
-renderDisplay : Display -> Html EditorMessage
+renderDisplay : Display -> Html Message
 renderDisplay messages = 
   let 
     numberedLines = List.map (\(x, y) -> toString (x + 1) ++ ". " ++ y)

@@ -20,6 +20,7 @@ type Message = TogglePause
                | UpdateTime Time
                | MakeChoice Choice
                | GameplayMessage Action
+               | CurrentTime Time
 
 
 update : Message -> Model -> Model
@@ -45,6 +46,7 @@ update msg model =
       else
         { model | gameState = processUserAction action model.gameState }
 
+    CurrentTime t -> model
 
 gameplayPaused : Model -> Bool
 gameplayPaused m =

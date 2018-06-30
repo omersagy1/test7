@@ -5,11 +5,12 @@ import Game.Story exposing (StoryEvent)
 
 import Data.Init
 import Data.Begin
+import Data.Simple
 
 
 initialGameState : GameState
-initialGameState = Data.Init.initialGameState
+initialGameState = Data.Simple.init
 
 storyEventCorpus : List StoryEvent
 storyEventCorpus = 
-  Data.Begin.corpus
+  Data.Simple.corpus
