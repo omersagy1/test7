@@ -6,25 +6,24 @@ import Random exposing (Seed, Generator)
 import Annex exposing (..)
 
 
-type alias Randomizer = 
-  { seed : Seed
-  } 
+type alias Randomizer = Seed
 
 
 init : Time -> Randomizer
-init t =
-  { seed = Random.initialSeed (round t)
-  }
+init t = Random.initialSeed (round t)
+
+
+int : Int -> Int -> Randomizer -> (Int, Randomizer)
+int lower upper randomizer = 
+  Random.step (Random.int lower upper) randomizer
 
 
 choose : List a -> Randomizer -> (Maybe a, Randomizer)
 choose list randomizer =
   let
-    (index, newSeed) = Random.step (fromList list) randomizer.seed
+    (index, newRandomizer) = Random.step (fromList list) randomizer
   in
-    ( list !! index
-    , { randomizer | seed = newSeed }
-    )
+    ( list !! index , newRandomizer)
 
 
 fromList : List a -> Generator Int
