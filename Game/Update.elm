@@ -3,6 +3,7 @@ module Game.Update exposing (..)
 import Time exposing (Time)
 
 import Annex exposing (..)
+import Randomizer
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
 import Game.Condition as Condition
@@ -20,7 +21,6 @@ type Message = TogglePause
                | UpdateTime Time
                | MakeChoice Choice
                | GameplayMessage Action
-               | CurrentTime Time
 
 
 update : Message -> Model -> Model
@@ -46,7 +46,6 @@ update msg model =
       else
         { model | gameState = processUserAction action model.gameState }
 
-    CurrentTime t -> model
 
 gameplayPaused : Model -> Bool
 gameplayPaused m =
@@ -86,13 +85,22 @@ restart paused =
 
 updateGame : Time -> Model -> Model
 updateGame t m =
-  updateGameTime m t
+  initRandomizer t m
+  |> updateGameTime t
   |> triggerStoryEvents
   |> processEventQueue
   |> clearActions 
 
-updateGameTime : Model -> Time -> Model
-updateGameTime m t =
+
+initRandomizer : Time -> Model -> Model
+initRandomizer t m =
+  case m.randomizer of
+    Nothing -> { m | randomizer = Just (Randomizer.init t) }
+    other -> m
+
+
+updateGameTime : Time -> Model -> Model
+updateGameTime t m =
   let
     timePassed : Time
     timePassed = case m.lastFrameTime of

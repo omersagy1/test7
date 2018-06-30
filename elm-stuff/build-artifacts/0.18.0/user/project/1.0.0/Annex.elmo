@@ -1,3 +1,12 @@
+var _user$project$Annex_ops = _user$project$Annex_ops || {};
+_user$project$Annex_ops['!!'] = F2(
+	function (l, i) {
+		return _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$drop,
+				i - 1,
+				A2(_elm_lang$core$List$take, i, l)));
+	});
 var _user$project$Annex$maybePerform = F3(
 	function (mutateFn, maybeArg, struct) {
 		var _p0 = maybeArg;

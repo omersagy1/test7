@@ -69,3 +69,9 @@ maybePerform mutateFn maybeArg struct =
   case maybeArg of
     Nothing -> struct
     Just arg -> mutateFn arg struct
+
+
+(!!) : List a -> Int -> Maybe a
+(!!) l i = List.take i l 
+           |> List.drop (i - 1)
+           |> List.head

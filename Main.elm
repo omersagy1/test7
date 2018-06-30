@@ -31,8 +31,6 @@ model =
   }
 
 
--- SUBSCRIPTIONS
-
 subscriptions : Model -> Sub Message
 subscriptions model =
   case model.currentPage of
@@ -41,8 +39,6 @@ subscriptions model =
     GamePage ->
       Sub.map GameMessage (Game.Subs.subscriptions model.gameModel)
 
-
--- UPDATE
 
 update : Message -> Model -> (Model, Cmd Message)
 update msg model =
@@ -62,6 +58,7 @@ update msg model =
     other ->
       -- Somehow a message was sent for the wrong page.
       -- Drop it and do nothing.
+      -- TODO: figure out how to send warnings.
       (model, Cmd.none)
 
 

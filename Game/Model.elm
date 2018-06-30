@@ -1,8 +1,9 @@
 module Game.Model exposing(..)
 
 import Time exposing (Time)
-import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 
+import Randomizer exposing (Randomizer)
+import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 import Game.Event exposing (Event)
 import Game.GameState exposing (GameState)
 import Game.Story exposing (StoryEvent, Choice)
@@ -18,6 +19,7 @@ initialModel =
   , storyEventCorpus = Parser.Main.storyEventCorpus
   , paused = False
   , activeChoices = Nothing
+  , randomizer = Nothing
   }
 
 
@@ -45,4 +47,5 @@ type alias Model =
   -- The choice the player must make to continue the game.
   , activeChoices : Maybe (List Choice)
 
+  , randomizer : Maybe Randomizer
   }
