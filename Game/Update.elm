@@ -174,8 +174,7 @@ enqueueTextEvents event m =
           if eventQueueEmpty m then Constants.firstMessageDelay
           else Constants.firstMessageNonEmptyQueueDelay
         (txt, m2) = getText first m
-        m3 = enqueueEvent
-              (Event.DisplayText txt) firstMessageDelay m2
+        m3 = enqueueEvent (Event.DisplayText txt) firstMessageDelay m2
         (textLines, m4) = 
           foldingMutate getText rest m3
       in
