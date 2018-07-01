@@ -41,7 +41,6 @@ conditionFn c =
     TimeSinceMilestone name t -> timePassedSince name t
     MilestoneAtCount name x -> milestoneAtCount name x
     MilestoneGreaterThan name x -> milestoneGreaterThan name x
-      
 
 
 type alias ConditionFn = GameState -> Bool
