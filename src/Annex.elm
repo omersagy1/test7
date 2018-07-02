@@ -82,8 +82,7 @@ maybePerform mutateFn maybeArg struct =
 foldingMutate : (a -> c -> (b, c)) -> List a -> c -> (List b, c)
 foldingMutate mutateFn argList struct =
   case argList of
-    [] -> 
-      ([], struct)
+    [] -> ([], struct)
     first::rest ->
       let 
         (result, nextStruct) = mutateFn first struct

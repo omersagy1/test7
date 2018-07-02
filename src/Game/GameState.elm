@@ -172,8 +172,7 @@ performCustomAction a s =
 applyEffect : Effect -> GameState -> GameState
 applyEffect e s =
   case e of
-    Effect.NoEffect -> 
-      s
+    Effect.NoEffect -> s
 
     Effect.ActivateResource name -> 
       applyToResource name (Resource.activate) s
