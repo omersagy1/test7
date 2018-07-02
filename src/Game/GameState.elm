@@ -3,6 +3,7 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Annex exposing (..)
+import Randomizer exposing (Randomizer)
 import Game.Action as Action exposing (Action, CustomAction)
 import Game.ActionHistory as ActionHistory exposing (ActionHistory)
 import Game.Effect as Effect exposing (Effect)
@@ -160,49 +161,60 @@ applyToAction name fn s =
   }
 
 
-performCustomAction : CustomAction -> GameState -> GameState
-performCustomAction a s =
-  if not (Action.canPerform a) then s
+performCustomAction : CustomAction -> GameState -> Randomizer -> (GameState, Randomizer)
+performCustomAction a s randomizer =
+  if not (Action.canPerform a) then (s, randomizer)
   else
-    applyToAction a.name Action.performAction s
-    |> applyEffect a.effect
-    |> addAction (Action.CA a)
+    let
+        s1 = applyToAction a.name Action.performAction s
+        (s2, r2) = applyEffect a.effect s1 randomizer
+        s3 = addAction (Action.CA a) s2
+    in
+      (s3, r2)
 
 
-applyEffect : Effect -> GameState -> GameState
-applyEffect e s =
+applyEffect : Effect -> GameState -> Randomizer -> (GameState, Randomizer)
+applyEffect e s randomizer =
   case e of
-    Effect.NoEffect -> s
+    Effect.NoEffect -> (s, randomizer)
 
     Effect.ActivateResource name -> 
-      applyToResource name (Resource.activate) s
+      (applyToResource name (Resource.activate) s
+       , randomizer)
 
     Effect.AddToResource name x -> 
-      (addToResource name x) s
+      ((addToResource name x) s
+       , randomizer)
 
     Effect.SubtractResource name x ->
-      applyToResource name (Resource.subtract x) s
+      (applyToResource name (Resource.subtract x) s
+      , randomizer)
 
     Effect.SetResourceAmount name x ->
-      applyToResource name (Resource.mutate (\_ -> x)) s
+      (applyToResource name (Resource.mutate (\_ -> x)) s
+      , randomizer)
 
     Effect.SetMilestoneReached name -> 
-      setMilestoneReached name s
+      (setMilestoneReached name s
+      , randomizer)
 
     Effect.IncrementMilestone name -> 
-      incrementMilestone name s
+      (incrementMilestone name s
+      , randomizer)
 
     Effect.ActivateAction name -> 
-      applyToAction name (Action.activate) s
+      (applyToAction name (Action.activate) s
+      , randomizer)
 
     Effect.DeactivateAction name -> 
-      applyToAction name (Action.deactivate) s
+      (applyToAction name (Action.deactivate) s
+      , randomizer)
 
     Effect.Compound effects -> 
-      List.foldl applyEffect s effects
+      doubleFold applyEffect effects s randomizer
 
     Effect.Compound2 e1 e2 -> 
-      List.foldl applyEffect s [e1, e2]
+      doubleFold applyEffect [e1, e2] s randomizer
 
 
 addToResource : String -> Int -> GameState -> GameState

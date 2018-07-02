@@ -90,3 +90,17 @@ foldingMutate mutateFn argList struct =
           foldingMutate mutateFn rest nextStruct
       in
         (result::restResults, finalStruct)
+
+
+-- Mutate two data structures at once by folding over
+-- a list of arguments. The mutating function has one
+-- argument (besides the two data structures).
+doubleFold : (a -> b -> c -> (b, c)) -> List a -> b -> c -> (b, c)
+doubleFold mutateFn argList struct1 struct2 =
+  case argList of
+    [] -> (struct1, struct2)
+    first::rest ->
+      let
+        (s1, s2) = mutateFn first struct1 struct2
+      in
+        doubleFold mutateFn rest s1 s2

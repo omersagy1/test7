@@ -44,7 +44,16 @@ update msg model =
     GameplayMessage action -> 
       if gameplayPaused model then model
       else
-        { model | gameState = processUserAction action model.gameState }
+        case model.randomizer of
+          Nothing -> model
+          Just randomizer ->
+            let
+              (s2, r2) = 
+                processUserAction action model.gameState randomizer
+            in
+              { model | gameState = s2
+                      , randomizer = Just r2
+              }
 
 
 gameplayPaused : Model -> Bool
@@ -60,15 +69,17 @@ waitingOnChoice : Model -> Bool
 waitingOnChoice m = m.activeChoices /= Nothing
 
 
-processUserAction : Action -> GameState -> GameState
-processUserAction msg state =
+processUserAction : Action -> GameState -> Randomizer -> (GameState, Randomizer)
+processUserAction msg state randomizer =
   case msg of 
 
     Action.StokeFire ->
-      GameState.stokeFire state
+      ( GameState.stokeFire state
+      , randomizer
+      )
     
     Action.CA customAction ->
-      GameState.performCustomAction customAction state
+      GameState.performCustomAction customAction state randomizer
 
 
 togglePause : Model -> Model
@@ -97,6 +108,11 @@ initRandomizer t m =
   case m.randomizer of
     Nothing -> { m | randomizer = Just (Randomizer.init t) }
     other -> m
+
+
+updateRandomizer : Randomizer -> Model -> Model
+updateRandomizer randomizer m =
+  { m | randomizer = Just randomizer}
 
 
 updateGameTime : Time -> Model -> Model
@@ -196,11 +212,6 @@ getText ln m =
         )
 
 
-updateRandomizer : Randomizer -> Model -> Model
-updateRandomizer randomizer m =
-  { m | randomizer = Just randomizer}
-
-
 enqueueTextEvent : String -> Model -> Model
 enqueueTextEvent text m =
   enqueueEvent
@@ -292,7 +303,16 @@ displayChoices choices m =
 
 applyEffect : Effect -> Model -> Model
 applyEffect effect model =
-  { model | gameState = GameState.applyEffect effect model.gameState }
+  case model.randomizer of
+    Nothing -> model
+    Just randomizer ->
+      let
+        (s2, r2) = 
+          GameState.applyEffect effect model.gameState randomizer
+      in
+        { model | gameState = s2
+                , randomizer = Just r2
+        }
 
 
 makeChoice : Choice -> Model -> Model

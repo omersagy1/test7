@@ -49,4 +49,15 @@ suite =
       (\_ ->
         Expect.equal (Just "a") (["a", "b", "c", "d", "e"] !! 0)
       )
+  , 
+    test "double fold"
+      (\_ ->
+        let
+          s1 = 0
+          s2 = ""
+          accumulator = (\x p1 p2 -> (p1 + x, p2 ++ (toString x))) 
+          args = [1, 2, 3, 4, 5, 6]
+        in
+          Expect.equal (21, "123456") (doubleFold accumulator args s1 s2)
+      )
   ]
