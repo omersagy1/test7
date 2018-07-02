@@ -2,8 +2,8 @@ module Game.Update exposing (..)
 
 import Time exposing (Time)
 
-import Annex exposing (..)
-import Randomizer exposing (Randomizer)
+import Common.Annex exposing (..)
+import Common.Randomizer as Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
 import Game.Condition as Condition

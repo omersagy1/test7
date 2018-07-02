@@ -2,7 +2,7 @@ module Game.Model exposing(..)
 
 import Time exposing (Time)
 
-import Randomizer exposing (Randomizer)
+import Common.Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 import Game.Event exposing (Event)
 import Game.GameState exposing (GameState)

@@ -1,9 +1,9 @@
-module Randomizer exposing (..)
+module Common.Randomizer exposing (..)
 
 import Time exposing (Time)
 import Random exposing (Seed, Generator)
 
-import Annex exposing (..)
+import Common.Annex exposing (..)
 
 
 type alias Randomizer = Seed

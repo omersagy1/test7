@@ -1,6 +1,6 @@
 module Game.Story exposing(..)
 
-import Randomizer exposing (Randomizer)
+import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Effect as Effect exposing (Effect)
 import Game.Condition as Condition exposing (Condition)
 

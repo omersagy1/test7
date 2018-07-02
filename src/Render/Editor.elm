@@ -4,7 +4,7 @@ import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value)
 
-import Annex exposing(zip, enumerate)
+import Common.Annex exposing (zip, enumerate)
 import Editor.Main exposing(..)
 
 

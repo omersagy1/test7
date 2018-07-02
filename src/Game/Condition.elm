@@ -2,7 +2,7 @@ module Game.Condition exposing (..)
 
 import Time exposing (Time)
 
-import Annex exposing (..)
+import Common.Annex exposing (..)
 import Game.Action as Action exposing (Action)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)

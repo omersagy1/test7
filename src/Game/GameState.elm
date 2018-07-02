@@ -2,8 +2,8 @@ module Game.GameState exposing(..)
 
 import Time exposing (Time)
 
-import Annex exposing (..)
-import Randomizer exposing (Randomizer)
+import Common.Annex exposing (..)
+import Common.Randomizer exposing (Randomizer)
 import Game.Action as Action exposing (Action, CustomAction)
 import Game.ActionHistory as ActionHistory exposing (ActionHistory)
 import Game.Effect as Effect exposing (Effect)

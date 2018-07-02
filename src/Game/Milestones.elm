@@ -3,7 +3,7 @@ module Game.Milestones exposing (..)
 import Dict exposing (Dict)
 import Time exposing (Time)
 
-import Annex exposing (..)
+import Common.Annex exposing (..)
 
 type alias Milestones = Dict String Milestone
 

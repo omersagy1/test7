@@ -4,7 +4,7 @@ import Css exposing (..)
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 
-import Annex exposing(..)
+import Common.Annex exposing(..)
 
 
 displaySize : Int

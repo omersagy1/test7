@@ -6,7 +6,7 @@ import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
-import Annex exposing(..)
+import Common.Annex exposing(..)
 
 import Game.Action exposing (CustomAction)
 import Game.Cooldown
