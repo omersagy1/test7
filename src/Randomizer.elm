@@ -10,7 +10,9 @@ type alias Randomizer = Seed
 
 
 init : Time -> Randomizer
-init t = Random.initialSeed (round t)
+init t = 
+  Random.initialSeed (round t)
+  |> churn
 
 
 -- Generate several random numbers.

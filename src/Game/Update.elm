@@ -107,7 +107,7 @@ initRandomizer : Time -> Model -> Model
 initRandomizer t m =
   case m.randomizer of
     Nothing -> 
-      { m | randomizer = Just (Randomizer.init t |> Randomizer.churn) }
+      { m | randomizer = Just (Randomizer.init t) }
     other -> 
       m
 
