@@ -106,8 +106,10 @@ updateGame t m =
 initRandomizer : Time -> Model -> Model
 initRandomizer t m =
   case m.randomizer of
-    Nothing -> { m | randomizer = Just (Randomizer.init t) }
-    other -> m
+    Nothing -> 
+      { m | randomizer = Just (Randomizer.init t |> Randomizer.churn) }
+    other -> 
+      m
 
 
 updateRandomizer : Randomizer -> Model -> Model

@@ -13,6 +13,18 @@ init : Time -> Randomizer
 init t = Random.initialSeed (round t)
 
 
+-- Generate several random numbers.
+-- For superstitious users.
+churn : Randomizer -> Randomizer
+churn randomizer =
+  foldingMutate
+    (\upper r -> int 0 upper r)
+    (List.range 0 100)
+    randomizer
+  |> Tuple.second
+
+
+
 int : Int -> Int -> Randomizer -> (Int, Randomizer)
 int lower upper randomizer = 
   Random.step (Random.int lower upper) randomizer
