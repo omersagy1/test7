@@ -1,7 +1,7 @@
 import AnimationFrame
 import Html.Styled exposing (Html, button, div, text, input)
 
-import Model exposing (..)
+import App.Model exposing (..)
 import Render.App
 
 import Editor.Main

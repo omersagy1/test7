@@ -1,9 +1,9 @@
 var _user$project$Main$switchPage = function (model) {
-	return _elm_lang$core$Native_Utils.eq(model.currentPage, _user$project$Model$EditorPage) ? _elm_lang$core$Native_Utils.update(
+	return _elm_lang$core$Native_Utils.eq(model.currentPage, _user$project$App_Model$EditorPage) ? _elm_lang$core$Native_Utils.update(
 		model,
-		{currentPage: _user$project$Model$GamePage}) : _elm_lang$core$Native_Utils.update(
+		{currentPage: _user$project$App_Model$GamePage}) : _elm_lang$core$Native_Utils.update(
 		model,
-		{currentPage: _user$project$Model$EditorPage});
+		{currentPage: _user$project$App_Model$EditorPage});
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
@@ -58,16 +58,16 @@ var _user$project$Main$subscriptions = function (model) {
 	if (_p1.ctor === 'EditorPage') {
 		return A2(
 			_elm_lang$core$Platform_Sub$map,
-			_user$project$Model$EditorMessage,
+			_user$project$App_Model$EditorMessage,
 			_elm_lang$animation_frame$AnimationFrame$diffs(_user$project$Editor_Main$UpdateTime));
 	} else {
 		return A2(
 			_elm_lang$core$Platform_Sub$map,
-			_user$project$Model$GameMessage,
+			_user$project$App_Model$GameMessage,
 			_user$project$Game_Subs$subscriptions(model.gameModel));
 	}
 };
-var _user$project$Main$model = {currentPage: _user$project$Model$GamePage, editorModel: _user$project$Editor_Main$initialModel, gameModel: _user$project$Game_Model$initialModel};
+var _user$project$Main$model = {currentPage: _user$project$App_Model$GamePage, editorModel: _user$project$Editor_Main$initialModel, gameModel: _user$project$Game_Model$initialModel};
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Main$main = _rtfeldman$elm_css$Html_Styled$program(
 	{init: _user$project$Main$init, view: _user$project$Render_App$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();

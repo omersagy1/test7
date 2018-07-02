@@ -1,7 +1,4 @@
-module Model exposing(..)
-
-import Time exposing (Time)
-import Queue.TimedQueue exposing(TimedQueue)
+module App.Model exposing(..)
 
 import Editor.Main
 import Game.Model
