@@ -169,30 +169,44 @@ performCustomAction a s =
     |> addAction (Action.CA a)
 
 
-type alias Mutator = GameState -> GameState
-
 applyEffect : Effect -> GameState -> GameState
 applyEffect e s =
   case e of
-    Effect.NoEffect -> s
-    Effect.ActivateResource name -> (activateResource name) s
-    Effect.AddToResource name x -> (addToResource name x) s
-    Effect.SubtractResource name x -> (subtractResource name x) s
-    Effect.SetResourceAmount name x -> (setResourceAmount name x) s
-    Effect.SetMilestoneReached name -> setMilestoneReached name s
-    Effect.IncrementMilestone name -> incrementMilestone name s
-    Effect.ActivateAction name -> (activateAction name) s
-    Effect.DeactivateAction name -> (deactivateAction name) s
-    Effect.Compound effects -> List.foldl applyEffect s effects
-    Effect.Compound2 e1 e2 -> List.foldl applyEffect s [e1, e2]
+    Effect.NoEffect -> 
+      s
+
+    Effect.ActivateResource name -> 
+      applyToResource name (Resource.activate) s
+
+    Effect.AddToResource name x -> 
+      (addToResource name x) s
+
+    Effect.SubtractResource name x ->
+      applyToResource name (Resource.subtract x) s
+
+    Effect.SetResourceAmount name x ->
+      applyToResource name (Resource.mutate (\_ -> x)) s
+
+    Effect.SetMilestoneReached name -> 
+      setMilestoneReached name s
+
+    Effect.IncrementMilestone name -> 
+      incrementMilestone name s
+
+    Effect.ActivateAction name -> 
+      applyToAction name (Action.activate) s
+
+    Effect.DeactivateAction name -> 
+      applyToAction name (Action.deactivate) s
+
+    Effect.Compound effects -> 
+      List.foldl applyEffect s effects
+
+    Effect.Compound2 e1 e2 -> 
+      List.foldl applyEffect s [e1, e2]
 
 
-activateResource : String -> Mutator
-activateResource name =
-  (\s -> applyToResource name (Resource.activate) s)
-
-
-addToResource : String -> Int -> Mutator
+addToResource : String -> Int -> GameState -> GameState
 addToResource name x = 
   (\s ->
     let stateWithActiveResource =
@@ -203,27 +217,3 @@ addToResource name x =
     in
       applyToResource 
         name (Resource.add x) stateWithActiveResource)
-
-
-subtractResource : String -> Int -> Mutator
-subtractResource name x = 
-  applyToResource name (Resource.subtract x)
-
-
-setResourceAmount : String -> Int -> Mutator
-setResourceAmount name x = 
-  applyToResource name (Resource.mutate (\_ -> x))
-
-
-and : Mutator -> Mutator -> Mutator
-and m1 m2 = (\s -> s |> m1 |> m2)
-
-
-activateAction : String -> Mutator
-activateAction name =
-  (\s -> applyToAction name (Action.activate) s)
-
-
-deactivateAction : String -> Mutator
-deactivateAction name =
-  (\s -> applyToAction name (Action.deactivate) s)
