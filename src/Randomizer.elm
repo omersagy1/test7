@@ -26,7 +26,6 @@ churn randomizer =
   |> Tuple.second
 
 
-
 int : Int -> Int -> Randomizer -> (Int, Randomizer)
 int lower upper randomizer = 
   Random.step (Random.int lower upper) randomizer
