@@ -3,7 +3,7 @@ module AnnexTest exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
 
-import Annex exposing (..)
+import Common.Annex exposing (..)
 
 suite : Test
 suite =

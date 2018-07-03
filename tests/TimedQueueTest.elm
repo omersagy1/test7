@@ -2,11 +2,12 @@ module TimedQueueTest exposing (..)
 
 import Expect exposing (Expectation)
 import Test exposing (..)
-
-import Queue.TimedQueue exposing (..)
-import Annex exposing (..)
-import Tuple exposing (..)
 import Time exposing (second)
+import Tuple exposing (..)
+
+import Common.Annex exposing (..)
+import Queue.TimedQueue exposing (..)
+
 
 suite : Test
 suite =

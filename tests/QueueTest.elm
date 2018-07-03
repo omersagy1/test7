@@ -2,10 +2,10 @@ module QueueTest exposing (..)
 
 import Expect exposing (Expectation)
 import Test exposing (..)
+import Tuple exposing (..)
 
 import Queue.Queue exposing (..)
-import Annex exposing (..)
-import Tuple exposing (..)
+import Common.Annex exposing (..)
 
 suite : Test
 suite =
