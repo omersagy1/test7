@@ -29,7 +29,11 @@ corpus =
                     (And (MilestoneReached "wood-searched")
                          (Not (MilestoneAtCount "wood-searched" 2))))
     |> reoccurring
-    |> ln "A few more twigs for the fire..."
+    |> randlns 
+        [ "A few more twigs for the fire..."
+        , "The twigs are dirty, but dry enough..."
+        , "You return from your dark wandering with a small bounty..."
+        ]
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
@@ -48,7 +52,15 @@ corpus =
     newEvent
     |> trigger (And FireStoked (MilestoneGreaterThan "fire-stoked" 0))
     |> reoccurring
-    |> ln "The fire is roaring."
+    |> randlns [ "The fire is roaring."
+               , "The fire is roaring."
+               , "The fire is roaring."
+               , "The flames double in height."
+               , "The fire crackles with a human voice."
+               , "You shiver with warmth."
+               , "The flames rise."
+               , "The fire dances with primitive urgency."
+               ]
     |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent

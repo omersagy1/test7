@@ -15,10 +15,12 @@ init =
   |> GameState.addResource (Resource.init "wood" 0)
   |> GameState.addResource (Resource.init "rats" 0)
   |> GameState.addResource (Resource.init "gold" 0)
+
   |> GameState.addCustomAction
       (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
         |> Action.effect (AddToResourceRand "wood" 5 10))
+
   |> GameState.addCustomAction
       (Action.init "hunt rats"
         |> Action.effect (AddToResource "rats" 2)
