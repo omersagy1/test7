@@ -3,7 +3,7 @@ module Game.GameState exposing(..)
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
-import Common.Randomizer exposing (Randomizer)
+import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Action as Action exposing (Action, CustomAction)
 import Game.ActionHistory as ActionHistory exposing (ActionHistory)
 import Game.Effect as Effect exposing (Effect)
@@ -140,6 +140,7 @@ incrementMilestone : String -> GameState -> GameState
 incrementMilestone name s =
   { s | milestones = Milestones.increment name s.gameTime s.milestones }
 
+
 milestoneCounter : String -> GameState -> Int
 milestoneCounter name s = Milestones.counter name s.milestones
 
@@ -167,64 +168,82 @@ performCustomAction a s randomizer =
   else
     let
         s1 = applyToAction a.name Action.performAction s
-        (s2, r2) = applyEffect a.effect s1 randomizer
+        (s2, r1) = applyEffect a.effect s1 randomizer
         s3 = addAction (Action.CA a) s2
     in
-      (s3, r2)
+      (s3, r1)
 
 
 applyEffect : Effect -> GameState -> Randomizer -> (GameState, Randomizer)
 applyEffect e s randomizer =
-  case e of
-    Effect.NoEffect -> (s, randomizer)
+  let
+    -- Wrapper for functions that don't make use of
+    -- the randomizer.
+    nonRandom : GameState -> (GameState, Randomizer)
+    nonRandom state = (state, randomizer)
+  in
+    case e of
+      Effect.NoEffect -> 
+        s 
+        |> nonRandom
 
-    Effect.ActivateResource name -> 
-      (applyToResource name (Resource.activate) s
-       , randomizer)
+      Effect.ActivateResource name -> 
+        applyToResource name (Resource.activate) s
+        |> nonRandom
 
-    Effect.AddToResource name x -> 
-      ((addToResource name x) s
-       , randomizer)
+      Effect.AddToResource name x -> 
+        addToResource name x s
+        |> nonRandom
 
-    Effect.SubtractResource name x ->
-      (applyToResource name (Resource.subtract x) s
-      , randomizer)
+      Effect.AddToResourceRand name x y -> 
+        addToResourceRand name x y s randomizer
 
-    Effect.SetResourceAmount name x ->
-      (applyToResource name (Resource.mutate (\_ -> x)) s
-      , randomizer)
+      Effect.SubtractResource name x ->
+        applyToResource name (Resource.subtract x) s
+        |> nonRandom
 
-    Effect.SetMilestoneReached name -> 
-      (setMilestoneReached name s
-      , randomizer)
+      Effect.SetResourceAmount name x ->
+        applyToResource name (Resource.mutate (\_ -> x)) s
+        |> nonRandom
 
-    Effect.IncrementMilestone name -> 
-      (incrementMilestone name s
-      , randomizer)
+      Effect.SetMilestoneReached name -> 
+        setMilestoneReached name s
+        |> nonRandom
 
-    Effect.ActivateAction name -> 
-      (applyToAction name (Action.activate) s
-      , randomizer)
+      Effect.IncrementMilestone name -> 
+        incrementMilestone name s
+        |> nonRandom
 
-    Effect.DeactivateAction name -> 
-      (applyToAction name (Action.deactivate) s
-      , randomizer)
+      Effect.ActivateAction name -> 
+        applyToAction name (Action.activate) s
+        |> nonRandom
 
-    Effect.Compound effects -> 
-      doubleFold applyEffect effects s randomizer
+      Effect.DeactivateAction name -> 
+        applyToAction name (Action.deactivate) s
+        |> nonRandom
 
-    Effect.Compound2 e1 e2 -> 
-      doubleFold applyEffect [e1, e2] s randomizer
+      Effect.Compound effects -> 
+        doubleFold applyEffect effects s randomizer
+
+      Effect.Compound2 e1 e2 -> 
+        doubleFold applyEffect [e1, e2] s randomizer
 
 
 addToResource : String -> Int -> GameState -> GameState
-addToResource name x = 
-  (\s ->
-    let stateWithActiveResource =
-      if not (resourceActive name s) then
-        applyToResource name (Resource.activate) s
-      else
-        s
-    in
-      applyToResource 
-        name (Resource.add x) stateWithActiveResource)
+addToResource name x s = 
+  let stateWithActiveResource =
+    if not (resourceActive name s) then
+      applyToResource name (Resource.activate) s
+    else
+      s
+  in
+    applyToResource 
+      name (Resource.add x) stateWithActiveResource
+
+
+addToResourceRand : String -> Int -> Int -> GameState -> Randomizer -> (GameState, Randomizer)
+addToResourceRand name x y s randomizer =
+  let
+    (val, r) = Randomizer.int x y randomizer
+  in
+    (addToResource name val s, r)

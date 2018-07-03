@@ -36,7 +36,7 @@ choose list randomizer =
   let
     (index, newRandomizer) = Random.step (fromList list) randomizer
   in
-    ( list !! index , newRandomizer)
+    (list !! index, newRandomizer)
 
 
 fromList : List a -> Generator Int

@@ -1,4 +1,4 @@
-module Data.Init exposing (initialGameState)
+module Data.Init exposing (init)
 
 import Time
 
@@ -8,8 +8,8 @@ import Game.GameState as GameState exposing (GameState)
 import Game.Resource as Resource
 
 
-initialGameState : GameState
-initialGameState =
+init : GameState
+init =
   GameState.init 
   |> GameState.initFire (30*Time.second) (10*Time.second)
   |> GameState.addResource (Resource.init "wood" 0)
@@ -18,7 +18,7 @@ initialGameState =
   |> GameState.addCustomAction
       (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
-        |> Action.effect (AddToResource "wood" 5))
+        |> Action.effect (AddToResourceRand "wood" 5 10))
   |> GameState.addCustomAction
       (Action.init "hunt rats"
         |> Action.effect (AddToResource "rats" 2)

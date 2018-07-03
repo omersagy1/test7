@@ -4,6 +4,7 @@ module Game.Effect exposing (..)
 type Effect = NoEffect
               | ActivateResource String
               | AddToResource String Int
+              | AddToResourceRand String Int Int
               | SubtractResource String Int
               | SetResourceAmount String Int
               | SetMilestoneReached String
