@@ -143,7 +143,7 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event m = 
   enqueueTextEvents event m
   |> enqueueChoiceEvent event
-  |> enqueueMutator event
+  |> enqueueEffect event
   |> enqueueGoto event
 
 
@@ -209,8 +209,8 @@ enqueueChoiceEvent event m =
         m
 
 
-enqueueMutator : StoryEvent -> Model -> Model
-enqueueMutator event m =
+enqueueEffect : StoryEvent -> Model -> Model
+enqueueEffect event m =
   case event.effect of
     Nothing -> m
     Just mutator ->
