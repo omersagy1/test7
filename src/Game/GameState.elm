@@ -23,6 +23,7 @@ type alias GameState =
   , actionHistory : ActionHistory
   , milestones : Milestones
   , customActions : List CustomAction
+  , randomizer : Randomizer
   }
 
 
@@ -34,7 +35,19 @@ init =
   , actionHistory = ActionHistory.newHistory
   , milestones = Milestones.init
   , customActions = []
+  , randomizer = Randomizer.init 0
   }
+
+
+update : Time -> GameState -> GameState
+update t s = 
+  { s | gameTime = s.gameTime + t }
+  |> updateActionCooldowns t
+  |> (\s -> { s | fire = Fire.update t s.fire })
+
+
+updateRandomizer : Randomizer -> GameState -> GameState
+updateRandomizer randomizer s = { s | randomizer = randomizer}
 
 
 addResource : Resource -> GameState -> GameState
@@ -45,13 +58,6 @@ addResource r s =
 initFire : Time -> Time -> GameState -> GameState
 initFire burnTime stokeCooldown s =
   { s | fire = Fire.init burnTime stokeCooldown }
-
-
-updateGameTime : Time -> GameState -> GameState
-updateGameTime t s = 
-  { s | gameTime = s.gameTime + t }
-  |> updateActionCooldowns t
-  |> (\s -> { s | fire = Fire.update t s.fire })
 
 
 updateActionCooldowns : Time -> GameState -> GameState
@@ -162,71 +168,52 @@ applyToAction name fn s =
   }
 
 
-performCustomAction : CustomAction -> GameState -> Randomizer -> (GameState, Randomizer)
-performCustomAction a s randomizer =
-  if not (Action.canPerform a) then (s, randomizer)
+performCustomAction : CustomAction -> GameState -> GameState
+performCustomAction a s =
+  if not (Action.canPerform a) then s
   else
-    let
-        s1 = applyToAction a.name Action.performAction s
-        (s2, r1) = applyEffect a.effect s1 randomizer
-        s3 = addAction (Action.CA a) s2
-    in
-      (s3, r1)
+    applyToAction a.name Action.performAction s
+    |> (applyEffect a.effect) 
+    |> addAction (Action.CA a)
 
 
-applyEffect : Effect -> GameState -> Randomizer -> (GameState, Randomizer)
-applyEffect e s randomizer =
-  let
-    -- Wrapper for functions that don't make use of
-    -- the randomizer.
-    nonRandom : GameState -> (GameState, Randomizer)
-    nonRandom state = (state, randomizer)
-  in
-    case e of
-      Effect.NoEffect -> 
-        s 
-        |> nonRandom
+applyEffect : Effect -> GameState -> GameState
+applyEffect e s =
+  case e of
+    Effect.NoEffect -> s 
 
-      Effect.ActivateResource name -> 
-        applyToResource name (Resource.activate) s
-        |> nonRandom
+    Effect.ActivateResource name -> 
+      applyToResource name (Resource.activate) s
 
-      Effect.AddToResource name x -> 
-        addToResource name x s
-        |> nonRandom
+    Effect.AddToResource name x -> 
+      addToResource name x s
 
-      Effect.AddToResourceRand name x y -> 
-        addToResourceRand name x y s randomizer
+    Effect.AddToResourceRand name x y -> 
+      addToResourceRand name x y s 
 
-      Effect.SubtractResource name x ->
-        applyToResource name (Resource.subtract x) s
-        |> nonRandom
+    Effect.SubtractResource name x ->
+      applyToResource name (Resource.subtract x) s
 
-      Effect.SetResourceAmount name x ->
-        applyToResource name (Resource.mutate (\_ -> x)) s
-        |> nonRandom
+    Effect.SetResourceAmount name x ->
+      applyToResource name (Resource.mutate (\_ -> x)) s
 
-      Effect.SetMilestoneReached name -> 
-        setMilestoneReached name s
-        |> nonRandom
+    Effect.SetMilestoneReached name -> 
+      setMilestoneReached name s
 
-      Effect.IncrementMilestone name -> 
-        incrementMilestone name s
-        |> nonRandom
+    Effect.IncrementMilestone name -> 
+      incrementMilestone name s
 
-      Effect.ActivateAction name -> 
-        applyToAction name (Action.activate) s
-        |> nonRandom
+    Effect.ActivateAction name -> 
+      applyToAction name (Action.activate) s
 
-      Effect.DeactivateAction name -> 
-        applyToAction name (Action.deactivate) s
-        |> nonRandom
+    Effect.DeactivateAction name -> 
+      applyToAction name (Action.deactivate) s
 
-      Effect.Compound effects -> 
-        doubleFold applyEffect effects s randomizer
+    Effect.Compound effects -> 
+      List.foldl applyEffect s effects
 
-      Effect.Compound2 e1 e2 -> 
-        doubleFold applyEffect [e1, e2] s randomizer
+    Effect.Compound2 e1 e2 -> 
+      List.foldl applyEffect s [e1, e2]
 
 
 addToResource : String -> Int -> GameState -> GameState
@@ -241,9 +228,10 @@ addToResource name x s =
       name (Resource.add x) stateWithActiveResource
 
 
-addToResourceRand : String -> Int -> Int -> GameState -> Randomizer -> (GameState, Randomizer)
-addToResourceRand name x y s randomizer =
+addToResourceRand : String -> Int -> Int -> GameState -> GameState
+addToResourceRand name x y s =
   let
-    (val, r) = Randomizer.int x y randomizer
+    (val, r) = Randomizer.int x y s.randomizer
   in
-    (addToResource name val s, r)
+    addToResource name val s
+    |> (\s -> { s | randomizer = r })

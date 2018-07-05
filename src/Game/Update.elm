@@ -44,16 +44,7 @@ update msg model =
     GameplayMessage action -> 
       if gameplayPaused model then model
       else
-        case model.randomizer of
-          Nothing -> model
-          Just randomizer ->
-            let
-              (s2, r2) = 
-                processUserAction action model.gameState randomizer
-            in
-              { model | gameState = s2
-                      , randomizer = Just r2
-              }
+        { model | gameState = processUserAction action model.gameState }
 
 
 gameplayPaused : Model -> Bool
@@ -69,17 +60,15 @@ waitingOnChoice : Model -> Bool
 waitingOnChoice m = m.activeChoices /= Nothing
 
 
-processUserAction : Action -> GameState -> Randomizer -> (GameState, Randomizer)
-processUserAction msg state randomizer =
+processUserAction : Action -> GameState -> GameState
+processUserAction msg state =
   case msg of 
 
     Action.StokeFire ->
-      ( GameState.stokeFire state
-      , randomizer
-      )
+      GameState.stokeFire state
     
     Action.CA customAction ->
-      GameState.performCustomAction customAction state randomizer
+      GameState.performCustomAction customAction state
 
 
 togglePause : Model -> Model
@@ -96,25 +85,10 @@ restart paused =
 
 updateGame : Time -> Model -> Model
 updateGame t m =
-  initRandomizer t m
-  |> updateGameTime t
+  updateGameTime t m
   |> triggerStoryEvents
   |> processEventQueue
   |> clearActions 
-
-
-initRandomizer : Time -> Model -> Model
-initRandomizer t m =
-  case m.randomizer of
-    Nothing -> 
-      { m | randomizer = Just (Randomizer.init t) }
-    other -> 
-      m
-
-
-updateRandomizer : Randomizer -> Model -> Model
-updateRandomizer randomizer m =
-  { m | randomizer = Just randomizer}
 
 
 updateGameTime : Time -> Model -> Model
@@ -125,7 +99,7 @@ updateGameTime t m =
                    Nothing -> 0
                    Just lastFrame -> t - lastFrame
   in
-    { m | gameState = GameState.updateGameTime timePassed m.gameState
+    { m | gameState = GameState.update timePassed m.gameState
         , eventQueue = TimedQueue.update timePassed m.eventQueue 
         , lastFrameTime = Just t
     }
@@ -201,17 +175,17 @@ enqueueTextEvents event m =
 
 getText : Story.Line -> Model -> (String, Model)
 getText ln m =
-  case m.randomizer of
-    Nothing ->
-      -- Randomizer is not initialized. This is an error.
-      ("randomizer is not initialized!", m)
-    Just rnd ->
-      let
-        (txt, newRandomizer) = Story.getText ln rnd
-      in
-        ( Maybe.withDefault "randomizer code is broken!" txt
-        , updateRandomizer newRandomizer m
-        )
+  let
+    (txt, newRandomizer) = Story.getText ln m.gameState.randomizer
+  in
+    ( Maybe.withDefault "randomizer code is broken!" txt
+    , updateRandomizer newRandomizer m
+    )
+
+
+updateRandomizer : Randomizer -> Model -> Model
+updateRandomizer r m = 
+  { m | gameState = GameState.updateRandomizer r m.gameState }
 
 
 enqueueTextEvent : String -> Model -> Model
@@ -305,16 +279,7 @@ displayChoices choices m =
 
 applyEffect : Effect -> Model -> Model
 applyEffect effect model =
-  case model.randomizer of
-    Nothing -> model
-    Just randomizer ->
-      let
-        (s2, r2) = 
-          GameState.applyEffect effect model.gameState randomizer
-      in
-        { model | gameState = s2
-                , randomizer = Just r2
-        }
+  { model | gameState = GameState.applyEffect effect model.gameState }
 
 
 makeChoice : Choice -> Model -> Model

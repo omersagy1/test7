@@ -22,6 +22,7 @@ type Condition = And Condition Condition
                  | TimeSinceMilestone String Time
                  | MilestoneAtCount String Int
                  | MilestoneGreaterThan String Int
+                 | Chance Float
 
 
 conditionFn : Condition -> ConditionFn
@@ -41,6 +42,7 @@ conditionFn c =
     TimeSinceMilestone name t -> timePassedSince name t
     MilestoneAtCount name x -> milestoneAtCount name x
     MilestoneGreaterThan name x -> milestoneGreaterThan name x
+    Chance p -> chance p
 
 
 type alias ConditionFn = GameState -> Bool
@@ -110,3 +112,7 @@ milestoneGreaterThan name target =
   (\s ->
     GameState.milestoneCounter name s
     |> (<) target)
+
+
+chance : Float -> ConditionFn
+chance p = (\s -> True)
