@@ -81,7 +81,7 @@ corpus =
     ,
     newEvent
     |> trigger (timeSinceMilestone "fire-stoked" (25*Time.second))
-    |> ln "Your belly rolls with hunger."
+    |> ln "Your belly groans with hunger."
     |> ln "In the corner, you find a dead rat."
     |> choice
         (newChoice 
@@ -133,4 +133,13 @@ corpus =
     |> trigger (timeSinceMilestone "first-rat-eaten" (20*Time.second))
     |> ln "You feel very cold..."
     |> ln "From your mouth comes a glob of vomit speckled with rat bones."
+  ,
+    newEvent
+    |> trigger (and (milestoneReached "first-rat-eaten")
+                    (and (actionPerformed "search for wood")
+                         (chance 0.3)))
+    |> ln "A swarm of rats falls out from the trees and attacks you."
+    |> ln "They are vengeful."
+    |> effect (SubtractResource "wood" 4)
+
   ]
