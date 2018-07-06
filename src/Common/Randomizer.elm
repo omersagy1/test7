@@ -41,3 +41,8 @@ choose list randomizer =
 
 fromList : List a -> Generator Int
 fromList l = Random.int 0 ((List.length l) - 1)
+
+
+float : Float -> Float -> Randomizer -> (Float, Randomizer)
+float lower upper randomizer =
+  Random.step (Random.float lower upper) randomizer

@@ -3,59 +3,76 @@ module Game.Condition exposing (..)
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
+import Common.Randomizer as Randomizer
 import Game.Action as Action exposing (Action)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)
 
+type Condition = P PureCondition
+                 | R RandomCondition
 
-type Condition = And Condition Condition
-                 | Or Condition Condition
-                 | Not Condition
-                 | GameTimePassed Time
-                 | Never
-                 | ResourceAmountAbove String Int 
-                 | ResourceActive String
-                 | FireExtinguished
-                 | FireStoked
-                 | ActionPerformed String
-                 | MilestoneReached String
-                 | TimeSinceMilestone String Time
-                 | MilestoneAtCount String Int
-                 | MilestoneGreaterThan String Int
-                 | Chance Float
+type PureCondition = And PureCondition PureCondition
+                    | Or PureCondition PureCondition
+                    | Not PureCondition
+                    | GameTimePassed Time
+                    | Never
+                    | ResourceAmountAbove String Int 
+                    | ResourceActive String
+                    | FireExtinguished
+                    | FireStoked
+                    | ActionPerformed String
+                    | MilestoneReached String
+                    | TimeSinceMilestone String Time
+                    | MilestoneAtCount String Int
+                    | MilestoneGreaterThan String Int
+
+type RandomCondition = Chance Float
 
 
-conditionFn : Condition -> ConditionFn
-conditionFn c =
+condition : Condition -> GameState -> (Bool, GameState)
+condition c s =
   case c of
-    And c1 c2 -> and (conditionFn c1) (conditionFn c2)
-    Or c1 c2 -> or (conditionFn c1) (conditionFn c2)
-    Not c -> notFn (conditionFn c)
-    GameTimePassed t -> gameTimePassed t
-    Never -> manualOnly
-    ResourceAmountAbove name val -> resourceAbove name val
-    ResourceActive name -> resourceActive name
-    FireExtinguished -> fireExtinguished
-    FireStoked -> actionPerformed Action.StokeFire
-    ActionPerformed action -> customActionPerformed action
-    MilestoneReached name -> milestoneReached name
-    TimeSinceMilestone name t -> timePassedSince name t
-    MilestoneAtCount name x -> milestoneAtCount name x
-    MilestoneGreaterThan name x -> milestoneGreaterThan name x
-    Chance p -> chance p
+    P pureCondition -> (pure pureCondition s, s)
+    R randomCondition -> random randomCondition s
+
+
+pure : PureCondition -> GameState -> Bool
+pure c s =
+  case c of
+    And c1 c2 -> and c1 c2 s
+    Or c1 c2 -> or c1 c2 s
+    Not c -> notFn c s
+    GameTimePassed t -> gameTimePassed t s
+    Never -> manualOnly s
+    ResourceAmountAbove name val -> resourceAbove name val s
+    ResourceActive name -> resourceActive name s
+    FireExtinguished -> fireExtinguished s
+    FireStoked -> actionPerformed Action.StokeFire s
+    ActionPerformed action -> customActionPerformed action s
+    MilestoneReached name -> milestoneReached name s
+    TimeSinceMilestone name t -> timePassedSince name t s
+    MilestoneAtCount name x -> milestoneAtCount name x s
+    MilestoneGreaterThan name x -> milestoneGreaterThan name x s
+
+
+random : RandomCondition -> GameState -> (Bool, GameState)
+random c s =
+  case c of
+    Chance p -> chance p s
 
 
 type alias ConditionFn = GameState -> Bool
 
 
-and : ConditionFn -> ConditionFn -> ConditionFn
-and t1 t2 = (\s -> (t1 s) && (t2 s))
+and : PureCondition -> PureCondition -> ConditionFn
+and c1 c2 s = (pure c1 s) && (pure c2 s)
 
-or : ConditionFn -> ConditionFn -> ConditionFn
-or t1 t2 = (\s -> (t1 s) || (t2 s))
+or : PureCondition -> PureCondition -> ConditionFn
+or c1 c2 s = (pure c1 s) || (pure c2 s)
 
-notFn : ConditionFn -> ConditionFn
-notFn c = (\s -> not (c s))
+notFn : PureCondition -> ConditionFn
+notFn c s = not (pure c s)
+
 
 gameTimePassed : Time -> ConditionFn
 gameTimePassed t = (\s -> s.gameTime >= t)
@@ -114,5 +131,10 @@ milestoneGreaterThan name target =
     |> (<) target)
 
 
-chance : Float -> ConditionFn
-chance p = (\s -> True)
+chance : Float -> GameState -> (Bool, GameState)
+chance p s =
+  let
+    (x, r) = Randomizer.float 0 1 s.randomizer
+    success = x > p
+  in
+    (success, { s | randomizer = r })

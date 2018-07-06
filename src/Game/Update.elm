@@ -111,24 +111,38 @@ clearActions m = { m | gameState = GameState.clearActions m.gameState }
 
 triggerStoryEvents : Model -> Model
 triggerStoryEvents m =
-  playStoryEvents (triggeredStoryEvents m.storyEventCorpus m.gameState) m
-  |> removeStoryEvents
+  let
+    (triggeredEvents, newModel) =
+      triggeredStoryEvents m.storyEventCorpus m
+  in
+    playStoryEvents triggeredEvents newModel
 
 
-triggeredStoryEvents : List StoryEvent -> GameState -> List StoryEvent
-triggeredStoryEvents events state =
-  List.filter (\e -> Condition.conditionFn(e.trigger) state) events
+-- Returns a list of triggered story events, and the state
+-- with the corpus updated.
+triggeredStoryEvents : List StoryEvent -> Model -> (List StoryEvent, Model)
+triggeredStoryEvents events model =
+  let
+    (triggered, remaining, state) = helper model.gameState events [] []
+  in
+    ( triggered
+    , { model | gameState = state
+              , storyEventCorpus = remaining 
+      })
 
 
--- Remove Conditioned events that can only be Conditioned once.
-removeStoryEvents : Model -> Model
-removeStoryEvents m =
-  { m | storyEventCorpus =
-          List.filter (\e -> not ((Condition.conditionFn(e.trigger) 
-                                    m.gameState) 
-                                  && e.occursOnce)) 
-                      m.storyEventCorpus
-  }
+helper : GameState -> List StoryEvent -> List StoryEvent -> List StoryEvent -> (List StoryEvent, List StoryEvent, GameState)
+helper state toscan triggered remaining =
+  case toscan of
+    [] -> (triggered, remaining, state)
+    first::rest ->
+      let
+        (eventTriggered, newState) = (Condition.condition(first.trigger) state)
+        triggered2 = if eventTriggered then first::triggered else triggered
+        shouldRemove = eventTriggered && first.occursOnce
+        remaining2 = if shouldRemove then remaining else first::remaining
+      in
+        helper newState rest triggered2 remaining2
 
 
 playStoryEvents : List StoryEvent -> Model -> Model

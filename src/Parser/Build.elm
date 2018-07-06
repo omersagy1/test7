@@ -1,7 +1,7 @@
 module Parser.Build exposing(..)
 
 import Game.Effect as Effect exposing (Effect)
-import Game.Condition as Condition exposing (Condition)
+import Game.Condition as Condition exposing (Condition, PureCondition)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 
@@ -10,7 +10,7 @@ import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 newEvent : StoryEvent
 newEvent =
   { name = ""
-  , trigger = Condition.Never
+  , trigger = (Condition.P Condition.Never)
   , text = []
   , choices = Nothing
   , occursOnce = True
@@ -21,8 +21,8 @@ newEvent =
 name : String -> StoryEvent -> StoryEvent
 name n e = { e | name = n }
 
-trigger : Condition -> StoryEvent -> StoryEvent
-trigger t e = { e | trigger = t }
+trigger : PureCondition -> StoryEvent -> StoryEvent
+trigger c e = { e | trigger = Condition.P c }
 
 setText : List String -> StoryEvent -> StoryEvent
 setText t e = { e | text = List.map Story.FixedLine t }
