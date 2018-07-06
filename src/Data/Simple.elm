@@ -13,6 +13,5 @@ init = GameState.init
 corpus : List StoryEvent
 corpus =
   [ newEvent
-    |> trigger (GameTimePassed (0*Time.second))
     |> ln "builds!"
   ]

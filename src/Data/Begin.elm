@@ -64,6 +64,11 @@ corpus =
     |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent
+    |> randtrigger (and fireStoked (chance 0.1))
+    |> reoccurring
+    |> ln "RANDOM CHANCE!!!!"
+  ,
+    newEvent
     |> trigger (TimeSinceMilestone "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."

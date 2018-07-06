@@ -6,7 +6,7 @@ import Common.Annex exposing (..)
 import Common.Randomizer as Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
-import Game.Condition as Condition
+import Game.ConditionFns as ConditionFns
 import Game.Constants as Constants
 import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
@@ -137,7 +137,7 @@ helper state toscan triggered remaining =
     [] -> (triggered, remaining, state)
     first::rest ->
       let
-        (eventTriggered, newState) = (Condition.condition(first.trigger) state)
+        (eventTriggered, newState) = (ConditionFns.condition(first.trigger) state)
         triggered2 = if eventTriggered then first::triggered else triggered
         shouldRemove = eventTriggered && first.occursOnce
         remaining2 = if shouldRemove then remaining else first::remaining

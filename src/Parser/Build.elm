@@ -1,7 +1,7 @@
 module Parser.Build exposing(..)
 
 import Game.Effect as Effect exposing (Effect)
-import Game.Condition as Condition exposing (Condition, PureCondition)
+import Game.Condition as Condition exposing (Condition, PureCondition, RandomCondition)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 
@@ -23,6 +23,9 @@ name n e = { e | name = n }
 
 trigger : PureCondition -> StoryEvent -> StoryEvent
 trigger c e = { e | trigger = Condition.P c }
+
+randtrigger : Condition -> StoryEvent -> StoryEvent
+randtrigger c e = { e | trigger = c }
 
 setText : List String -> StoryEvent -> StoryEvent
 setText t e = { e | text = List.map Story.FixedLine t }
@@ -67,3 +70,18 @@ consqName n c =
 
 consq : StoryEvent -> Choice -> Choice
 consq e c = { c | consequence = Just (Story.ActualEvent e) }
+
+
+-- Condition Builders --
+
+chance : Float -> Condition
+chance p = Condition.R (Condition.Chance p)
+
+and : Condition -> Condition -> Condition
+and c1 c2 = Condition.R (Condition.AndR c1 c2)
+
+actionPerformed : String -> Condition
+actionPerformed name = Condition.P (Condition.ActionPerformed name)
+
+fireStoked : Condition
+fireStoked = Condition.P Condition.FireStoked
