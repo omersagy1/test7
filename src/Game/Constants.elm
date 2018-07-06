@@ -43,3 +43,7 @@ mutatorDelay = 0.5 * Time.second
 -- by a goto statement.
 triggerStoryEventDelay : Time
 triggerStoryEventDelay = 1.0 * Time.second
+
+
+fastForwardFactor : Float
+fastForwardFactor = 3

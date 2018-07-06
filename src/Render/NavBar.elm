@@ -12,6 +12,7 @@ import Game.Model exposing (Model)
 navExtension : Model -> List (Html Message)
 navExtension m = [ restartButton
                  , togglePauseButton m.paused
+                 , toggleFastForwardButton m.fastForward
                  ]
 
 
@@ -31,3 +32,13 @@ restartButton =
          , onClick Game.Update.Restart]
          [text "RESTART"]
 
+
+toggleFastForwardButton : Bool -> Html Message
+toggleFastForwardButton fastForward =
+  let
+    buttonText = if fastForward then "RESTORE SPEED" else "SPEED UP"
+  in
+    button [ css [ margin (px 5)]
+           , onClick Game.Update.ToggleFastForward
+           ]
+           [text buttonText]

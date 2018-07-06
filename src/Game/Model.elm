@@ -15,6 +15,7 @@ initialModel =
   , eventQueue = TimedQueue.new
   , storyEventCorpus = Parser.Main.storyEventCorpus
   , paused = False
+  , fastForward = False
   , activeChoices = Nothing
   }
 
@@ -38,6 +39,9 @@ type alias Model =
 
   -- Whether the game receives update time events.
   , paused : Bool
+
+  -- Whether the game is sped up.
+  , fastForward : Bool
 
   -- The choice the player must make to continue the game.
   , activeChoices : Maybe (List Choice)

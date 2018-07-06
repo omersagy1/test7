@@ -17,6 +17,7 @@ import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
 
 -- Messages to control the running of the game
 type Message = TogglePause
+               | ToggleFastForward
                | Restart
                | UpdateTime Time
                | MakeChoice Choice
@@ -28,6 +29,8 @@ update msg model =
   case msg of
 
     TogglePause -> togglePause model
+
+    ToggleFastForward -> toggleFastForward model
 
     Restart -> restart model.paused
 
@@ -75,6 +78,10 @@ togglePause : Model -> Model
 togglePause m = { m | paused = not m.paused }
 
 
+toggleFastForward : Model -> Model
+toggleFastForward m = { m | fastForward = not m.fastForward }
+
+
 restart : Bool -> Model
 restart paused = 
   let
@@ -93,9 +100,14 @@ updateGame t m =
 
 updateGameTime : Time -> Model -> Model
 updateGameTime timePassed m =
-    { m | gameState = GameState.update timePassed m.gameState
-        , eventQueue = TimedQueue.update timePassed m.eventQueue 
-    }
+    let
+      t = if m.fastForward 
+          then timePassed * Constants.fastForwardFactor        
+          else timePassed
+    in
+      { m | gameState = GameState.update t m.gameState
+          , eventQueue = TimedQueue.update t m.eventQueue 
+      }
 
 
 clearActions : Model -> Model
