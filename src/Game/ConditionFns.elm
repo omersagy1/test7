@@ -20,9 +20,6 @@ condition c s =
 pure : PureCondition -> GameState -> Bool
 pure c s =
   case c of
-    And c1 c2 -> and c1 c2 s
-    Or c1 c2 -> or c1 c2 s
-    Not c -> notFn c s
     GameTimePassed t -> gameTimePassed t s
     Never -> manualOnly s
     ResourceAmountAbove name val -> resourceAbove name val s
@@ -40,20 +37,12 @@ random : RandomCondition -> GameState -> (Bool, GameState)
 random c s =
   case c of
     Chance p -> chance p s
-    AndR c1 c2 -> andr c1 c2 s
+    And c1 c2 -> and c1 c2 s
+    Or c1 c2 -> or c1 c2 s
+    Not c -> notFn c s
 
 
 type alias ConditionFn = GameState -> Bool
-
-
-and : PureCondition -> PureCondition -> ConditionFn
-and c1 c2 s = (pure c1 s) && (pure c2 s)
-
-or : PureCondition -> PureCondition -> ConditionFn
-or c1 c2 s = (pure c1 s) || (pure c2 s)
-
-notFn : PureCondition -> ConditionFn
-notFn c s = not (pure c s)
 
 
 gameTimePassed : Time -> ConditionFn
@@ -122,10 +111,27 @@ chance p s =
     (success, { s | randomizer = r })
 
 
-andr : Condition -> Condition -> GameState -> (Bool, GameState)
-andr c1 c2 s =
+and : Condition -> Condition -> GameState -> (Bool, GameState)
+and c1 c2 s =
   let
     (a, s1) = condition c1 s
     (b, s2) = condition c2 s1
   in
     (a && b, s2)
+
+
+or : Condition -> Condition -> GameState -> (Bool, GameState)
+or c1 c2 s =
+  let
+    (a, s1) = condition c1 s
+    (b, s2) = condition c2 s1
+  in
+    (a || b, s2)
+
+
+notFn : Condition -> GameState -> (Bool, GameState)
+notFn c s =
+  let
+    (a, s1) = condition c s
+  in
+    (not a, s1)

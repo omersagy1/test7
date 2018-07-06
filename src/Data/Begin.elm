@@ -4,14 +4,14 @@ import Time
 
 import Game.Effect as Effect exposing (..)
 import Game.Story as Story exposing (StoryEvent)
-import Game.Condition as Condition exposing (..)
 
 import Parser.Build exposing (..)
+import Parser.Condition exposing (..)
 
 corpus : List StoryEvent
 corpus = 
   [ newEvent
-    |> trigger (GameTimePassed (1.5*Time.second))
+    |> trigger (gameTimePassed (1.5*Time.second))
     |> ln "The fire is dead."
     |> ln "The room is freezing."
     |> ln "..."
@@ -19,15 +19,15 @@ corpus =
     |> effect (ActivateAction "search for wood")
   ,
     newEvent
-    |> trigger (ActionPerformed "search for wood")
+    |> trigger (actionPerformed "search for wood")
     |> ln "Outside, you find a small heap of twigs."
     |> ln "They're meager, but they'll feed a fire."
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
-    |> trigger (And (ActionPerformed "search for wood")
-                    (And (MilestoneReached "wood-searched")
-                         (Not (MilestoneAtCount "wood-searched" 2))))
+    |> trigger (and (actionPerformed "search for wood")
+                    (and (milestoneReached "wood-searched")
+                         (fail (milestoneAtCount "wood-searched" 2))))
     |> reoccurring
     |> randlns 
         [ "A few more twigs for the fire..."
@@ -37,20 +37,20 @@ corpus =
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
-    |> trigger (And (ActionPerformed "search for wood")
-                    (MilestoneAtCount "wood-searched" 2))
+    |> trigger (and (actionPerformed "search for wood")
+                    (milestoneAtCount "wood-searched" 2))
     |> ln "The infinite murmur of the forest envelops you..."
     |> ln "In the distance, you can hear the sound of a gay deer." 
     |> effect (IncrementMilestone "wood-searched")
   ,
     newEvent
-    |> trigger FireStoked
+    |> trigger fireStoked
     |> ln "A spark turns to flame, and you sit back as your body thaws."
     |> ln "The fire is roaring."
     |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent
-    |> trigger (And FireStoked (MilestoneGreaterThan "fire-stoked" 0))
+    |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 0))
     |> reoccurring
     |> randlns [ "The fire is roaring."
                , "The fire is roaring."
@@ -64,17 +64,12 @@ corpus =
     |> effect (IncrementMilestone "fire-stoked")
   ,
     newEvent
-    |> randtrigger (and fireStoked (chance 0.1))
-    |> reoccurring
-    |> ln "RANDOM CHANCE!!!!"
-  ,
-    newEvent
-    |> trigger (TimeSinceMilestone "fire-set-once" (3*Time.second))
+    |> trigger (timeSinceMilestone "fire-set-once" (3*Time.second))
     |> ln "In the flames you see a warmth long forgotten..."
     |> ln "Don't let the fire go out."
   ,
     newEvent
-    |> trigger (And FireExtinguished (MilestoneReached "fire-set-once"))
+    |> trigger (and fireExtinguished (milestoneReached "fire-set-once"))
     |> ln "The fire is dead."
     |> ln "When the light comes back..."
     |> ln "Expect the worst."
@@ -85,7 +80,7 @@ corpus =
                 ])
     ,
     newEvent
-    |> trigger (TimeSinceMilestone "fire-stoked" (25*Time.second))
+    |> trigger (timeSinceMilestone "fire-stoked" (25*Time.second))
     |> ln "Your belly rolls with hunger."
     |> ln "In the corner, you find a dead rat."
     |> choice
@@ -118,24 +113,24 @@ corpus =
                , ActivateAction "hunt rats" ])
   ,
     newEvent
-    |> trigger (ActionPerformed "hunt rats")
+    |> trigger (actionPerformed "hunt rats")
     |> ln "You scramble in the firelight, and feel sick with yourself."
     |> effect (IncrementMilestone "hunting-rats")
   ,
     newEvent
-    |> trigger (And (ActionPerformed "hunt rats")
-                    (MilestoneAtCount "hunting-rats" 1))
+    |> trigger (and (actionPerformed "hunt rats")
+                    (milestoneAtCount "hunting-rats" 1))
     |> ln "You no longer close your eyes when you smash their skulls."
     |> effect (IncrementMilestone "hunting-rats")
   ,
     newEvent
-    |> trigger (And (ActionPerformed "hunt rats")
-                    (MilestoneGreaterThan "hunting-rats" 1))
+    |> trigger (and (actionPerformed "hunt rats")
+                    (milestoneGreaterThan "hunting-rats" 1))
     |> ln "You catch the rodents quietly and automatically."
     |> effect (IncrementMilestone "hunting-rats")
   ,
     newEvent
-    |> trigger (TimeSinceMilestone "first-rat-eaten" (20*Time.second))
+    |> trigger (timeSinceMilestone "first-rat-eaten" (20*Time.second))
     |> ln "You feel very cold..."
     |> ln "From your mouth comes a glob of vomit speckled with rat bones."
   ]

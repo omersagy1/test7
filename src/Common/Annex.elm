@@ -104,3 +104,9 @@ doubleFold mutateFn argList struct1 struct2 =
         (s1, s2) = mutateFn first struct1 struct2
       in
         doubleFold mutateFn rest s1 s2
+
+
+-- Function composition (g . f) where 'f' takes
+-- two arguments and 'g' takes one.
+(>>>) : (a -> b -> c) -> (c -> d) -> a -> b -> d
+(>>>) f g x y = (f x y) |> g
