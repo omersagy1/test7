@@ -3,8 +3,11 @@ module Game.Condition exposing (..)
 import Time exposing (Time)
 
 
-type Condition = P PureCondition
-                 | R RandomCondition
+type Condition = Pure PureCondition
+                 | Chance Float
+                 | And Condition Condition
+                 | Or Condition Condition
+                 | Not Condition
 
 type PureCondition = GameTimePassed Time
                      | Never
@@ -17,9 +20,3 @@ type PureCondition = GameTimePassed Time
                      | TimeSinceMilestone String Time
                      | MilestoneAtCount String Int
                      | MilestoneGreaterThan String Int
-
-type RandomCondition = Chance Float
-                       | And Condition Condition
-                       | Or Condition Condition
-                       | Not Condition
-

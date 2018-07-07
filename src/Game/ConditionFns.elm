@@ -13,8 +13,11 @@ import Game.GameState as GameState exposing (GameState)
 condition : Condition -> GameState -> (Bool, GameState)
 condition c s =
   case c of
-    P pureCondition -> (pure pureCondition s, s)
-    R randomCondition -> random randomCondition s
+    Pure pureCondition -> (pure pureCondition s, s)
+    Chance p -> chance p s
+    And c1 c2 -> and c1 c2 s
+    Or c1 c2 -> or c1 c2 s
+    Not c -> notFn c s
 
 
 pure : PureCondition -> GameState -> Bool
@@ -31,15 +34,6 @@ pure c s =
     TimeSinceMilestone name t -> timePassedSince name t s
     MilestoneAtCount name x -> milestoneAtCount name x s
     MilestoneGreaterThan name x -> milestoneGreaterThan name x s
-
-
-random : RandomCondition -> GameState -> (Bool, GameState)
-random c s =
-  case c of
-    Chance p -> chance p s
-    And c1 c2 -> and c1 c2 s
-    Or c1 c2 -> or c1 c2 s
-    Not c -> notFn c s
 
 
 type alias ConditionFn = GameState -> Bool
