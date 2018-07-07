@@ -46,6 +46,10 @@ update t s =
   |> (\s -> { s | fire = Fire.update t s.fire })
 
 
+initRandomizer : Time -> GameState -> GameState
+initRandomizer t = updateRandomizer (Randomizer.init t)
+
+
 updateRandomizer : Randomizer -> GameState -> GameState
 updateRandomizer randomizer s = { s | randomizer = randomizer}
 

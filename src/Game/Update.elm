@@ -1,5 +1,6 @@
 module Game.Update exposing (..)
 
+import Task
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
@@ -22,12 +23,15 @@ type Message = TogglePause
                | UpdateTime Time
                | MakeChoice Choice
                | GameplayMessage Action
+               | StartTime Time
 
 
 update : Message -> Model -> Model
 update msg model =
   case msg of
 
+    StartTime t -> initialize t model
+    
     TogglePause -> togglePause model
 
     ToggleFastForward -> toggleFastForward model
@@ -48,6 +52,11 @@ update msg model =
       if gameplayPaused model then model
       else
         { model | gameState = processUserAction action model.gameState }
+
+
+initialize : Time -> Model -> Model
+initialize t m =
+  { m | gameState = GameState.initRandomizer t m.gameState }
 
 
 gameplayPaused : Model -> Bool

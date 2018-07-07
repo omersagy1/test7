@@ -1,5 +1,7 @@
 import AnimationFrame
 import Html.Styled exposing (Html, button, div, text, input)
+import Task
+import Time
 
 import App.Model exposing (..)
 import Render.App
@@ -10,6 +12,7 @@ import Game.Update
 import Game.Subs
 
 
+main : Program Never Model Message
 main =
   Html.Styled.program
     { init = init
@@ -20,7 +23,7 @@ main =
 
 
 init : (Model, Cmd Message)
-init = (model, Cmd.none)
+init = (model, Task.perform (GameMessage << Game.Update.StartTime) Time.now)
 
 
 model : Model
@@ -48,8 +51,8 @@ update msg model =
       ({ model | editorModel = Editor.Main.updateEditor m model.editorModel }
       , Cmd.none)
 
-    (GameMessage m, GamePage) -> 
-      ({ model | gameModel = Game.Update.update m model.gameModel }
+    (GameMessage gameMsg, GamePage) -> 
+      ({ model | gameModel = Game.Update.update gameMsg model.gameModel }
       , Cmd.none)
 
     (SwitchPage, anyPage) ->
