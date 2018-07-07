@@ -11,8 +11,8 @@ import Game.Model exposing (Model)
 
 navExtension : Model -> List (Html Message)
 navExtension m = [ restartButton
-                 , togglePauseButton m.paused
                  , toggleFastForwardButton m.fastForward
+                 , togglePauseButton m.paused
                  ]
 
 

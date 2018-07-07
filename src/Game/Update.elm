@@ -1,6 +1,7 @@
 module Game.Update exposing (..)
 
 import Time exposing (Time)
+import Task
 
 import Common.Annex exposing (..)
 import Common.Randomizer as Randomizer exposing (Randomizer)
@@ -23,6 +24,13 @@ type Message = TogglePause
                | MakeChoice Choice
                | GameplayMessage Action
                | StartTime Time
+
+
+command : Message -> Cmd Message
+command msg =
+  case msg of
+    Restart -> Task.perform StartTime Time.now
+    other -> Cmd.none
 
 
 update : Message -> Model -> Model

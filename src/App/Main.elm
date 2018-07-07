@@ -53,7 +53,7 @@ update msg model =
 
     (GameMessage gameMsg, GamePage) -> 
       ({ model | gameModel = Game.Update.update gameMsg model.gameModel }
-      , Cmd.none)
+      , Cmd.map GameMessage (Game.Update.command gameMsg))
 
     (SwitchPage, anyPage) ->
       (switchPage model, Cmd.none)
