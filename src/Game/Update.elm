@@ -1,6 +1,5 @@
 module Game.Update exposing (..)
 
-import Task
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
