@@ -3,6 +3,7 @@ module Parser.Build exposing(..)
 import Game.Effect as Effect exposing (Effect)
 import Game.Condition as Condition exposing (Condition, PureCondition, RandomCondition)
 import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
+import Parser.Consequence as Csq
 
 
 -- Event with default values that can
@@ -15,7 +16,7 @@ newEvent =
   , choices = Nothing
   , occursOnce = True
   , effect = Nothing
-  , goto = Nothing
+  , subsequents = []
   } 
 
 name : String -> StoryEvent -> StoryEvent
@@ -49,21 +50,7 @@ effect : Effect -> StoryEvent -> StoryEvent
 effect effect event = { event | effect = Just effect }
 
 goto : String -> StoryEvent -> StoryEvent
-goto name e = { e | goto = Just (Story.EventName name) }
+goto name e = { e | subsequents = [ Csq.new |> Csq.name name ] }
 
-
-newChoice : Choice
-newChoice =
-  { text = ""
-  , consequence = Nothing
-  }
-
-text : String -> Choice -> Choice
-text t c = { c | text = t }
-
-consqName : String -> Choice -> Choice
-consqName n c = 
-  { c | consequence = Just (Story.EventName n) }
-
-consq : StoryEvent -> Choice -> Choice
-consq e c = { c | consequence = Just (Story.ActualEvent e) }
+subsq : Consequence -> StoryEvent -> StoryEvent
+subsq c e = { e | subsequents = e.subsequents ++ [c] }

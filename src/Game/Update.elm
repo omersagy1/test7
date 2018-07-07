@@ -12,7 +12,7 @@ import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model exposing (Model)
-import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
+import Game.Story as Story exposing (StoryEvent, Choice, Consequence, EventOrName)
 
 
 -- Messages to control the running of the game
@@ -163,7 +163,7 @@ playStoryEvent event m =
   enqueueTextEvents event m
   |> enqueueChoiceEvent event
   |> enqueueEffect event
-  |> enqueueGoto event
+  |> enqueueSubsequent event
 
 
 enqueueEvent : Event -> Time -> Model -> Model
@@ -239,20 +239,18 @@ enqueueEffect event m =
         m
 
 
-enqueueGoto : StoryEvent -> Model -> Model
-enqueueGoto event m =
-  case event.goto of
-    Nothing -> m
-    Just goto ->
-      let 
-        name = case goto of
-                  Story.EventName n -> n
-                  Story.ActualEvent e -> e.name
-      in
-        enqueueEvent 
-          (Event.TriggerStoryEvent name)
-          Constants.triggerStoryEventDelay
-          m
+enqueueSubsequent : StoryEvent -> Model -> Model
+enqueueSubsequent event m =
+  let
+    (maybeConsq, s) = Story.getConsequence event.subsequents m.gameState
+    m2 = setGameState s m
+  in
+    case maybeConsq of
+      Nothing -> m2
+      Just consq ->
+        enqueueEvent (Event.TriggerStoryEvent (Story.eventName consq))
+                      Constants.triggerStoryEventDelay
+                      m2
 
 
 dequeueEvent : Model -> (Maybe Event, Model)
@@ -302,9 +300,18 @@ applyEffect effect model =
 
 
 makeChoice : Choice -> Model -> Model
-makeChoice choice m =
-  clearActiveChoices <|
-  (maybePerform playConsequence) choice.consequence m
+makeChoice choice model =
+  let
+    (c, s) = Story.getConsequence choice.consequenceSet model.gameState
+  in
+    model
+    |> setGameState s
+    |> (maybePerform playEventOrName) c
+    |> clearActiveChoices
+
+
+setGameState : GameState -> Model -> Model
+setGameState s m = { m | gameState = s }
 
 
 clearActiveChoices : Model -> Model
@@ -312,9 +319,9 @@ clearActiveChoices m =
   { m | activeChoices = Nothing }
 
 
-playConsequence : Consequence -> Model -> Model
-playConsequence consequence m =
-  case consequence of
+playEventOrName : EventOrName -> Model -> Model
+playEventOrName e m =
+  case e of
 
     Story.ActualEvent storyEvent -> 
       playStoryEvent storyEvent m
