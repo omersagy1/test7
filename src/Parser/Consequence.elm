@@ -10,8 +10,8 @@ new =
   , condition = Nothing
   }
 
-name : String -> Consequence -> Consequence
-name name c = { c | eventOrName = Story.EventName name }
+ref : String -> Consequence -> Consequence
+ref name c = { c | eventOrName = Story.EventName name }
 
 event : StoryEvent -> Consequence -> Consequence
 event e c = { c | eventOrName = Story.ActualEvent e }

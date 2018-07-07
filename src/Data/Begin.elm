@@ -87,16 +87,20 @@ corpus =
         (newChoice 
          |> text "Eat it"
          |> consq 
-             (newEvent
-              |> ln "You hold it over the flame..."
-              |> ln "And bite into it just as its skin begins to sizzle."
-              |> ln "There is something holy about its taste."
-              |> effect (SetMilestoneReached "first-rat-eaten")
-              |> goto "more-rats"))
+             (newConsq
+              |> event
+                  (newEvent
+                   |> ln "You hold it over the flame..."
+                   |> ln "And bite into it just as its skin begins to sizzle."
+                   |> ln "There is something holy about its taste."
+                   |> effect (SetMilestoneReached "first-rat-eaten")
+                   |> goto "more-rats")))
     |> choice
         (newChoice
          |> text "Keep it "
-         |> consqName "rat-kept")
+         |> consq
+             (newConsq
+              |> ref "rat-kept"))
   ,
     newEvent
     |> name "rat-kept"
@@ -139,7 +143,7 @@ corpus =
                     (and (actionPerformed "search for wood")
                          (chance 0.3)))
     |> ln "A swarm of rats falls out from the trees and attacks you."
-    |> ln "They are vengeful."
+    |> ln "They can smell the rodent blood congealed around your teeth."
     |> effect (SubtractResource "wood" 4)
 
   ]
