@@ -37,8 +37,7 @@ model =
 subscriptions : Model -> Sub Message
 subscriptions model =
   case model.currentPage of
-    EditorPage ->
-      Sub.map EditorMessage (AnimationFrame.diffs Editor.Main.UpdateTime)
+    EditorPage -> Sub.none
     GamePage ->
       Sub.map GameMessage (Game.Subs.subscriptions model.gameModel)
 
@@ -48,7 +47,7 @@ update msg model =
   case (msg, model.currentPage) of
 
     (EditorMessage m, EditorPage) -> 
-      ({ model | editorModel = Editor.Main.updateEditor m model.editorModel }
+      ({ model | editorModel = Editor.Main.update m model.editorModel }
       , Cmd.none)
 
     (GameMessage gameMsg, GamePage) -> 

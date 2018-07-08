@@ -17,7 +17,7 @@ view model =
     case model.currentPage of
 
       EditorPage -> Html.Styled.map EditorMessage 
-                      (Render.Editor.editorView model.editorModel)
+                      (Render.Editor.view model.editorModel)
 
       GamePage -> Html.Styled.map GameMessage 
                     (Render.Game.view model.gameModel)
@@ -31,8 +31,8 @@ navBar model = div [ style [ ("background-color", "grey")
                            , ("text-color", "white")
                            ] 
                    ] 
-                   -- ([switchPageButton model.currentPage] 
-                   (navExtension model)
+                   ([switchPageButton model.currentPage] ++
+                    (navExtension model))
 
 
 navExtension : Model -> List (Html Message)
