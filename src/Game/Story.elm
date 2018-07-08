@@ -1,4 +1,4 @@
-module Game.Story exposing(..)
+module Game.Story exposing (..)
 
 import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Condition as Condition exposing (Condition)
@@ -6,6 +6,7 @@ import Game.ConditionFns as ConditionFns
 import Game.Effect as Effect exposing (Effect)
 import Game.GameState exposing (GameState)
 
+type alias Story = List StoryEvent
 
 type alias StoryEvent = 
   { name: String

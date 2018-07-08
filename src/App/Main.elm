@@ -67,6 +67,5 @@ switchPage model =
   if model.currentPage == EditorPage then
     ({ model | currentPage = GamePage }, Cmd.none)
   else
-    ({ model | currentPage = EditorPage },
-     Task.perform (EditorMessage << Editor.Main.Initialize) 
-                  (Task.succeed 0))
+    update (EditorMessage Editor.Main.Initialize)
+           { model | currentPage = EditorPage }
