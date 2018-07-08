@@ -9,7 +9,7 @@ import Data.Simple
 
 
 initialGameState : GameState
-initialGameState = Data.Simple.init
+initialGameState = Data.Init.init
 
 storyEventCorpus : List StoryEvent
-storyEventCorpus = Data.Simple.corpus
+storyEventCorpus = Data.Begin.corpus

@@ -1,11 +1,9 @@
-import AnimationFrame
-import Html.Styled exposing (Html, button, div, text, input)
+import Html.Styled exposing (Html)
 import Task
 import Time
 
 import App.Model exposing (..)
 import Render.App
-
 import Editor.Main
 import Game.Model
 import Game.Update
@@ -54,8 +52,8 @@ update msg model =
       ({ model | gameModel = Game.Update.update gameMsg model.gameModel }
       , Cmd.map GameMessage (Game.Update.command gameMsg))
 
-    (SwitchPage, anyPage) ->
-      (switchPage model, Cmd.none)
+    (SwitchPage, anyPage) -> 
+      switchPage model
 
     other ->
       -- Somehow a message was sent for the wrong page.
@@ -64,9 +62,11 @@ update msg model =
       (model, Cmd.none)
 
 
-switchPage : Model -> Model
+switchPage : Model -> (Model, Cmd Message)
 switchPage model =
   if model.currentPage == EditorPage then
-    { model | currentPage = GamePage }
+    ({ model | currentPage = GamePage }, Cmd.none)
   else
-    { model | currentPage = EditorPage }
+    ({ model | currentPage = EditorPage },
+     Task.perform (EditorMessage << Editor.Main.Initialize) 
+                  (Task.succeed 0))

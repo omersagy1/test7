@@ -7,6 +7,17 @@ import Html.Styled.Attributes exposing (style, value)
 import Editor.Main exposing(..)
 
 
-view : Model -> Html Message
-view model = div []
-                 [text "hello!"]
+view : Model -> Html a
+view model = 
+  div [] 
+      [ actionsSet model
+      ]
+
+actionsSet : Model -> Html a
+actionsSet model = 
+  div [] 
+      ([ text "The following actions were initialized:" ] ++
+       List.map entry model.actionsSet)
+
+entry : String -> Html a
+entry s = div [] [text s]
