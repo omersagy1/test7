@@ -16,13 +16,19 @@ view model =
             , color Colors.white
             ]
       ]
-      [ actionsSet model
+      [ header
+      , actionsSet model
       ]
+
+
+header : Html a
+header = div [css [marginBottom (px 20)]] 
+             [text "STATIC ANALYSIS CHECKS"]
 
 
 actionsSet : Model -> Html a
 actionsSet model = 
-  div [] 
+  div [css [marginBottom (px 20)]] 
       ([ text "The following actions were initialized:" ] ++
        List.map entry model.actionsSet)
 
@@ -32,4 +38,4 @@ actionsUsed m = div [] []
 
 
 entry : String -> Html a
-entry s = div [] [text s]
+entry s = div [] [text ("- \"" ++ s ++ "\"")]
