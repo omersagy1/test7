@@ -25,7 +25,9 @@ view model =
                     (Render.Game.view model.gameModel)
   in
     styled div 
-      [ height (pct 100) ] 
+      [ height (pct 100) 
+      , fontFamily serif
+      ] 
       [] 
       [ globalStyle
       , navBar model 
@@ -37,8 +39,7 @@ globalStyle : Html a
 globalStyle =
   Css.Foreign.global
     [ Css.Foreign.selector "html"
-      [ fontFamily serif
-      , height (pct 100) 
+      [ height (pct 100) 
       ]
     , Css.Foreign.selector "body"
       [ height (pct 100) 
