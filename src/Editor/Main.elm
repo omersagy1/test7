@@ -1,7 +1,9 @@
 module Editor.Main exposing (..)
 
+import Set
+
 import Common.Annex exposing (..)
-import Game.Condition exposing (Condition)
+import Game.Condition exposing (..)
 import Game.GameState exposing (GameState)
 import Game.Story exposing (StoryEvent, Story)
 import Parser.Main
@@ -47,25 +49,46 @@ analyze m =
 actionsSet : GameState -> List String
 actionsSet state =
   List.map .name state.customActions
+  |> List.sort
 
 
 actionsUsed : Story -> List String
-actionsUsed events = []
+actionsUsed story = 
+  List.map actionsReferenced (getConditions story)
+  |> List.concat
+  |> Set.fromList
+  |> Set.toList
 
--- TODO: need to filter conditions by whether they contain
--- action subconditions, then extract the names.
+
+badActionReferences : Model -> List String
+badActionReferences model =
+  Set.diff (Set.fromList model.actionsUsed)
+           (Set.fromList model.actionsSet)
+  |> Set.toList
 
 
-filterConditions : (Condition -> Bool) -> Story -> List Condition
-filterConditions pred story =
-  List.map (filterConditionsForEvent pred) story
+actionsReferenced : Condition -> List String
+actionsReferenced cond =
+  case cond of
+    Not c -> 
+      actionsReferenced c
+    And c1 c2 -> 
+      (actionsReferenced c1) ++ (actionsReferenced c2)
+    Or c1 c2 -> 
+      (actionsReferenced c1) ++ (actionsReferenced c2)
+    Pure (ActionPerformed name) -> 
+      [name]
+    other -> 
+      []
+
+
+getConditions : Story -> List Condition
+getConditions story =
+  List.map getConditionsForEvent story
   |> List.concat
 
 
-filterConditionsForEvent : (Condition -> Bool) -> StoryEvent -> List Condition
-filterConditionsForEvent pred event =
-  let
-    unfiltered = [event.trigger] ++ 
-                 (concatMaybes (List.map .condition event.subsequents))
-  in
-    List.filter pred unfiltered
+getConditionsForEvent : StoryEvent -> List Condition
+getConditionsForEvent event =
+  [event.trigger] ++ 
+  (concatMaybes (List.map .condition event.subsequents))

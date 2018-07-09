@@ -5,7 +5,7 @@ import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 
-import Editor.Main exposing(..)
+import Editor.Main exposing (Model)
 
 
 view : Model -> Html a
@@ -18,6 +18,8 @@ view model =
       ]
       [ header
       , actionsSet model
+      , actionsUsed model
+      , badActionReferences model
       ]
 
 
@@ -34,7 +36,17 @@ actionsSet model =
 
 
 actionsUsed : Model -> Html a
-actionsUsed m = div [] []
+actionsUsed model =
+  div [css [marginBottom (px 20)]] 
+      ([ text "The following actions were referenced:" ] ++
+       List.map entry model.actionsUsed)
+
+
+badActionReferences : Model -> Html a
+badActionReferences model =
+  div [css [marginBottom (px 20)]] 
+      ([ text "The following actions references are broken:" ] ++
+       List.map entry (Editor.Main.badActionReferences model))
 
 
 entry : String -> Html a
