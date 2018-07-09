@@ -27,6 +27,7 @@ view m = div [ css [ displayFlex
                    , padding (px 30)
                    , backgroundColor Colors.black
                    , color Colors.white
+                   , fontFamily serif
                    ] 
              ]
              [ Messages.messageHistory m.messageHistory

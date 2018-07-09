@@ -1,10 +1,12 @@
 module Render.App exposing (view)
 
-import Html.Styled exposing (Html, button, div, text, input)
+import Css exposing (..)
+import Css.Foreign
+import Html.Styled exposing (Html, button, div, text, input, styled)
 import Html.Styled.Events exposing (onClick, onInput)
-import Html.Styled.Attributes exposing (style, value)
+import Html.Styled.Attributes exposing (style, value, css)
 
-import App.Model exposing(..)
+import App.Model exposing (..)
 
 import Render.Game
 import Render.Editor
@@ -22,9 +24,27 @@ view model =
       GamePage -> Html.Styled.map GameMessage 
                     (Render.Game.view model.gameModel)
   in
-    div [style [("height", "100%")]] 
-        [ navBar model 
-        , mainPage ]
+    styled div 
+      [ height (pct 100) ] 
+      [] 
+      [ globalStyle
+      , navBar model 
+      , mainPage 
+      ]
+
+
+globalStyle : Html a
+globalStyle =
+  Css.Foreign.global
+    [ Css.Foreign.selector "html"
+      [ fontFamily serif
+      , height (pct 100) 
+      ]
+    , Css.Foreign.selector "body"
+      [ height (pct 100) 
+      ]
+    ]
+
 
 navBar : Model -> Html Message
 navBar model = div [ style [ ("background-color", "grey")

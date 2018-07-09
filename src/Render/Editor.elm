@@ -45,7 +45,7 @@ actionsUsed model =
 badActionReferences : Model -> Html a
 badActionReferences model =
   div [css [marginBottom (px 20)]] 
-      ([ text "The following actions references are broken:" ] ++
+      ([ text "The following action references are broken:" ] ++
        List.map entry (Editor.Main.badActionReferences model))
 
 
