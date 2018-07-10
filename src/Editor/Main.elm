@@ -4,8 +4,9 @@ import Set
 
 import Common.Annex exposing (..)
 import Game.Condition exposing (..)
+import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
-import Game.Story exposing (StoryEvent, Story)
+import Game.Story as Story exposing (Consequence, StoryEvent, Story)
 import Parser.Main
 
 
@@ -55,6 +56,7 @@ actionsSet state =
 actionsUsed : Story -> List String
 actionsUsed story = 
   List.map actionsReferenced (getConditions story)
+  |> (++) (List.map actionsReferencedInEffect (getEffects story))
   |> List.concat
   |> Set.fromList
   |> Set.toList
@@ -82,6 +84,16 @@ actionsReferenced cond =
       []
 
 
+actionsReferencedInEffect : Effect -> List String
+actionsReferencedInEffect effect =
+  case effect of
+    ActivateAction a -> [a]
+    DeactivateAction a -> [a]
+    Compound2 e1 e2 -> (actionsReferencedInEffect e1) ++ (actionsReferencedInEffect e2)
+    Compound effects -> List.map actionsReferencedInEffect effects |> List.concat 
+    other -> []
+
+
 getConditions : Story -> List Condition
 getConditions story =
   List.map getConditionsForEvent story
@@ -92,3 +104,21 @@ getConditionsForEvent : StoryEvent -> List Condition
 getConditionsForEvent event =
   [event.trigger] ++ 
   (concatMaybes (List.map .condition event.subsequents))
+
+
+getEffects : Story -> List Effect
+getEffects story =
+  List.map getEffectsForEvent story
+  |> List.concat
+
+
+getEffectsForEvent : StoryEvent -> List Effect
+getEffectsForEvent event =
+  concatMaybes [event.effect] ++ (List.map getEffectsForConsequence event.subsequents |> List.concat )
+
+
+getEffectsForConsequence : Consequence -> List Effect
+getEffectsForConsequence consq =
+  case consq.eventOrName of
+    Story.EventName s -> []
+    Story.ActualEvent e -> getEffectsForEvent e

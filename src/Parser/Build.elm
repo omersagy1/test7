@@ -2,9 +2,16 @@ module Parser.Build exposing (..)
 
 import Game.Effect as Effect exposing (Effect)
 import Game.Condition as Condition exposing (Condition, PureCondition)
-import Game.Story as Story exposing (StoryEvent, Choice, Consequence)
+import Game.Story as Story exposing (Story, StoryEvent, Choice, Consequence)
 import Parser.Consequence as Consequence
 import Parser.Choice as Choice
+
+
+begin : Story
+begin = []
+
+add : StoryEvent -> Story -> Story
+add event story = story ++ [event]
 
 
 -- Event with default values that can
@@ -63,6 +70,7 @@ subsq c e = { e | subsequents = e.subsequents ++ [c] }
 newChoice = Choice.new
 text = Choice.text
 consq = Choice.consq
+directConsq = Choice.directConsq
 
 newConsq = Consequence.new
 ref = Consequence.ref

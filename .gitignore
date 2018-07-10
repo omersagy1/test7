@@ -3,3 +3,6 @@ elm-stuff/
 tests/elm-stuff/
 
 compiled/
+
+.DS_Store
+src/.DS_Store
