@@ -14,50 +14,82 @@ import Parser.Condition exposing (..)
 story : Story
 story =
   begin
+
   |> add (newEvent
-     |> trigger (gameTimePassed (1.5*Time.second))
-     |> ln "The room is cold."
-     |> ln "..."
-     |> ln "Foul water drips from the ceiling."
-     |> ln "You shiver."
-     |> choice (newChoice
-        |> text "Shut eyes"
-        |> directConsq (newEvent
-           |> ln "You breathe deeply."
-           |> ln "The freezing air bites your face."
-           |> goto "need-a-light"))
-     |> choice (newChoice
-        |> text "Look up"
-        |> directConsq (newEvent
-           |> ln "A thick haze clouds your vision."
-           |> ln "But you swear the pale white letters speak to you..."
-           |> ln "DEFUMIGATION CHAMBER"
-           |> ln "..."
-           |> ln "The cold is unbearable."
-           |> goto "need-a-light")))
+    |> trigger (gameTimePassed (1.5*Time.second))
+    |> ln "The room is cold."
+    |> ln "Foul water drips from the ceiling."
+    |> ln "..."
+    |> ln "You shiver."
+    |> choice (newChoice
+       |> text "Shut eyes"
+       |> directConsq (newEvent
+          |> ln "You breathe deeply."
+          |> ln "The freezing air bites your face."
+          |> goto "need-a-light"))
+    |> choice (newChoice
+       |> text "Look up"
+       |> directConsq (newEvent
+          |> ln "A thick haze clouds your vision."
+          |> ln "But pale white letters speak to you..."
+          |> ln "DEFUMIGATION CHAMBER"
+          |> ln "..."
+          |> ln "The cold is unbearable."
+          |> goto "need-a-light")))
+
   |> add (newEvent
-     |> name "need-a-light"
-     |> ln "..."
-     |> ln "Feeling returns to your hands."
-     |> ln "The ground is covered in grass..."
-     |> ln "And dry little twigs."
-     |> effect (ActivateAction "search for wood"))
+    |> name "need-a-light"
+    |> ln "..."
+    |> ln "Feeling returns to your fingers."
+    |> ln "The ground is covered in grass..."
+    |> ln "And dry little twigs."
+    |> effect (ActivateAction "search for wood"))
+
   |> add (newEvent
-     |> trigger (actionPerformed "search for wood")
-     |> ln "You clutch a bundle of dry branches in your frozen fingers."
-     |> ln "They're meager, but they'll feed a fire."
-     |> effect (IncrementMilestone "wood-searched"))
+    |> trigger (and (actionPerformed "search for wood")
+                    (milestoneAtCount "wood-searched" 1))
+    |> ln "You clutch a bundle of dry branches in your frozen fingers."
+    |> ln "They're meager, but they'll feed a fire.")
+
   |> add (newEvent
-     |> trigger fireStoked
-     |> ln "A fire hatches in the brush."
-     |> ln "You hover your hands over the flame and feel them thaw."
-     |> effect (IncrementMilestone "fire-stoked"))
+    |> trigger fireStoked
+    |> ln "Embers hatch in the brush."
+    |> ln "You hover your hands over the flame."
+    |> ln "..."
+    |> ln "The fire is roaring."
+    |> effect (IncrementMilestone "fire-stoked"))
+  
+  |> add (newEvent
+    |> trigger (and fireStoked (milestoneAtCount "fire-stoked" 1))
+    |> ln "You bring you face close to the flames."
+    |> ln "A foreign smile breaks upon your face."
+    |> effect (IncrementMilestone "fire-stoked"))
+
+  |> add (newEvent
+    |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 1))
+    |> reoccurring
+    |> randlns [ "The fire is roaring."
+               , "The fire is roaring."
+               , "The fire is roaring."
+               , "The flames double in height."
+               , "The fire crackles with a human voice."
+               , "You shiver with warmth."
+               , "The flames rise."
+               , "The fire dances with primitive urgency."
+               ]
+    |> effect (IncrementMilestone "fire-stoked"))
+  
+  |> add (newEvent
+    |> trigger (and (actionPerformed "search for wood")
+                    (milestoneAtCount "wood-searched" 2))
+    |> ln "You feel around in the dark."
+    |> ln "The distant fire shines a small light on a rotting log.")
 
 
 init : GameState
 init =
   GameState.init 
-  |> GameState.initFire (30*Time.second) (10*Time.second)
+  |> GameState.initFire (50*Time.second) (20*Time.second)
   |> GameState.addResource (Resource.init "wood" 0)
   |> GameState.addResource (Resource.init "rats" 0)
   |> GameState.addResource (Resource.init "gold" 0)
@@ -65,9 +97,10 @@ init =
   |> GameState.addCustomAction
       (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
-        |> Action.effect (AddToResourceRand "wood" 2 4))
+        |> Action.effect (Compound2 (AddToResourceRand "wood" 2 4)
+                                    (IncrementMilestone "wood-searched")))
 
   |> GameState.addCustomAction
-      (Action.init "hunt rats"
-        |> Action.effect (AddToResource "rats" 2)
-        |> Action.cooldown (60*Time.second))
+      (Action.init "investigate"
+        |> Action.cooldown (60*Time.second)
+        |> Action.effect (IncrementMilestone "investigated"))
