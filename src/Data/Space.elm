@@ -43,6 +43,7 @@ story =
   |> add
      (newEvent
       |> name "need-a-light"
+      |> ln "..."
       |> ln "Feeling returns to your hands..."
       |> ln "The ground is covered in grass."
       |> ln "..."
@@ -59,7 +60,7 @@ init =
   |> GameState.addResource (Resource.init "gold" 0)
 
   |> GameState.addCustomAction
-      (Action.init "rip up grass"
+      (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
         |> Action.effect (AddToResourceRand "wood" 2 4))
 
