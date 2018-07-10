@@ -69,6 +69,13 @@ badActionReferences model =
   |> Set.toList
 
 
+unusedActions : Model -> List String
+unusedActions model = 
+  Set.diff (Set.fromList model.actionsSet)
+           (Set.fromList model.actionsUsed)
+  |> Set.toList
+
+
 actionsReferenced : Condition -> List String
 actionsReferenced cond =
   case cond of

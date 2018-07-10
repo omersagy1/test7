@@ -20,6 +20,7 @@ view model =
       , actionsSet model
       , actionsUsed model
       , badActionReferences model
+      , unusedActions model
       ]
 
 
@@ -47,6 +48,13 @@ badActionReferences model =
   div [css [marginBottom (px 20)]] 
       ([ text "The following action references are broken:" ] ++
        List.map entry (Editor.Main.badActionReferences model))
+
+
+unusedActions : Model -> Html a
+unusedActions model =
+  div [css [marginBottom (px 20)]] 
+      ([ text "The following actions are never referenced:" ] ++
+       List.map entry (Editor.Main.unusedActions model))
 
 
 entry : String -> Html a

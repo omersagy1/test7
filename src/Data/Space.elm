@@ -14,41 +14,44 @@ import Parser.Condition exposing (..)
 story : Story
 story =
   begin
-  |> add 
-     (newEvent
-      |> trigger (gameTimePassed (1.5*Time.second))
-      |> ln "The room is cold."
-      |> ln "..."
-      |> ln "Foul water drips from the ceiling."
-      |> ln "You shiver."
-      |> choice
-         (newChoice
-          |> text "Shut eyes"
-          |> directConsq 
-             (newEvent
-              |> ln "You breathe deeply."
-              |> ln "The freezing air bites your face."
-              |> goto "need-a-light"))
-      |> choice
-         (newChoice
-          |> text "Look up"
-          |> directConsq 
-             (newEvent
-              |> ln "A thick haze clouds your vision."
-              |> ln "But you swear the pale white letters speak to you..."
-              |> ln "DEFUMIGATION CHAMBER"
-              |> ln "..."
-              |> ln "The cold is unbearable."
-              |> goto "need-a-light")))
-  |> add
-     (newEvent
-      |> name "need-a-light"
-      |> ln "..."
-      |> ln "Feeling returns to your hands..."
-      |> ln "The ground is covered in grass."
-      |> ln "..."
-      |> ln "And dry little twigs."
-      |> effect (ActivateAction "search for wood"))
+  |> add (newEvent
+     |> trigger (gameTimePassed (1.5*Time.second))
+     |> ln "The room is cold."
+     |> ln "..."
+     |> ln "Foul water drips from the ceiling."
+     |> ln "You shiver."
+     |> choice (newChoice
+        |> text "Shut eyes"
+        |> directConsq (newEvent
+           |> ln "You breathe deeply."
+           |> ln "The freezing air bites your face."
+           |> goto "need-a-light"))
+     |> choice (newChoice
+        |> text "Look up"
+        |> directConsq (newEvent
+           |> ln "A thick haze clouds your vision."
+           |> ln "But you swear the pale white letters speak to you..."
+           |> ln "DEFUMIGATION CHAMBER"
+           |> ln "..."
+           |> ln "The cold is unbearable."
+           |> goto "need-a-light")))
+  |> add (newEvent
+     |> name "need-a-light"
+     |> ln "..."
+     |> ln "Feeling returns to your hands."
+     |> ln "The ground is covered in grass..."
+     |> ln "And dry little twigs."
+     |> effect (ActivateAction "search for wood"))
+  |> add (newEvent
+     |> trigger (actionPerformed "search for wood")
+     |> ln "You clutch a bundle of dry branches in your frozen fingers."
+     |> ln "They're meager, but they'll feed a fire."
+     |> effect (IncrementMilestone "wood-searched"))
+  |> add (newEvent
+     |> trigger fireStoked
+     |> ln "A fire hatches in the brush."
+     |> ln "You hover your hands over the flame and feel them thaw."
+     |> effect (IncrementMilestone "fire-stoked"))
 
 
 init : GameState
