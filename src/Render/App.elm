@@ -43,6 +43,7 @@ globalStyle =
       ]
     , Css.Foreign.selector "body"
       [ height (pct 100) 
+      , margin (px 0)
       ]
     ]
 
