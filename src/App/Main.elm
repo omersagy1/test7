@@ -23,8 +23,8 @@ main =
 init : (Model, Cmd Message)
 init = 
   case model.currentPage of
-    EditorPage -> update (EditorMessage Editor.Main.Initialize) model
-    GamePage -> (model, startGame)
+    EditorPage -> initializeEditor model
+    GamePage -> initializeGame model
 
 
 model : Model
@@ -70,9 +70,12 @@ switchPage model =
   if model.currentPage == EditorPage then
     ({ model | currentPage = GamePage }, Cmd.none)
   else
-    update (EditorMessage Editor.Main.Initialize)
-           { model | currentPage = EditorPage }
+    initializeEditor { model | currentPage = EditorPage }
 
 
-startGame : Cmd Message
-startGame = Task.perform (GameMessage << Game.Update.StartTime) Time.now
+initializeGame : Model -> (Model, Cmd Message)
+initializeGame m = (m, Task.perform (GameMessage << Game.Update.StartTime) Time.now)
+
+
+initializeEditor : Model -> (Model, Cmd Message)
+initializeEditor = update (EditorMessage Editor.Main.Initialize)
