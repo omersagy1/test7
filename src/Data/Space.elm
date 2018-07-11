@@ -39,16 +39,13 @@ story =
 
   |> add (newEvent
     |> name "need-a-light"
-    |> ln "..."
-    |> ln "Feeling returns to your fingers."
-    |> ln "The ground is covered in grass..."
-    |> ln "And dry little twigs."
     |> effect (ActivateAction "search for wood"))
 
   |> add (newEvent
     |> trigger (and (actionPerformed "search for wood")
                     (milestoneAtCount "wood-searched" 1))
-    |> ln "You clutch a bundle of dry branches in your frozen fingers."
+    |> ln "The ground is covered in grass..."
+    |> ln "And dry little twigs."
     |> ln "They're meager, but they'll feed a fire.")
 
   |> add (newEvent
@@ -61,7 +58,7 @@ story =
   
   |> add (newEvent
     |> trigger (and fireStoked (milestoneAtCount "fire-stoked" 1))
-    |> ln "You bring you face close to the flames."
+    |> ln "You bring your face close to the flames."
     |> ln "A foreign smile breaks upon your face."
     |> effect (IncrementMilestone "fire-stoked"))
 
@@ -85,6 +82,15 @@ story =
     |> ln "You feel around in the dark."
     |> ln "The distant fire shines a small light on a rotting log.")
 
+  |> add (newEvent
+    |> trigger (timeSinceMilestone "fire-stoked" (5*Time.second))
+    |> ln "There is something artificial about this place."
+    |> effect (ActivateAction "investigate"))
+
+  |> add (newEvent
+    |> trigger (milestoneAtCount "did-investigate" 1)
+    |> ln "The grass seems to stretch on for miles..."
+    |> ln "And the stars look false.")
 
 init : GameState
 init =
@@ -103,4 +109,4 @@ init =
   |> GameState.addCustomAction
       (Action.init "investigate"
         |> Action.cooldown (60*Time.second)
-        |> Action.effect (IncrementMilestone "investigated"))
+        |> Action.effect (IncrementMilestone "did-investigate"))

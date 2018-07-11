@@ -24,7 +24,7 @@ messageHistory : List String -> Html a
 messageHistory msgs =
   let 
     msgsToDisplay = List.take displaySize msgs
-    opacities = rangeToZero 1 displaySize
+    opacities = 1::(rangeToZero 0.65 (displaySize - 1))
   in
     div [css [ width displayWidth
              , marginRight rightMargin
