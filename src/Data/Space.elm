@@ -63,8 +63,8 @@ story =
     |> effect (IncrementMilestone "fire-stoked"))
 
   |> add (newEvent
-    |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 1))
     |> reoccurring
+    |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 1))
     |> randlns [ "The fire is roaring."
                , "The fire is roaring."
                , "The fire is roaring."
@@ -82,8 +82,9 @@ story =
     |> ln "The distant fire shines a small light on a rotting log.")
 
   |> add (newEvent
-    |> trigger (milestoneGreaterThan "wood-searched" 2)
     |> reoccurring
+    |> trigger (and (milestoneGreaterThan "wood-searched" 2)
+                    (actionPerformed "search for wood"))
     |> randlns 
         [ "A few more twigs for the fire..."
         , "The twigs are dirty, but dry enough..."
@@ -123,10 +124,75 @@ story =
     |> choice (newChoice
       |> text "Crush its neck"
       |> directConsq (newEvent
-        |> ln "The body's bony head snaps from its shoulders..."
+        |> ln "Its bony head snaps from its shoulders..."
         |> ln "And rolls into the grass."
         |> ln "..."
-        |> ln "You rip off its dress but find nothing of value.")))
+        |> ln "You rip off the body's dress but find nothing of value."
+        |> effect (SetMilestoneReached "corpse-defiled"))))
+
+  |> add (newEvent
+    |> trigger (milestoneAtCount "did-investigate" 3)
+    |> ln "It's raining..."
+    |> ln "The drops sting your body."
+    |> ln "You go back inside."
+    |> ln "There is a someone sitting by the fire."
+    |> choice (newChoice
+      |> text "Who are you?"
+      |> directConsq (newEvent
+        |> ln "..."
+        |> ln "The man looks up."
+        |> ln "'It's been years since I've seen anyone else on the starboard.'"
+        |> ln "'Except for ol' Cathy.'"
+        |> subsq (newConsq
+          |> cond (milestoneReached "corpse-defiled")
+          |> ref "comment-on-defiling")
+        |> subsq (newConsq
+          |> ref "visitor-intro")))
+    |> choice (newChoice
+      |> text "Get out!"
+      |> directConsq (newEvent
+        |> ln "..."
+        |> ln "The man is unfazed."
+        |> ln "'You ought to relax, stranger.'"
+        |> subsq (newConsq
+          |> cond (milestoneReached "corpse-defiled")
+          |> ref "threat-on-defiling")
+        |> subsq (newConsq
+          |> ref "stranger-relax"))))
+
+  |> add (newEvent
+    |> name "comment-on-defiling"
+    |> ln "..."
+    |> ln "The man chuckles to himself."
+    |> ln "'...whose poor neck you decided to crush.'"
+    |> goto "visitor-intro")
+
+  |> add (newEvent
+    |> name "threat-on-defiling"
+    |> ln "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
+    |> goto "visitor-intro")
+
+  |> add (newEvent
+    |> name "stranger-relax"
+    |> ln "'It's just you and me out here on the starboard.'"
+    |> ln "'Been years and years since I seen anyone else.'"
+    |> ln "'Damn near forgot how to talk.'"
+    |> ln "He smiles."
+    |> goto "visitor-intro")
+  
+  |> add (newEvent
+    |> name "visitor-intro"
+    |> ln "The man reaches out his hand."
+    |> ln "You shake it."
+    |> goto "game-over")
+  
+  |> add (newEvent
+    |> name "game-over"
+    |> ln "..."
+    |> ln " ~ to be continued..."
+    |> effect (Compound [ (DeactivateAction "search for wood")
+                        , (DeactivateAction "investigate")
+                        ]))
 
 
 init : GameState
@@ -145,5 +211,5 @@ init =
 
   |> GameState.addCustomAction
       (Action.init "investigate"
-        |> Action.cooldown (60*Time.second)
+        |> Action.cooldown (40*Time.second)
         |> Action.effect (IncrementMilestone "did-investigate"))
