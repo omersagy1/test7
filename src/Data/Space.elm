@@ -33,12 +33,12 @@ story =
           |> ln "A thick haze clouds your vision."
           |> ln "But pale white letters speak to you..."
           |> ln "DEFUMIGATION CHAMBER"
-          |> ln "..."
-          |> ln "The cold is unbearable."
           |> goto "need-a-light")))
 
   |> add (newEvent
     |> name "need-a-light"
+    |> ln "..."
+    |> ln "The cold is unbearable."
     |> effect (ActivateAction "search for wood"))
 
   |> add (newEvent
@@ -77,10 +77,18 @@ story =
     |> effect (IncrementMilestone "fire-stoked"))
   
   |> add (newEvent
-    |> trigger (and (actionPerformed "search for wood")
-                    (milestoneAtCount "wood-searched" 2))
+    |> trigger (milestoneAtCount "wood-searched" 2)
     |> ln "You feel around in the dark."
     |> ln "The distant fire shines a small light on a rotting log.")
+
+  |> add (newEvent
+    |> trigger (milestoneGreaterThan "wood-searched" 2)
+    |> reoccurring
+    |> randlns 
+        [ "A few more twigs for the fire..."
+        , "The twigs are dirty, but dry enough..."
+        , "From your dark wandering you return with a small bounty..."
+        ])
 
   |> add (newEvent
     |> trigger (timeSinceMilestone "fire-stoked" (5*Time.second))
@@ -90,7 +98,36 @@ story =
   |> add (newEvent
     |> trigger (milestoneAtCount "did-investigate" 1)
     |> ln "The grass seems to stretch on for miles..."
-    |> ln "And the stars look false.")
+    |> ln "And the stars look false."
+    |> choice (newChoice
+      |> text "Yell"
+      |> directConsq (newEvent
+        |> ln "Your own voice returns to you from every direction..."
+        |> ln "Even from above."))
+    |> choice (newChoice
+      |> text "Stay Silent"
+      |> directConsq (newEvent
+        |> ln "The haze congeals on your face."
+        |> ln "You return to the fire.")))
+
+  |> add (newEvent
+    |> trigger (milestoneAtCount "did-investigate" 2)
+    |> ln "You find a body lying in the grass."
+    |> ln "It's not moving."
+    |> choice (newChoice
+      |> text "Turn it over"
+      |> directConsq (newEvent
+        |> ln "A skull stares back up at you, framed by long blonde hair."
+        |> ln "Its teeth are small and rotted."
+        |> ln "On its body is nothing of value."))
+    |> choice (newChoice
+      |> text "Crush its neck"
+      |> directConsq (newEvent
+        |> ln "The body's bony head snaps from its shoulders..."
+        |> ln "And rolls into the grass."
+        |> ln "..."
+        |> ln "You rip off its dress but find nothing of value.")))
+
 
 init : GameState
 init =
