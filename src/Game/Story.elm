@@ -26,6 +26,7 @@ getEventByName name story =
       e::others -> Just e
     
 
+-- Returns (triggered events, remaining story, gamestate)
 triggeredStoryEvents : GameState -> Story -> (List StoryEvent, Story, GameState)
 triggeredStoryEvents state story = triggeredHelper state story [] []
 
@@ -40,7 +41,7 @@ triggeredHelper state toscan triggered remaining =
         triggered2 = if eventTriggered then 
                        (StoryEvent.getEvent first)::triggered 
                      else triggered
-        shouldRemove = eventTriggered && StoryEvent.isReoccurring first
+        shouldRemove = eventTriggered && not (StoryEvent.isReoccurring first)
         remaining2 = if shouldRemove then remaining else first::remaining
       in
         triggeredHelper newState rest triggered2 remaining2

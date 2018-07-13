@@ -89,7 +89,10 @@ start : StoryEvent
 start = Atomic Empty
 
 seq : StoryEvent -> StoryEvent -> StoryEvent
-seq e f = Compound <| Sequenced e f
+seq e1 e2 = Compound <| Sequenced e2 e1
 
 ln : String -> StoryEvent -> StoryEvent
 ln s e = seq (Atomic <| Narration s) e
+
+effect : Effect -> StoryEvent -> StoryEvent
+effect eff e = seq (Atomic <| Effectful eff) e 

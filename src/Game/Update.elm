@@ -126,6 +126,7 @@ playAtomicEvent : AtomicEvent -> Model -> Model
 playAtomicEvent e m =
   case e of
     Narration ln -> enqueueTextEvent ln m
+    Effectful eff -> enqueueEffect eff m
     other -> m
 
 
