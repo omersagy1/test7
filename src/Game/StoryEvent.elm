@@ -48,7 +48,7 @@ type CompoundEvent =
 
 
 type alias Choice =
-  { cond: Maybe Condition
+  { condition: Condition
   , prompt: String
   , consq: StoryEvent 
   }

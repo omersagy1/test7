@@ -29,16 +29,32 @@ start : StoryEvent
 start = Atomic Empty
 
 seq : StoryEvent -> StoryEvent -> StoryEvent
-seq next prev = Compound <| Sequenced prev next
+seq prev next = Compound <| Sequenced prev next
 
 ln : String -> StoryEvent -> StoryEvent
-ln s e = seq (Atomic <| Narration s) e
+ln s e = seq e (Atomic <| Narration s)
 
 narrate : String -> StoryEvent
 narrate s = Atomic <| Narration s
 
 effect : Effect -> StoryEvent -> StoryEvent
-effect eff e = seq (Atomic <| Effectful eff) e 
+effect eff e = seq e (Atomic <| Effectful eff)
 
 cond : Condition -> StoryEvent -> StoryEvent -> StoryEvent
-cond c e prev = seq (Compound <| Conditioned c e) prev
+cond c e prev = seq prev (Compound <| Conditioned c e)
+
+choices : List Choice -> StoryEvent -> StoryEvent
+choices choices prev = seq prev (Compound <| PlayerChoice choices)
+
+choice : String -> Choice
+choice prompt =
+  { condition = Condition.Pure Condition.Always
+  , prompt = prompt
+  , consq = Atomic Empty
+  }
+
+consq : StoryEvent -> Choice -> Choice
+consq e c = { c | consq = e }
+
+condition : Condition -> Choice -> Choice
+condition cond choice = { choice | condition = cond }

@@ -135,8 +135,12 @@ playAtomicEvent e m =
 playCompoundEvent : CompoundEvent -> Model -> Model
 playCompoundEvent e m =
   case e of
-    Conditioned c e -> playConditionedEvent c e m
-    Sequenced e1 e2 -> playStoryEvent e1 m |> playStoryEvent e2
+    Conditioned c e -> 
+      playConditionedEvent c e m
+    Sequenced e1 e2 -> 
+      playStoryEvent e1 m |> playStoryEvent e2
+    PlayerChoice choices -> 
+      playChoice choices m
     other -> m
 
 
@@ -149,6 +153,20 @@ playConditionedEvent c e m =
     if success then
       (playStoryEvent e)
     else identity
+
+
+playChoice : List Choice -> Model -> Model
+playChoice choices m =
+  let
+    (choicesToDisplay, newState) = 
+      filterMutate (\choice gameState -> 
+                      ConditionFns.condition choice.condition gameState) 
+                   choices 
+                   m.gameState
+  in
+    Model.setGameState newState m
+    |> enqueueChoiceEvent choicesToDisplay
+      
 
 
 enqueueEvent : Event -> Time -> Model -> Model
@@ -213,13 +231,6 @@ processEvent e m =
 
 
 makeChoice : Choice -> Model -> Model
-makeChoice choice model = model
-{-
-  let
-    (c, s) = Story.getConsequence choice.consequenceSet model.gameState
-  in
-    model
-    |> Model.setGameState s
-    |> (maybePerform playEventOrName) c
-    |> clearActiveChoices
--}
+makeChoice choice model =
+  Model.clearActiveChoices model
+  |> playStoryEvent choice.consq

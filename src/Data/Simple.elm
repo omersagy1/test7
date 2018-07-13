@@ -32,10 +32,25 @@ story = begin
       |> effect (ActivateAction "search for wood")
       |> ln "activated..."
       |> effect (SetMilestoneReached "t1")
-      |> cond (gameTimePassed (1*Time.second))
+      |> cond (gameTimePassed (0.8*Time.second))
               (narrate "this one shows!")
       |> cond (milestoneReached "fake") 
               (narrate "this one doesn't!")
+      |> choices
+          [ choice "yes" 
+            |> consq (narrate "said yes!")
+
+          , choice "no" 
+            |> consq (narrate "said no...")
+
+          , choice "maybe?"
+            |> condition (gameTimePassed (0.5*Time.second))
+            |> consq (narrate "was available...")
+
+          , choice "never"
+            |> condition (milestoneReached "fake")
+            |> consq (narrate "never seen..")
+          ]
       ))
   
   |> add (topLevel

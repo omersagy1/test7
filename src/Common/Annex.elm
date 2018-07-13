@@ -92,6 +92,21 @@ foldingMutate mutateFn argList struct =
         (result::restResults, finalStruct)
 
 
+filterMutate : (a -> b -> (Bool, b)) -> List a -> b -> (List a, b)
+filterMutate filterFn argList struct =
+  case argList of
+    [] -> ([], struct)
+    first::rest ->
+      let 
+        (success, nextStruct) = filterFn first struct
+        (restResults, finalStruct) = filterMutate filterFn rest nextStruct
+      in
+        if success then
+          (first::restResults, finalStruct)
+        else
+          (restResults, finalStruct)
+
+
 -- Mutate two data structures at once by folding over
 -- a list of arguments. The mutating function has one
 -- argument (besides the two data structures).
