@@ -8,6 +8,8 @@ import Common.Randomizer as Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
 import Game.Constants as Constants
+import Game.Condition as Condition exposing (Condition)
+import Game.ConditionFns as ConditionFns
 import Game.Effect as Effect exposing (Effect)
 import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
@@ -133,8 +135,20 @@ playAtomicEvent e m =
 playCompoundEvent : CompoundEvent -> Model -> Model
 playCompoundEvent e m =
   case e of
+    Conditioned c e -> playConditionedEvent c e m
     Sequenced e1 e2 -> playStoryEvent e1 m |> playStoryEvent e2
     other -> m
+
+
+playConditionedEvent : Condition -> StoryEvent -> Model -> Model
+playConditionedEvent c e m =
+  let
+      (success, state) = ConditionFns.condition c m.gameState
+  in
+    Model.setGameState state m |>
+    if success then
+      (playStoryEvent e)
+    else identity
 
 
 enqueueEvent : Event -> Time -> Model -> Model

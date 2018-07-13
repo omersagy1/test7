@@ -53,14 +53,6 @@ type alias Choice =
   , consq: StoryEvent 
   }
 
-topLevel : TopLevelEvent
-topLevel = TopLevel
-  { name = ""
-  , reoccurring = False
-  , trigger = Condition.Pure Condition.Never
-  , event = Atomic Empty
-  }
-
 getName : TopLevelEvent -> String
 getName (TopLevel e) = e.name
 
@@ -72,27 +64,3 @@ getEvent (TopLevel e) = e.event
 
 isReoccurring : TopLevelEvent -> Bool
 isReoccurring (TopLevel e) = e.reoccurring
-
-name : String -> TopLevelEvent -> TopLevelEvent
-name s (TopLevel p) = TopLevel { p | name = s }
-
-reoccurring : TopLevelEvent -> TopLevelEvent
-reoccurring (TopLevel p) = TopLevel { p | reoccurring = True }
-
-trigger : Condition -> TopLevelEvent -> TopLevelEvent
-trigger t (TopLevel p) = TopLevel { p | trigger = t }
-
-body : StoryEvent -> TopLevelEvent -> TopLevelEvent
-body e (TopLevel p) = TopLevel { p | event = e }
-
-start : StoryEvent
-start = Atomic Empty
-
-seq : StoryEvent -> StoryEvent -> StoryEvent
-seq e1 e2 = Compound <| Sequenced e2 e1
-
-ln : String -> StoryEvent -> StoryEvent
-ln s e = seq (Atomic <| Narration s) e
-
-effect : Effect -> StoryEvent -> StoryEvent
-effect eff e = seq (Atomic <| Effectful eff) e 

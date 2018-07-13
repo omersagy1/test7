@@ -7,7 +7,7 @@ import Game.Effect as Effect exposing (..)
 import Game.GameState as GameState exposing (GameState)
 import Game.Resource as Resource
 import Game.Story exposing (..)
-import Game.StoryEvent exposing (..)
+import Parser.Build exposing (..)
 import Parser.Condition exposing (..)
 
 init : GameState
@@ -30,7 +30,13 @@ story = begin
       |> ln "hello"
       |> ln "world"
       |> effect (ActivateAction "search for wood")
-      |> ln "activated..."))
+      |> ln "activated..."
+      |> effect (SetMilestoneReached "t1")
+      |> cond (gameTimePassed (1*Time.second))
+              (narrate "this one shows!")
+      |> cond (milestoneReached "fake") 
+              (narrate "this one doesn't!")
+      ))
   
   |> add (topLevel
     |> trigger fireStoked
