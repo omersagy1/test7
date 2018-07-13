@@ -7,9 +7,10 @@ import Game.Condition as Condition exposing (..)
 chance = Chance 
 and = And 
 or = Or 
-fail = Not 
+ifnot = Not 
 gameTimePassed = GameTimePassed >> Pure
 never = Never |> Pure
+unconditionally = Always |> Pure
 resourceAmountAbove = ResourceAmountAbove >>> Pure
 resourceActive = ResourceActive >> Pure
 fireExtinguished = FireExtinguished |> Pure

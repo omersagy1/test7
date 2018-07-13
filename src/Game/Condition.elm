@@ -11,6 +11,7 @@ type Condition = Pure PureCondition
 
 type PureCondition = GameTimePassed Time
                      | Never
+                     | Always
                      | ResourceAmountAbove String Int 
                      | ResourceActive String
                      | FireExtinguished

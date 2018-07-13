@@ -38,7 +38,7 @@ view m = div [ css [ displayFlex
 
 interactiveDisplay : Model -> Html Message
 interactiveDisplay m =
-  let softPaused = Game.Update.waitingOnChoice m
+  let softPaused = Game.Model.waitingOnChoice m
   in
     div [ css [flexGrow (num 1)]]
         (concatMaybes

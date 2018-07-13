@@ -7,6 +7,9 @@ import Html.Styled.Attributes exposing (style, value, css)
 
 import Editor.Main exposing (Model)
 
+view m = text ""
+
+{-
 
 view : Model -> Html a
 view model = 
@@ -59,3 +62,5 @@ unusedActions model =
 
 entry : String -> Html a
 entry s = div [] [text ("- \"" ++ s ++ "\"")]
+
+-}

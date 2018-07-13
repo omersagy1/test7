@@ -7,7 +7,7 @@ import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
 import Game.Model exposing (Model)
-import Game.Story exposing (Choice)
+import Game.StoryEvent exposing (Choice)
 import Game.Update exposing (Message)
 import Render.Constants as Constants
 
@@ -36,4 +36,4 @@ choiceButton c =
                , padding (px 0)
                ]
          , onClick (Game.Update.MakeChoice c)] 
-         [text c.text]
+         [text c.prompt]

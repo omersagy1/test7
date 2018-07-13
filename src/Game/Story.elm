@@ -1,66 +1,46 @@
 module Game.Story exposing (..)
 
-import Common.Randomizer as Randomizer exposing (Randomizer)
-import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
-import Game.Effect as Effect exposing (Effect)
-import Game.GameState exposing (GameState)
-
-type alias Story = List StoryEvent
-
-type alias StoryEvent = 
-  { name: String
-  , trigger: Condition 
-  , text: List Line 
-  , choices: Maybe (List Choice)
-  , occursOnce: Bool
-  , effect : Maybe Effect
-  , subsequents : ConsequenceSet
-  }
-
-type alias Choice =
-  { text : String
-  , consequenceSet : ConsequenceSet
-  } 
-
-type alias ConsequenceSet = List Consequence
-
-type alias Consequence =
-  { eventOrName : EventOrName
-  , condition : Maybe Condition
-  }
-
-type EventOrName = ActualEvent StoryEvent
-                   | EventName String
-
-type Line = FixedLine String
-            | RandomLines (List String)
+import Game.GameState as GameState exposing (GameState)
+import Game.StoryEvent as StoryEvent exposing (TopLevelEvent, StoryEvent)
 
 
-eventName : EventOrName -> String
-eventName e =
-  case e of
-    ActualEvent event -> event.name
-    EventName name -> name
+type alias Story = List TopLevelEvent
+
+begin : Story
+begin = []
+
+add : TopLevelEvent -> Story -> Story
+add e s = s ++ [e]
 
 
-getText : Line -> Randomizer -> (Maybe String, Randomizer)
-getText ln randomizer =
-  case ln of
-    FixedLine str -> (Just str, randomizer)
-    RandomLines strs -> Randomizer.choose strs randomizer
+getEventByName : String -> Story -> Maybe TopLevelEvent
+getEventByName name story =
+  let
+    matches = List.filter (\e -> StoryEvent.getName e == name) story
+  in
+    case matches of
+      [] -> Nothing
+      [e] -> Just e
+      -- Only return the first match.
+      e::others -> Just e
+    
 
+triggeredStoryEvents : GameState -> Story -> (List StoryEvent, Story, GameState)
+triggeredStoryEvents state story = triggeredHelper state story [] []
 
-getConsequence : List Consequence -> GameState -> (Maybe EventOrName, GameState)
-getConsequence consequences state =
-  case consequences of
-    [] -> (Nothing, state)
+triggeredHelper : GameState -> Story -> List StoryEvent -> Story -> (List StoryEvent, Story, GameState)
+triggeredHelper state toscan triggered remaining =
+  case toscan of
+    [] -> (triggered, remaining, state)
     first::rest ->
-      case first.condition of
-        Nothing -> (Just first.eventOrName, state)
-        Just condition ->
-          let
-            (success, newState) = ConditionFns.condition condition state
-          in
-            if success then (Just first.eventOrName, newState)
-            else getConsequence rest newState
+      let
+        (eventTriggered, newState) = 
+          (ConditionFns.condition(StoryEvent.getTrigger first) state)
+        triggered2 = if eventTriggered then 
+                       (StoryEvent.getEvent first)::triggered 
+                     else triggered
+        shouldRemove = eventTriggered && StoryEvent.isReoccurring first
+        remaining2 = if shouldRemove then remaining else first::remaining
+      in
+        triggeredHelper newState rest triggered2 remaining2

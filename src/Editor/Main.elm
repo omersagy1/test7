@@ -6,7 +6,7 @@ import Common.Annex exposing (..)
 import Game.Condition exposing (..)
 import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
-import Game.Story as Story exposing (Consequence, StoryEvent, Story)
+import Game.Story as Story exposing (Story)
 import Parser.Main
 
 
@@ -35,12 +35,15 @@ update msg model =
   case msg of
       Initialize -> analyze model
 
+analyze m = m
+
+{-
 
 analyze : Model -> Model
 analyze m =
   let
     initialState = Parser.Main.initialGameState
-    story = Parser.Main.storyEventCorpus
+    story = Parser.Main.story
   in
     { m | actionsSet = actionsSet initialState
         , actionsUsed = actionsUsed story
@@ -129,3 +132,4 @@ getEffectsForConsequence consq =
   case consq.eventOrName of
     Story.EventName s -> []
     Story.ActualEvent e -> getEffectsForEvent e
+-}

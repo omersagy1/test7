@@ -24,7 +24,8 @@ pure : PureCondition -> GameState -> Bool
 pure c s =
   case c of
     GameTimePassed t -> gameTimePassed t s
-    Never -> manualOnly s
+    Never -> False
+    Always -> True
     ResourceAmountAbove name val -> resourceAbove name val s
     ResourceActive name -> resourceActive name s
     FireExtinguished -> fireExtinguished s
@@ -41,10 +42,6 @@ type alias ConditionFn = GameState -> Bool
 
 gameTimePassed : Time -> ConditionFn
 gameTimePassed t = (\s -> s.gameTime >= t)
-
-
-manualOnly : ConditionFn
-manualOnly s = False
 
 
 resourceAbove : String -> Int -> ConditionFn
