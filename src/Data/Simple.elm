@@ -29,7 +29,8 @@ story = begin
     |> body (start
       |> ln "hello"
       |> ln "world"
-      |> effect (ActivateAction "search for wood")))
+      |> effect (ActivateAction "search for wood")
+      |> ln "activated..."))
   
   |> add (topLevel
     |> trigger fireStoked
