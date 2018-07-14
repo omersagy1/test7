@@ -41,8 +41,6 @@ type CompoundEvent =
   | Conditioned Condition StoryEvent
   -- All options have equal weight.
   | Random (List StoryEvent)
-  -- Allows assigning a custom weight to each option.
-  | RandomWeighted (List (Float, StoryEvent))
   -- First event which satisfies its condition is picked.
   | Ranked (List StoryEvent) 
 

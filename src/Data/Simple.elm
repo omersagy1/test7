@@ -32,6 +32,7 @@ story = begin
               , narrate "hello3"
               , narrate "hello4"
               , narrate "hello5"
+                |> ln "hello 5-2!!"
               ]
       |> ln "world"
       |> effect (ActivateAction "search for wood")
