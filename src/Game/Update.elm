@@ -107,30 +107,32 @@ triggerStoryEvents m =
 
 
 playStoryEvents : List StoryEvent -> Model -> Model
-playStoryEvents events m =
+playStoryEvents events model =
+  model |>
   case events of
-    [] -> m
+    [] -> identity
     event::rest ->
-      playStoryEvent event m 
-      |> (playStoryEvents rest)
+      playStoryEvent event >> playStoryEvents rest
 
 
 playStoryEvent : StoryEvent -> Model -> Model
-playStoryEvent event m = 
+playStoryEvent event model = 
+  model |>
   case event of
     StoryEvent.Atomic e -> 
-      playAtomicEvent e m
+      playAtomicEvent e
     StoryEvent.Compound e ->
-      playCompoundEvent e m
+      playCompoundEvent e
 
 
 playAtomicEvent : AtomicEvent -> Model -> Model
-playAtomicEvent e m =
+playAtomicEvent e model =
+  model |>
   case e of
-    Narration ln -> enqueueTextEvent ln m
-    Effectful eff -> enqueueEffect eff m
-    Goto ref -> enqueueGotoEvent ref m
-    other -> m
+    Narration ln -> enqueueTextEvent ln
+    Effectful eff -> enqueueEffect eff
+    Goto ref -> enqueueGotoEvent ref
+    other -> identity
 
 
 playCompoundEvent : CompoundEvent -> Model -> Model
@@ -140,7 +142,7 @@ playCompoundEvent e model =
     Conditioned c e -> 
       playConditionedEvent c e
     Sequenced e1 e2 -> 
-      playStoryEvent e1 >> (playStoryEvent e2)
+      playStoryEvent e1 >> playStoryEvent e2
     PlayerChoice choices -> 
       playChoice choices
     Random options ->
