@@ -38,7 +38,9 @@ story = begin
               (narrate "this one doesn't!")
       |> choices
           [ choice "yes" 
-            |> consq (narrate "said yes!")
+            |> consq (start
+              |> ln "said yes!"
+              |> goto "reffed")
 
           , choice "no" 
             |> consq (narrate "said no...")
@@ -58,3 +60,8 @@ story = begin
     |> reoccurring
     |> body (start
       |> ln "the fire is roaring."))
+  
+  |> add (topLevel
+    |> name "reffed"
+    |> body (start
+      |> ln "got to the referenced event!"))

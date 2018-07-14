@@ -46,6 +46,9 @@ cond c e prev = seq prev (Compound <| Conditioned c e)
 choices : List Choice -> StoryEvent -> StoryEvent
 choices choices prev = seq prev (Compound <| PlayerChoice choices)
 
+goto : String -> StoryEvent -> StoryEvent
+goto ref prev = seq prev (Atomic <| Goto ref)
+
 choice : String -> Choice
 choice prompt =
   { condition = Condition.Pure Condition.Always

@@ -129,6 +129,7 @@ playAtomicEvent e m =
   case e of
     Narration ln -> enqueueTextEvent ln m
     Effectful eff -> enqueueEffect eff m
+    Goto ref -> enqueueGotoEvent ref m
     other -> m
 
 
@@ -191,6 +192,11 @@ eventQueueEmpty m = (TimedQueue.size m.eventQueue) == 0
 enqueueChoiceEvent : List Choice -> Model -> Model
 enqueueChoiceEvent choices m =
   enqueueEvent (Event.DisplayChoices choices) Constants.choiceButtonsDelay m
+
+
+enqueueGotoEvent : String -> Model -> Model
+enqueueGotoEvent name m =
+  enqueueEvent (Event.TriggerStoryEvent name) 0 m
 
 
 enqueueEffect : Effect -> Model -> Model
