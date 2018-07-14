@@ -15,7 +15,7 @@ narrate s = Atomic <| Narration s
 -- CONVENIENCE BUILDERS FOR SEQUENCING 
 
 seq : StoryEvent -> StoryEvent -> StoryEvent
-seq next = (\prev -> Compound <| Sequenced prev next)
+seq next = (\prev -> append prev next)
 
 ln : String -> StoryEvent -> StoryEvent
 ln s = seq (Atomic <| Narration s)

@@ -4,7 +4,6 @@ import Time exposing (Time)
 import Task
 
 import Common.Annex exposing (..)
-import Common.Randomizer as Randomizer exposing (Randomizer)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
 import Game.Constants as Constants
@@ -119,10 +118,8 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event model = 
   model |>
   case event of
-    StoryEvent.Atomic e -> 
-      playAtomicEvent e
-    StoryEvent.Compound e ->
-      playCompoundEvent e
+    StoryEvent.Atomic e -> playAtomicEvent e
+    StoryEvent.Compound e -> playCompoundEvent e
 
 
 playAtomicEvent : AtomicEvent -> Model -> Model

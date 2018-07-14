@@ -27,6 +27,8 @@ story = begin
     |> name "first"
     |> trigger (gameTimePassed (1*Time.second))
     |> body (start
+      |> ln "first"
+      |> ln "second"
       |> rand [ narrate "hello1"
               , narrate "hello2"
               , narrate "hello3"
