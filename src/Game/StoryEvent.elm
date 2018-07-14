@@ -11,18 +11,6 @@ type TopLevelEvent =
            , event : StoryEvent
            }
 
-getName : TopLevelEvent -> String
-getName (TopLevel e) = e.name
-
-getTrigger : TopLevelEvent -> Condition
-getTrigger (TopLevel e) = e.trigger
-
-getEvent : TopLevelEvent -> StoryEvent
-getEvent (TopLevel e) = e.event
-
-isReoccurring : TopLevelEvent -> Bool
-isReoccurring (TopLevel e) = e.reoccurring
-
 
 type StoryEvent = Atomic AtomicEvent
                   | Compound CompoundEvent
@@ -57,6 +45,26 @@ type CompoundEvent =
   | Ranked (List StoryEvent) 
 
 
+type alias Choice =
+  { condition: Condition
+  , prompt: String
+  , consq: StoryEvent 
+  }
+
+
+getName : TopLevelEvent -> String
+getName (TopLevel e) = e.name
+
+getTrigger : TopLevelEvent -> Condition
+getTrigger (TopLevel e) = e.trigger
+
+getEvent : TopLevelEvent -> StoryEvent
+getEvent (TopLevel e) = e.event
+
+isReoccurring : TopLevelEvent -> Bool
+isReoccurring (TopLevel e) = e.reoccurring
+
+
 -- Append a StoryEvent to a top-level chain of StoryEvents.
 -- Will append to the first non-sequenced event found.
 append : StoryEvent -> StoryEvent -> StoryEvent
@@ -64,10 +72,3 @@ append event latest =
   case event of
     Compound (Sequenced prev next) -> Compound (Sequenced prev (append next latest))
     other -> Compound (Sequenced other latest)
-
-
-type alias Choice =
-  { condition: Condition
-  , prompt: String
-  , consq: StoryEvent 
-  }
