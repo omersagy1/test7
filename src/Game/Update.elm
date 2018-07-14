@@ -9,7 +9,6 @@ import Game.Action as Action exposing (Action)
 import Game.Constants as Constants
 import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
-import Game.Effect as Effect exposing (Effect)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model as Model exposing (Model)
 import Game.Story as Story

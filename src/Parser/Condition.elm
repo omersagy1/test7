@@ -7,7 +7,7 @@ import Game.Condition as Condition exposing (..)
 chance = Chance 
 and = And 
 or = Or 
-ifnot = Not 
+notif = Not 
 gameTimePassed = GameTimePassed >> Pure
 never = Never |> Pure
 unconditionally = Always |> Pure
