@@ -25,7 +25,7 @@ story = begin
 
   |> add (topLevel 
     |> name "first"
-    |> trigger (gameTimePassed (1*Time.second))
+    |> trigger (gameTimePassed (0*Time.second))
     |> body (start
       |> ln "first"
       |> ln "second"

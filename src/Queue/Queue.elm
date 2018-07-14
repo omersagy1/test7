@@ -11,6 +11,9 @@ newQueue = Q [] []
 enqueue : a -> Queue a -> Queue a
 enqueue x (Q front rear) = Q front (x::rear)
 
+push : a -> Queue a -> Queue a
+push x (Q front rear) = Q (x::front) rear
+
 dequeue : Queue a -> (Maybe a, Queue a)
 dequeue queue =
   case queue of

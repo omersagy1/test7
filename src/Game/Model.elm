@@ -125,3 +125,7 @@ choose list m =
     (choice, randomizer) = Randomizer.choose list m.gameState.randomizer
   in
     (choice, updateRandomizer randomizer m)
+
+
+eventQueueEmpty : Model -> Bool
+eventQueueEmpty model = (TimedQueue.size model.eventQueue) == 0

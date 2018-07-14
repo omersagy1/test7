@@ -26,9 +26,7 @@ type StoryEvent = Atomic AtomicEvent
 
 
 type AtomicEvent =
-  Empty
-  -- Displays a line of text as-is.
-  | Narration String
+  Narration String
   -- Dialogue causes "interaction mode" to start if it hasn't started already.
   -- This freezes many aspects of the game. It will also print the text in quotes.
   | Dialogue String

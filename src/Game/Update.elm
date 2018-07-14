@@ -109,16 +109,51 @@ enqueueStoryEvents events model =
   model |>
   case events of
     [] -> identity
-    event::rest -> enqueueStoryEvent event 0
+    event::rest -> enqueueStoryEvent event
 
 
-enqueueStoryEvent : StoryEvent -> Time -> Model -> Model
-enqueueStoryEvent event delay m =
-    { m | eventQueue = TimedQueue.enqueue 
-                          event 
-                          delay
-                          m.eventQueue 
-    }
+enqueueStoryEvent : StoryEvent -> Model -> Model
+enqueueStoryEvent event m =
+  let
+    delay = if Model.eventQueueEmpty m then
+              Constants.firstMessageDelay
+            else 
+              Constants.firstMessageNonEmptyQueueDelay
+  in
+    enqueueStoryEventWithDelay event delay m
+
+
+enqueueStoryEventWithDelay : StoryEvent -> Time -> Model -> Model
+enqueueStoryEventWithDelay event delay m =
+      { m | eventQueue = TimedQueue.enqueue 
+                            event 
+                            delay
+                            m.eventQueue 
+      }
+
+
+pushStoryEvent : StoryEvent -> Model -> Model
+pushStoryEvent event m =
+  pushStoryEventWithDelay event (getDelay event) m
+
+
+pushStoryEventWithDelay : StoryEvent -> Time -> Model -> Model
+pushStoryEventWithDelay event delay m =
+      { m | eventQueue = TimedQueue.push 
+                            event 
+                            delay
+                            m.eventQueue 
+      }
+
+
+getDelay : StoryEvent -> Time
+getDelay event =
+  case event of
+    Atomic (Narration _) -> Constants.defaultMessageDelay
+    Atomic (Effectful _) -> Constants.mutatorDelay
+    Atomic (Goto _) -> 0
+    PlayerChoice _ -> Constants.choiceButtonsDelay
+    other -> 0
 
 
 processEventQueue : Model -> Model
@@ -179,8 +214,17 @@ playSequencedEvent events model =
   model |>
   case events of
     [] -> identity
-    first::rest -> enqueueStoryEvent first (1*Time.second) 
-                   >> playSequencedEvent rest
+    first::rest ->
+      pushStoryEvents (List.reverse rest)
+      >> pushStoryEventWithDelay first Constants.postChoiceMessageDelay
+
+
+pushStoryEvents : List StoryEvent -> Model -> Model
+pushStoryEvents events model =
+  model |>
+  case events of
+    [] -> identity
+    first::rest -> pushStoryEvent first >> pushStoryEvents rest
 
 
 playConditionedEvent : Condition -> StoryEvent -> Model -> Model
@@ -190,8 +234,18 @@ playConditionedEvent c e m =
   in
     Model.setGameState state m |>
     if success then
-      (playStoryEvent e)
+      (pushStoryEvent e)
     else identity
+
+
+playRandomEvent : List StoryEvent -> Model -> Model
+playRandomEvent events m =
+  Model.choose events m
+  |> (\(event, model) -> (maybePerform pushStoryEvent event model))
+
+
+playRankedEvent : List StoryEvent -> Model -> Model
+playRankedEvent events m = m
 
 
 playChoice : List Choice -> Model -> Model
@@ -207,21 +261,7 @@ playChoice choices m =
     |> Model.displayChoices choicesToDisplay
 
 
-playRandomEvent : List StoryEvent -> Model -> Model
-playRandomEvent events m =
-  Model.choose events m
-  |> (\(event, model) -> (maybePerform playStoryEvent event model))
-
-
-playRankedEvent : List StoryEvent -> Model -> Model
-playRankedEvent events m = m
-
-
-eventQueueEmpty : Model -> Bool
-eventQueueEmpty m = (TimedQueue.size m.eventQueue) == 0
-
-
 makeChoice : Choice -> Model -> Model
 makeChoice choice model =
   Model.clearActiveChoices model
-  |> playStoryEvent choice.consq
+  |> pushStoryEventWithDelay choice.consq 0

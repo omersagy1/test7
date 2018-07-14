@@ -34,6 +34,13 @@ enqueue item delay timedQueue =
                             timedQueue.queue) 
   }
 
+push : a -> Time -> TimedQueue a -> TimedQueue a
+push item delay timedQueue =
+  { timedQueue | queue = (Queue.push 
+                            { item = item, delay = delay }
+                            timedQueue.queue) 
+  }
+
 size : TimedQueue a -> Int
 size timedQueue = (Queue.size timedQueue.queue)
 

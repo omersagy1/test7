@@ -7,10 +7,10 @@ import Game.StoryEvent exposing (..)
 -- BUILDERS THAT BEGIN AN EVENT SEQUENCE
 
 start : StoryEvent
-start = Atomic Empty
+start = Sequenced []
 
 narrate : String -> StoryEvent
-narrate s = Atomic <| Narration s
+narrate s = start |> ln s
 
 -- CONVENIENCE BUILDERS FOR SEQUENCING 
 
@@ -41,7 +41,7 @@ choice : String -> Choice
 choice prompt =
   { condition = Condition.Pure Condition.Always
   , prompt = prompt
-  , consq = Atomic Empty
+  , consq = Sequenced []
   }
 
 consq : StoryEvent -> Choice -> Choice
@@ -57,7 +57,7 @@ topLevel = TopLevel
   { name = ""
   , reoccurring = False
   , trigger = Condition.Pure Condition.Never
-  , event = Atomic Empty
+  , event = Sequenced []
   }
 
 name : String -> TopLevelEvent -> TopLevelEvent

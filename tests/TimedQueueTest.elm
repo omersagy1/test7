@@ -100,4 +100,15 @@ suite =
             |> (ignoreResult dequeue)
         in
           Expect.equal 0 (size tq))
+  ,
+    test "dequeue after pushing"
+      (\_ ->
+        let 
+          tq = new
+            |> (push "a" (3*Time.second))
+            |> (push "b" (5*Time.second))
+            |> (update (6*Time.second))
+          e1 = (dequeue tq) |> first
+        in
+          Expect.equal (Just "b") e1)
   ]

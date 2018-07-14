@@ -80,4 +80,22 @@ suite =
             e1 = dequeue q |> first
         in
           Expect.equal (Just 4) e1)
+  ,
+    test "push to front of queue"
+      (\_ ->
+        let q = newQueue
+              |> (enqueue 1)
+              |> (enqueue 2)
+              |> (ignoreResult dequeue)
+              |> (enqueue 3)
+              |> (ignoreResult dequeue)
+              |> (ignoreResult dequeue)
+              |> (enqueue 4)
+              |> (push 0)
+              |> (push 6)
+              |> (push 7)
+              |> (ignoreResult dequeue)
+            e1 = dequeue q |> first
+        in
+          Expect.equal (Just 6) e1)
   ]
