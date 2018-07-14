@@ -49,6 +49,9 @@ choices choices prev = seq prev (Compound <| PlayerChoice choices)
 goto : String -> StoryEvent -> StoryEvent
 goto ref prev = seq prev (Atomic <| Goto ref)
 
+rand : List StoryEvent -> StoryEvent -> StoryEvent
+rand opts prev = seq prev (Compound <| Random opts)
+
 choice : String -> Choice
 choice prompt =
   { condition = Condition.Pure Condition.Always

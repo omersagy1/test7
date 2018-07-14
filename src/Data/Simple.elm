@@ -27,7 +27,12 @@ story = begin
     |> name "first"
     |> trigger (gameTimePassed (1*Time.second))
     |> body (start
-      |> ln "hello"
+      |> rand [ narrate "hello1"
+              , narrate "hello2"
+              , narrate "hello3"
+              , narrate "hello4"
+              , narrate "hello5"
+              ]
       |> ln "world"
       |> effect (ActivateAction "search for wood")
       |> ln "activated..."

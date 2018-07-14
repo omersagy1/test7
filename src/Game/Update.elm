@@ -142,6 +142,8 @@ playCompoundEvent e m =
       playStoryEvent e1 m |> playStoryEvent e2
     PlayerChoice choices -> 
       playChoice choices m
+    Random possibilities ->
+      playRandomEvent possibilities m
     other -> m
 
 
@@ -167,7 +169,12 @@ playChoice choices m =
   in
     Model.setGameState newState m
     |> enqueueChoiceEvent choicesToDisplay
-      
+
+
+playRandomEvent : List StoryEvent -> Model -> Model
+playRandomEvent events m =
+  Model.choose events m
+  |> (\(event, model) -> (maybePerform playStoryEvent event model))
 
 
 enqueueEvent : Event -> Time -> Model -> Model

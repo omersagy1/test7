@@ -2,7 +2,7 @@ module Game.Model exposing(..)
 
 import Time exposing (Time)
 
-import Common.Randomizer exposing (Randomizer)
+import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Effect exposing (Effect)
 import Game.Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
@@ -118,3 +118,11 @@ clearActiveChoices m =
 updateRandomizer : Randomizer -> Model -> Model
 updateRandomizer r m = 
   { m | gameState = GameState.updateRandomizer r m.gameState }
+
+
+choose : List a -> Model -> (Maybe a, Model)
+choose list m =
+  let
+    (choice, randomizer) = Randomizer.choose list m.gameState.randomizer
+  in
+    (choice, updateRandomizer randomizer m)
