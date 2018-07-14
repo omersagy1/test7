@@ -118,12 +118,18 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event model = 
   model |>
   case event of
-    StoryEvent.Atomic e -> 
+    Atomic e -> 
       playAtomicEvent e
-    StoryEvent.Compound e -> 
-      playCompoundEvent e
-    StoryEvent.Sequenced events ->
+    Sequenced events -> 
       playSequencedEvent events
+    Conditioned c e -> 
+      playConditionedEvent c e
+    PlayerChoice choices -> 
+      playChoice choices
+    Random options ->
+      playRandomEvent options
+    Ranked options ->
+      playRankedEvent options
 
 
 playAtomicEvent : AtomicEvent -> Model -> Model
@@ -134,20 +140,6 @@ playAtomicEvent e model =
     Effectful eff -> enqueueEffect eff
     Goto ref -> enqueueGotoEvent ref
     other -> identity
-
-
-playCompoundEvent : CompoundEvent -> Model -> Model
-playCompoundEvent e model =
-  model |>
-  case e of
-    Conditioned c e -> 
-      playConditionedEvent c e
-    PlayerChoice choices -> 
-      playChoice choices
-    Random options ->
-      playRandomEvent options
-    Ranked options ->
-      playRankedEvent options
 
 
 playSequencedEvent : List StoryEvent -> Model -> Model

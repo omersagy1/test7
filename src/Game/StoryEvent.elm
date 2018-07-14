@@ -13,8 +13,16 @@ type TopLevelEvent =
 
 
 type StoryEvent = Atomic AtomicEvent
-                  | Compound CompoundEvent
                   | Sequenced (List StoryEvent)
+                  -- A list of possible choices for the player, with the text prompt for each.
+                  -- Choices will only appear if their condition is either Nothing or evaluates to True.
+                  | PlayerChoice (List Choice)
+                  -- A storyevent that only runs if its condition evaluates to True.
+                  | Conditioned Condition StoryEvent
+                  -- All options have equal weight.
+                  | Random (List StoryEvent)
+                  -- First event which satisfies its condition is picked.
+                  | Ranked (List StoryEvent) 
 
 
 type AtomicEvent =
@@ -30,18 +38,6 @@ type AtomicEvent =
   | Goto String
   -- Executes some kind of state-mutating effect on the game.
   | Effectful Effect
-
-
-type CompoundEvent =
-  -- A list of possible choices for the player, with the text prompt for each.
-  -- Choices will only appear if their condition is either Nothing or evaluates to True.
-  PlayerChoice (List Choice)
-  -- A storyevent that only runs if its condition evaluates to True.
-  | Conditioned Condition StoryEvent
-  -- All options have equal weight.
-  | Random (List StoryEvent)
-  -- First event which satisfies its condition is picked.
-  | Ranked (List StoryEvent) 
 
 
 type alias Choice =

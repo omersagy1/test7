@@ -24,16 +24,16 @@ effect : Effect -> StoryEvent -> StoryEvent
 effect eff = seq (Atomic <| Effectful eff)
 
 cond : Condition -> StoryEvent -> StoryEvent -> StoryEvent
-cond c e = seq (Compound <| Conditioned c e)
+cond c e = seq (Conditioned c e)
 
 choices : List Choice -> StoryEvent -> StoryEvent
-choices choices = seq (Compound <| PlayerChoice choices)
+choices choices = seq (PlayerChoice choices)
 
 goto : String -> StoryEvent -> StoryEvent
 goto ref = seq (Atomic <| Goto ref)
 
 rand : List StoryEvent -> StoryEvent -> StoryEvent
-rand opts = seq (Compound <| Random opts)
+rand opts = seq (Random opts)
 
 -- BUILDERS FOR CHOICES
 
