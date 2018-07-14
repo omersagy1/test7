@@ -118,8 +118,12 @@ playStoryEvent : StoryEvent -> Model -> Model
 playStoryEvent event model = 
   model |>
   case event of
-    StoryEvent.Atomic e -> playAtomicEvent e
-    StoryEvent.Compound e -> playCompoundEvent e
+    StoryEvent.Atomic e -> 
+      playAtomicEvent e
+    StoryEvent.Compound e -> 
+      playCompoundEvent e
+    StoryEvent.Sequenced events ->
+      playSequencedEvent events
 
 
 playAtomicEvent : AtomicEvent -> Model -> Model
@@ -138,14 +142,20 @@ playCompoundEvent e model =
   case e of
     Conditioned c e -> 
       playConditionedEvent c e
-    Sequenced e1 e2 -> 
-      playStoryEvent e1 >> playStoryEvent e2
     PlayerChoice choices -> 
       playChoice choices
     Random options ->
       playRandomEvent options
     Ranked options ->
       playRankedEvent options
+
+
+playSequencedEvent : List StoryEvent -> Model -> Model
+playSequencedEvent events model =
+  model |>
+  case events of
+    [] -> identity
+    first::rest -> playStoryEvent first >> playSequencedEvent rest
 
 
 playConditionedEvent : Condition -> StoryEvent -> Model -> Model

@@ -14,6 +14,7 @@ type TopLevelEvent =
 
 type StoryEvent = Atomic AtomicEvent
                   | Compound CompoundEvent
+                  | Sequenced (List StoryEvent)
 
 
 type AtomicEvent =
@@ -32,11 +33,9 @@ type AtomicEvent =
 
 
 type CompoundEvent =
-  -- Plays one StoryEvent after another.
-  Sequenced StoryEvent StoryEvent
   -- A list of possible choices for the player, with the text prompt for each.
   -- Choices will only appear if their condition is either Nothing or evaluates to True.
-  | PlayerChoice (List Choice)
+  PlayerChoice (List Choice)
   -- A storyevent that only runs if its condition evaluates to True.
   | Conditioned Condition StoryEvent
   -- All options have equal weight.
@@ -70,5 +69,5 @@ isReoccurring (TopLevel e) = e.reoccurring
 append : StoryEvent -> StoryEvent -> StoryEvent
 append event latest =
   case event of
-    Compound (Sequenced prev next) -> Compound (Sequenced prev (append next latest))
-    other -> Compound (Sequenced other latest)
+    Sequenced seq -> Sequenced (seq ++ [latest])
+    other -> Sequenced [other, latest]
