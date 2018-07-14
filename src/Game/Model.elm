@@ -4,10 +4,9 @@ import Time exposing (Time)
 
 import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Effect exposing (Effect)
-import Game.Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Story exposing (Story)
-import Game.StoryEvent exposing (Choice)
+import Game.StoryEvent exposing (StoryEvent, Choice)
 import Parser.Main
 import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 
@@ -36,7 +35,7 @@ type alias Model =
   , messageHistory : List String 
 
   -- Events waiting to be executed.
-  , eventQueue : TimedQueue Event
+  , eventQueue : TimedQueue StoryEvent
 
   -- All story events that could be Conditioned.
   , story : Story

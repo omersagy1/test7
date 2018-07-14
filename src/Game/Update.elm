@@ -10,7 +10,6 @@ import Game.Constants as Constants
 import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
 import Game.Effect as Effect exposing (Effect)
-import Game.Event as Event exposing (Event)
 import Game.GameState as GameState exposing (GameState)
 import Game.Model as Model exposing (Model)
 import Game.Story as Story
@@ -102,16 +101,42 @@ triggerStoryEvents m =
     { m | gameState = gameState
         , story = story
     }
-    |> playStoryEvents triggeredEvents
+    |> enqueueStoryEvents triggeredEvents
 
 
-playStoryEvents : List StoryEvent -> Model -> Model
-playStoryEvents events model =
+enqueueStoryEvents : List StoryEvent -> Model -> Model
+enqueueStoryEvents events model =
   model |>
   case events of
     [] -> identity
-    event::rest ->
-      playStoryEvent event >> playStoryEvents rest
+    event::rest -> enqueueStoryEvent event 0
+
+
+enqueueStoryEvent : StoryEvent -> Time -> Model -> Model
+enqueueStoryEvent event delay m =
+    { m | eventQueue = TimedQueue.enqueue 
+                          event 
+                          delay
+                          m.eventQueue 
+    }
+
+
+processEventQueue : Model -> Model
+processEventQueue m = 
+  let 
+    (e, newModel) = dequeueEvent m
+  in
+    case e of
+      Nothing -> newModel
+      Just event -> playStoryEvent event newModel
+
+
+dequeueEvent : Model -> (Maybe StoryEvent, Model)
+dequeueEvent m =
+  let 
+    (e, queue) = (TimedQueue.dequeue m.eventQueue)
+  in
+    (e, { m | eventQueue = queue })
 
 
 playStoryEvent : StoryEvent -> Model -> Model
@@ -136,9 +161,16 @@ playAtomicEvent : AtomicEvent -> Model -> Model
 playAtomicEvent e model =
   model |>
   case e of
-    Narration ln -> enqueueTextEvent ln
-    Effectful eff -> enqueueEffect eff
-    Goto ref -> enqueueGotoEvent ref
+    Narration ln -> 
+      Model.displayText ln
+
+    Effectful eff ->
+      Model.applyEffect eff
+
+    Goto ref ->
+      (maybePerform playStoryEvent) 
+        (Story.getEventByName ref model.story |> maybeChain StoryEvent.getEvent)
+
     other -> identity
 
 
@@ -147,7 +179,8 @@ playSequencedEvent events model =
   model |>
   case events of
     [] -> identity
-    first::rest -> playStoryEvent first >> playSequencedEvent rest
+    first::rest -> enqueueStoryEvent first (1*Time.second) 
+                   >> playSequencedEvent rest
 
 
 playConditionedEvent : Condition -> StoryEvent -> Model -> Model
@@ -171,7 +204,7 @@ playChoice choices m =
                    m.gameState
   in
     Model.setGameState newState m
-    |> enqueueChoiceEvent choicesToDisplay
+    |> Model.displayChoices choicesToDisplay
 
 
 playRandomEvent : List StoryEvent -> Model -> Model
@@ -184,70 +217,8 @@ playRankedEvent : List StoryEvent -> Model -> Model
 playRankedEvent events m = m
 
 
-enqueueEvent : Event -> Time -> Model -> Model
-enqueueEvent event delay m =
-    { m | eventQueue = TimedQueue.enqueue 
-                          event 
-                          delay
-                          m.eventQueue 
-    }
-
-
-enqueueTextEvent : String -> Model -> Model
-enqueueTextEvent text m =
-  enqueueEvent
-    (Event.DisplayText text) Constants.defaultMessageDelay m
-
-
 eventQueueEmpty : Model -> Bool
 eventQueueEmpty m = (TimedQueue.size m.eventQueue) == 0
-
-
-enqueueChoiceEvent : List Choice -> Model -> Model
-enqueueChoiceEvent choices m =
-  enqueueEvent (Event.DisplayChoices choices) Constants.choiceButtonsDelay m
-
-
-enqueueGotoEvent : String -> Model -> Model
-enqueueGotoEvent name m =
-  enqueueEvent (Event.TriggerStoryEvent name) 0 m
-
-
-enqueueEffect : Effect -> Model -> Model
-enqueueEffect eff m =
-  enqueueEvent (Event.ApplyEffect eff) Constants.mutatorDelay m
-
-
-dequeueEvent : Model -> (Maybe Event, Model)
-dequeueEvent m =
-  let 
-    (e, queue) = (TimedQueue.dequeue m.eventQueue)
-  in
-    (e, { m | eventQueue = queue })
-
-
-processEventQueue : Model -> Model
-processEventQueue m = 
-  let 
-    (e, newModel) = dequeueEvent m
-  in
-    case e of
-      Nothing -> newModel
-      Just event -> processEvent event newModel
-
-
-processEvent : Event -> Model -> Model
-processEvent e m =
-  case e of
-    Event.DisplayText text ->
-      Model.displayText text m
-    Event.DisplayChoices choices ->
-      Model.displayChoices choices m
-    Event.TriggerStoryEvent name ->
-      (maybePerform playStoryEvent) 
-        (Story.getEventByName name m.story |> maybeChain StoryEvent.getEvent) m
-    Event.ApplyEffect e ->
-      Model.applyEffect e m
 
 
 makeChoice : Choice -> Model -> Model
