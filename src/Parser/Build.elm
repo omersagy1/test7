@@ -25,32 +25,36 @@ trigger t (TopLevel p) = TopLevel { p | trigger = t }
 body : StoryEvent -> TopLevelEvent -> TopLevelEvent
 body e (TopLevel p) = TopLevel { p | event = e }
 
+-- BUILDERS THAT BEGIN AN EVENT SEQUENCE
+
 start : StoryEvent
 start = Atomic Empty
-
-seq : StoryEvent -> StoryEvent -> StoryEvent
-seq prev next = Compound <| Sequenced prev next
-
-ln : String -> StoryEvent -> StoryEvent
-ln s e = seq e (Atomic <| Narration s)
 
 narrate : String -> StoryEvent
 narrate s = Atomic <| Narration s
 
+-- CONVENIENCE BUILDERS FOR SEQUENCING 
+
+seq : StoryEvent -> StoryEvent -> StoryEvent
+seq next = (\prev -> Compound <| Sequenced prev next)
+
+ln : String -> StoryEvent -> StoryEvent
+ln s = seq (Atomic <| Narration s)
+
 effect : Effect -> StoryEvent -> StoryEvent
-effect eff e = seq e (Atomic <| Effectful eff)
+effect eff = seq (Atomic <| Effectful eff)
 
 cond : Condition -> StoryEvent -> StoryEvent -> StoryEvent
-cond c e prev = seq prev (Compound <| Conditioned c e)
+cond c e = seq (Compound <| Conditioned c e)
 
 choices : List Choice -> StoryEvent -> StoryEvent
-choices choices prev = seq prev (Compound <| PlayerChoice choices)
+choices choices = seq (Compound <| PlayerChoice choices)
 
 goto : String -> StoryEvent -> StoryEvent
-goto ref prev = seq prev (Atomic <| Goto ref)
+goto ref = seq (Atomic <| Goto ref)
 
 rand : List StoryEvent -> StoryEvent -> StoryEvent
-rand opts prev = seq prev (Compound <| Random opts)
+rand opts = seq (Compound <| Random opts)
 
 choice : String -> Choice
 choice prompt =
