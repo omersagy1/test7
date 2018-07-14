@@ -134,17 +134,19 @@ playAtomicEvent e m =
 
 
 playCompoundEvent : CompoundEvent -> Model -> Model
-playCompoundEvent e m =
+playCompoundEvent e model =
+  model |>
   case e of
     Conditioned c e -> 
-      playConditionedEvent c e m
+      playConditionedEvent c e
     Sequenced e1 e2 -> 
-      playStoryEvent e1 m |> playStoryEvent e2
+      playStoryEvent e1 >> (playStoryEvent e2)
     PlayerChoice choices -> 
-      playChoice choices m
-    Random possibilities ->
-      playRandomEvent possibilities m
-    other -> m
+      playChoice choices
+    Random options ->
+      playRandomEvent options
+    Ranked options ->
+      playRankedEvent options
 
 
 playConditionedEvent : Condition -> StoryEvent -> Model -> Model
@@ -175,6 +177,10 @@ playRandomEvent : List StoryEvent -> Model -> Model
 playRandomEvent events m =
   Model.choose events m
   |> (\(event, model) -> (maybePerform playStoryEvent event model))
+
+
+playRankedEvent : List StoryEvent -> Model -> Model
+playRankedEvent events m = m
 
 
 enqueueEvent : Event -> Time -> Model -> Model
