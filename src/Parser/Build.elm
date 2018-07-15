@@ -21,6 +21,9 @@ seq next = (\prev -> append prev next)
 ln : String -> StoryEvent -> StoryEvent
 ln s = seq (Atomic <| Narration s)
 
+di : String -> StoryEvent -> StoryEvent
+di s = seq (Atomic <| Dialogue s)
+
 effect : Effect -> StoryEvent -> StoryEvent
 effect eff = seq (Atomic <| Effectful eff)
 

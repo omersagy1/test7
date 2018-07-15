@@ -199,6 +199,9 @@ playAtomicEvent e model =
   case e of
     Narration ln -> 
       displayText ln
+    
+    Dialogue ln ->
+      displayDialogue ln
 
     Effectful eff ->
       Model.applyEffect eff
@@ -282,3 +285,8 @@ makeChoice choice model =
 displayText : String -> Model -> Model
 displayText text model =
   Printer.setActiveMessage text model
+
+
+displayDialogue : String -> Model -> Model
+displayDialogue text model =
+  displayText ("'" ++ text ++ "'") model

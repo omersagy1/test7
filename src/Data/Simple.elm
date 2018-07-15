@@ -24,54 +24,7 @@ story : Story
 story = begin
 
   |> add (topLevel 
-    |> name "first"
-    |> trigger (gameTimePassed (0*Time.second))
-    |> body (start
-      |> ln "first"
-      |> ln "second"
-      |> rand [ narrate "hello1"
-              , narrate "hello2"
-              , narrate "hello3"
-              , narrate "hello4"
-              , narrate "hello5"
-                |> ln "hello 5-2!!"
-              ]
-      |> ln "world"
-      |> effect (ActivateAction "search for wood")
-      |> ln "activated..."
-      |> effect (SetMilestoneReached "t1")
-      |> cond (gameTimePassed (0.8*Time.second))
-              (narrate "this one shows!")
-      |> cond (milestoneReached "fake") 
-              (narrate "this one doesn't!")
-      |> choices
-          [ choice "yes" 
-            |> consq (start
-              |> ln "said yes!"
-              |> goto "reffed")
-
-          , choice "no" 
-            |> consq (narrate "said no...")
-
-          , choice "maybe?"
-            |> condition (gameTimePassed (0.5*Time.second))
-            |> consq (narrate "was available...")
-
-          , choice "never"
-            |> condition (milestoneReached "fake")
-            |> consq (narrate "never seen..")
-          ]
-      ))
-  
-  |> add (topLevel
-  |> trigger fireStoked
-  |> reoccurring
+  |> name "first"
+  |> trigger (gameTimePassed (0*Time.second))
   |> body (start
-  |> ln "the fire is roaring."
-  |> ln "ending the game..."
-  |> effect GameOver))
-  
-  |> add (topLevel
-    |> name "reffed"
-    |> body (start
-      |> ln "got to the referenced event!"))
+  |> di "Hello to you!"))
