@@ -39,8 +39,15 @@ ignoreResult f = (\x -> (f x) |> Tuple.second)
 isJust : Maybe a -> Bool
 isJust m =
   case m of
-    Nothing -> False
-    (Just x) -> True
+    Just x -> True
+    other -> False
+
+
+isNothing : Maybe a -> Bool
+isNothing m =
+  case m of
+    Nothing -> True
+    other -> False
 
 
 maybeToList : Maybe a -> List a

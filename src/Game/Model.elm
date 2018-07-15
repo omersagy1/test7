@@ -2,6 +2,7 @@ module Game.Model exposing(..)
 
 import Time exposing (Time)
 
+import Common.Animation exposing (Animation)
 import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Effect exposing (Effect)
 import Game.GameState as GameState exposing (GameState)
@@ -20,6 +21,7 @@ initialModel =
   , paused = False
   , fastForward = False
   , activeChoices = Nothing
+  , activeScrollingMessage = Nothing
   }
 
 
@@ -49,6 +51,14 @@ type alias Model =
   -- The choice the player must make to continue the game.
   , activeChoices : Maybe (List Choice)
 
+  , activeScrollingMessage : Maybe ScrollingMessage
+
+  }
+
+
+type alias ScrollingMessage =
+  { fullText : String
+  , animation : Animation
   }
 
 
