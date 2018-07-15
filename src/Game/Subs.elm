@@ -8,6 +8,6 @@ import Game.Update as Update exposing(Message)
 
 subscriptions : Model -> Sub Message
 subscriptions model = 
-  case model.paused of
-    True -> Sub.none
-    False -> AnimationFrame.diffs Update.UpdateTime
+  if model.gameState.gameOver then Sub.none
+  else if model.paused then Sub.none
+  else AnimationFrame.diffs Update.UpdateTime

@@ -203,20 +203,18 @@ story =
         ]))
   
   |> add (topLevel
-    |> name "visitor-intro"
-    |> body (start
-    |> ln "The man reaches out his hand."
-    |> ln "You shake it."
-    |> goto "game-over"))
+  |> name "visitor-intro"
+  |> body (start
+  |> ln "The man reaches out his hand."
+  |> ln "You shake it."
+  |> goto "game-over"))
   
   |> add (topLevel
-    |> name "game-over"
-    |> body (start
-    |> ln "..."
-    |> ln " ~ TO BE CONTINUED ~ "
-    |> effect (Compound [ (DeactivateAction "search for wood")
-                        , (DeactivateAction "investigate")
-                        ])))
+  |> name "game-over"
+  |> body (start
+  |> ln "..."
+  |> ln " ~ TO BE CONTINUED ~ "
+  |> effect GameOver))
 
 
 init : GameState

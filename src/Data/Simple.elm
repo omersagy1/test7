@@ -64,10 +64,12 @@ story = begin
       ))
   
   |> add (topLevel
-    |> trigger fireStoked
-    |> reoccurring
-    |> body (start
-      |> ln "the fire is roaring."))
+  |> trigger fireStoked
+  |> reoccurring
+  |> body (start
+  |> ln "the fire is roaring."
+  |> ln "ending the game..."
+  |> effect GameOver))
   
   |> add (topLevel
     |> name "reffed"

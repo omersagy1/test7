@@ -24,6 +24,7 @@ type alias GameState =
   , milestones : Milestones
   , customActions : List CustomAction
   , randomizer : Randomizer
+  , gameOver : Bool
   }
 
 
@@ -36,6 +37,7 @@ init =
   , milestones = Milestones.init
   , customActions = []
   , randomizer = Randomizer.init 0
+  , gameOver = False
   }
 
 
@@ -212,6 +214,9 @@ applyEffect e s =
 
     Effect.DeactivateAction name -> 
       applyToAction name (Action.deactivate) s
+    
+    Effect.GameOver ->
+      gameOver s
 
     Effect.Compound effects -> 
       List.foldl applyEffect s effects
@@ -239,3 +244,7 @@ addToResourceRand name x y s =
   in
     addToResource name val s
     |> (\s -> { s | randomizer = r })
+
+
+gameOver : GameState -> GameState
+gameOver s = { s | gameOver = True }
