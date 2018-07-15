@@ -165,19 +165,18 @@ story =
             |> ln "..."
             |> ln "The man is unfazed."
             |> ln "'You ought to relax, stranger.'"
-            |> cases
-                [ caseif 
-                    (milestoneReached "corpse-defiled")
-                    (narrate "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
-                     |> goto "game-over")
-                , caseif
-                    unconditionally
-                    (narrate "'It's just you and me out here on the starboard.'"
-                     |> ln "'Been years and years since I seen anyone else.'"
-                     |> ln "'Damn near forgot how to talk.'"
-                     |> ln "He smiles."
-                     |> goto "visitor-intro")
-                ])
+            |> cases (caseList
+               |> caseif 
+                   (milestoneReached "corpse-defiled")
+                   (narrate "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
+                    |> goto "game-over")
+               |> default
+                   (narrate "'It's just you and me out here on the starboard.'"
+                    |> ln "'Been years and years since I seen anyone else.'"
+                    |> ln "'Damn near forgot how to talk.'"
+                    |> ln "He smiles."
+                    |> goto "visitor-intro")
+                ))
         ]))
   
   |> add (topLevel

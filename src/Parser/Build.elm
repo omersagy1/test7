@@ -3,6 +3,7 @@ module Parser.Build exposing (..)
 import Game.Condition as Condition exposing (Condition)
 import Game.Effect exposing (Effect)
 import Game.StoryEvent exposing (..)
+import Parser.Condition
 
 -- BUILDERS THAT BEGIN AN EVENT SEQUENCE
 
@@ -35,11 +36,18 @@ goto ref = seq (Atomic <| Goto ref)
 rand : List StoryEvent -> StoryEvent -> StoryEvent
 rand opts = seq (Random opts)
 
-caseif : Condition -> StoryEvent -> ConditionedEvent
-caseif c e = ConditionedEvent c e  
+caseif : Condition -> StoryEvent -> List ConditionedEvent -> List ConditionedEvent
+caseif c e list = list ++ [ConditionedEvent c e]
 
 cases : List ConditionedEvent -> StoryEvent -> StoryEvent
 cases events = seq (Cases events)
+
+default : StoryEvent -> List ConditionedEvent -> List ConditionedEvent
+default e list = caseif Parser.Condition.unconditionally e list
+
+caseList : List ConditionedEvent
+caseList = []
+
 
 -- BUILDERS FOR CHOICES
 
