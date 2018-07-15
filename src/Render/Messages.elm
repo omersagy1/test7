@@ -11,7 +11,7 @@ displaySize : Int
 displaySize = 14
 
 displayWidth : Px
-displayWidth = (px 350)
+displayWidth = (px 400)
 
 spaceBetweenMessages : Px
 spaceBetweenMessages = (px 12)

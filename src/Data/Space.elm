@@ -22,7 +22,7 @@ story =
     |> ln "..."
     |> ln "You shiver."
     |> choices 
-        [ choice "Shut eyes"
+        [ choice "Meditate"
           |> consq (start
             |> ln "You breathe deeply."
             |> ln "The freezing air bites your face."
@@ -32,7 +32,7 @@ story =
           |> consq (start
             |> ln "A thick haze clouds your vision."
             |> ln "But pale white letters speak to you..."
-            |> ln "DEFUMIGATION CHAMBER"
+            |> ln "FUMIGATION CHAMBER"
           |> goto "need-a-light")
         ]))
 
@@ -86,7 +86,7 @@ story =
     |> trigger (milestoneAtCount "wood-searched" 2)
     |> body (start
     |> ln "You feel around in the dark."
-    |> ln "The distant fire shines a small light on a rotting log."))
+    |> ln "The false starlight illuminates a rotting log."))
 
   |> add (topLevel
     |> reoccurring
@@ -100,46 +100,68 @@ story =
         ]))
 
   |> add (topLevel
-    |> trigger (timeSinceMilestone "fire-stoked" (5*Time.second))
-    |> body (start
-    |> ln "There is something artificial about this place."
-    |> effect (ActivateAction "investigate")))
+  |> trigger (timeSinceMilestone "fire-stoked" (5*Time.second))
+  |> body (start
+  |> ln "..."
+  |> ln "There is something artificial about this place."
+  |> effect (ActivateAction "investigate")))
 
   |> add (topLevel
-    |> trigger (milestoneAtCount "did-investigate" 1)
-    |> body (start
-    |> ln "The grass seems to stretch on for miles..."
-    |> ln "And the stars look false."
-    |> choices
-        [ choice "Yell"
-          |> consq (start
-            |> ln "Your own voice returns to you from every direction..."
-            |> ln "Even from above.")
-        , choice "Stay Silent"
-          |> consq (start
-              |> ln "The haze congeals on your face."
-              |> ln "You return to the fire.")
-        ]))
+  |> trigger (milestoneAtCount "did-investigate" 1)
+  |> body (start
+  |> ln "The grass seems to stretch on for miles..."
+  |> ln "And the stars look false."
+  |> choices
+      [ choice "Call Out"
+        |> consq (start
+          |> ln "Your own voice returns to you from every direction..."
+          |> ln "Even from above.")
+      , choice "Stay Silent"
+        |> consq (start
+            |> ln "The haze congeals on your face..."
+            |> ln "But your eyes see better in silence."
+            |> ln "The haze hangs heavily over the surrounding forest."
+            |> ln "You return to the fire.")
+      ]))
 
   |> add (topLevel
-    |> trigger (milestoneAtCount "did-investigate" 2)
-    |> body (start
-    |> ln "You find a body lying in the grass."
-    |> ln "It's not moving."
-    |> choices 
-        [ choice "Turn it over"
-          |> consq (start
-              |> ln "A skull stares back up at you, framed by long blonde hair."
-              |> ln "Its teeth are small and rotted."
-              |> ln "On its body is nothing of value.")
-        , choice "Crush its neck"
-          |> consq (start
-              |> ln "Its bony head snaps from its shoulders..."
-              |> ln "And rolls into the grass."
-              |> ln "..."
-              |> ln "You rip off the body's dress but find nothing of value."
-              |> effect (SetMilestoneReached "corpse-defiled"))
-        ]))
+  |> trigger (milestoneAtCount "did-investigate" 2)
+  |> body (start
+  |> ln "You find a body lying in the grass."
+  |> ln "It's not moving."
+  |> ln "The mud-stained dress on its back is speckled with flowers."
+  |> choices 
+      [ choice "Turn it over"
+        |> consq (start
+        |> ln "A skull stares back up at you, framed by long blonde hair."
+        |> ln "Its teeth are small and rotted."
+        |> goto "defile-corpse-choice")
+      , choice "Crush its neck"
+        |> consq (start
+        |> ln "Its bony blonde head snaps from its shoulders..."
+        |> ln "And rolls into the grass."
+        |> ln "..."
+        |> goto "defile-corpse-choice")
+      ]))
+
+  |> add (topLevel
+  |> name "defile-corpse-choice"
+  |> body (start
+  |> ln "Your hunger demands compense."
+  |> choices
+      [ choice "Search Body"
+        |> consq (start
+        |> ln "Your rip off the body's dress..."
+        |> ln "But only find an insect den among its fleshy bones."
+        |> ln "There is nothing of value here."
+        |> ln "Except the dress."
+        |> effect (SetMilestoneReached "corpse-defiled"))
+      , choice "Return to Fire"
+        |> consq (start
+        |> ln "You leave the weeping skull be."
+        |> ln "The body fades into the haze..."
+        |> ln "But not your memory of its flowery dress.")
+      ]))
 
   |> add (topLevel
     |> trigger (milestoneAtCount "did-investigate" 3)

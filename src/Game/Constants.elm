@@ -46,4 +46,4 @@ triggerStoryEventDelay = 1.0 * Time.second
 
 
 fastForwardFactor : Float
-fastForwardFactor = 3
+fastForwardFactor = 5
