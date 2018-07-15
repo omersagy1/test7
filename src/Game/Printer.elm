@@ -36,7 +36,7 @@ endIfComplete model =
 
 
 isPrinting : Model -> Bool
-isPrinting model = isNothing model.activeScrollingMessage
+isPrinting model = isJust model.activeScrollingMessage
 
 
 allMessages : Model -> List String
@@ -76,7 +76,7 @@ currentText sm =
 
 
 timePerCharacter : Time
-timePerCharacter = 0.1 * Time.second
+timePerCharacter = 0.025 * Time.second
 
 
 scrollTime : String -> Time

@@ -11,6 +11,7 @@ import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
 import Game.GameState as GameState exposing (GameState)
 import Game.Model as Model exposing (Model)
+import Game.Printer as Printer
 import Game.Story as Story
 import Game.StoryEvent as StoryEvent exposing (..)
 
@@ -74,8 +75,9 @@ processUserAction msg state =
 updateGame : Time -> Model -> Model
 updateGame t m =
   updateGameTime t m
+  |> Printer.update t
   |> triggerStoryEvents
-  |> processEventQueue
+  |> (if not (Printer.isPrinting m) then processEventQueue else identity)
   |> Model.clearActions 
 
 
@@ -196,7 +198,7 @@ playAtomicEvent e model =
   model |>
   case e of
     Narration ln -> 
-      Model.displayText ln
+      displayText ln
 
     Effectful eff ->
       Model.applyEffect eff
@@ -275,3 +277,8 @@ makeChoice : Choice -> Model -> Model
 makeChoice choice model =
   Model.clearActiveChoices model
   |> pushStoryEventWithDelay choice.consq 0
+
+
+displayText : String -> Model -> Model
+displayText text model =
+  Printer.setActiveMessage text model

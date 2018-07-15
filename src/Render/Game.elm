@@ -13,6 +13,7 @@ import Game.Cooldown
 import Game.Fire exposing (Fire)
 import Game.GameState exposing (GameState)
 import Game.Model exposing (Model)
+import Game.Printer as Printer
 import Game.Resource exposing (Resource)
 import Game.Update exposing (Message)
 
@@ -30,7 +31,7 @@ view m = div [ css [ displayFlex
                    , fontFamily serif
                    ] 
              ]
-             [ Messages.messageHistory m.messageHistory
+             [ Messages.messageHistory (Printer.allMessages m)
              , interactiveDisplay m
              ]
 

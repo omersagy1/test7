@@ -100,11 +100,6 @@ clearActions : Model -> Model
 clearActions m = { m | gameState = GameState.clearActions m.gameState }
 
 
-displayText : String -> Model -> Model
-displayText text m =
-  { m | messageHistory = text::m.messageHistory }
-
-
 displayChoices : List Choice -> Model -> Model
 displayChoices choices m =
   { m | activeChoices = Just choices }
