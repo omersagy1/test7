@@ -17,13 +17,14 @@ type StoryEvent = Atomic AtomicEvent
                   -- A list of possible choices for the player, with the text prompt for each.
                   -- Choices will only appear if their condition is either Nothing or evaluates to True.
                   | PlayerChoice (List Choice)
-                  -- A storyevent that only runs if its condition evaluates to True.
-                  | Conditioned Condition StoryEvent
+                  | Conditioned ConditionedEvent
                   -- All options have equal weight.
                   | Random (List StoryEvent)
                   -- First event which satisfies its condition is picked.
-                  | Ranked (List StoryEvent) 
+                  | Cases (List ConditionedEvent) 
 
+-- A storyevent that only runs if its condition evaluates to True.
+type ConditionedEvent = ConditionedEvent Condition StoryEvent
 
 type AtomicEvent =
   Narration String

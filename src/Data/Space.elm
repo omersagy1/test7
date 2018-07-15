@@ -64,7 +64,7 @@ story =
     |> trigger (and fireStoked (milestoneAtCount "fire-stoked" 1))
     |> body (start
     |> ln "You bring your face close to the flames."
-    |> ln "A foreign smile breaks upon your face."
+    |> ln "A foreign smile stretches your lips."
     |> effect (IncrementMilestone "fire-stoked")))
 
   |> add (topLevel
@@ -132,8 +132,7 @@ story =
               |> ln "A skull stares back up at you, framed by long blonde hair."
               |> ln "Its teeth are small and rotted."
               |> ln "On its body is nothing of value.")
-        ,
-          choice "Crush its neck"
+        , choice "Crush its neck"
           |> consq (start
               |> ln "Its bony head snaps from its shoulders..."
               |> ln "And rolls into the grass."
@@ -166,17 +165,19 @@ story =
             |> ln "..."
             |> ln "The man is unfazed."
             |> ln "'You ought to relax, stranger.'"
-            |> cond 
-                (milestoneReached "corpse-defiled")
-                (narrate "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
-                 |> goto "game-over")
-            |> cond
-                (notif (milestoneReached "corpse-defiled"))
-                (narrate "'It's just you and me out here on the starboard.'"
-                 |> ln "'Been years and years since I seen anyone else.'"
-                 |> ln "'Damn near forgot how to talk.'"
-                 |> ln "He smiles."
-                 |> goto "visitor-intro"))
+            |> cases
+                [ caseif 
+                    (milestoneReached "corpse-defiled")
+                    (narrate "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
+                     |> goto "game-over")
+                , caseif
+                    unconditionally
+                    (narrate "'It's just you and me out here on the starboard.'"
+                     |> ln "'Been years and years since I seen anyone else.'"
+                     |> ln "'Damn near forgot how to talk.'"
+                     |> ln "He smiles."
+                     |> goto "visitor-intro")
+                ])
         ]))
   
   |> add (topLevel

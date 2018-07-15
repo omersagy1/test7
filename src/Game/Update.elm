@@ -181,14 +181,14 @@ playStoryEvent event model =
       playAtomicEvent e
     Sequenced events -> 
       playSequencedEvent events
-    Conditioned c e -> 
+    Conditioned (ConditionedEvent c e) -> 
       playConditionedEvent c e
     PlayerChoice choices -> 
       playChoice choices
     Random options ->
       playRandomEvent options
-    Ranked options ->
-      playRankedEvent options
+    Cases cases ->
+      playCasesEvent cases
 
 
 playAtomicEvent : AtomicEvent -> Model -> Model
@@ -243,8 +243,19 @@ playRandomEvent events m =
   |> (\(event, model) -> (maybePerform pushStoryEvent event model))
 
 
-playRankedEvent : List StoryEvent -> Model -> Model
-playRankedEvent events m = m
+playCasesEvent : List ConditionedEvent -> Model -> Model
+playCasesEvent events m =
+  case events of
+    [] -> m
+    (ConditionedEvent condition event)::rest ->
+      let 
+        (success, state) = ConditionFns.condition condition m.gameState
+      in
+        Model.setGameState state m |>
+        if success then
+          pushStoryEvent event
+        else
+          playCasesEvent rest
 
 
 playChoice : List Choice -> Model -> Model
