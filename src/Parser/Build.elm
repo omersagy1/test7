@@ -3,7 +3,7 @@ module Parser.Build exposing (..)
 import Game.Condition as Condition exposing (Condition)
 import Game.Effect exposing (Effect)
 import Game.StoryEvent exposing (..)
-import Parser.Condition
+import Parser.Condition exposing (..)
 
 -- BUILDERS THAT BEGIN AN EVENT SEQUENCE
 
@@ -43,7 +43,7 @@ cases : List ConditionedEvent -> StoryEvent -> StoryEvent
 cases events = seq (Cases events)
 
 default : StoryEvent -> List ConditionedEvent -> List ConditionedEvent
-default e list = caseif Parser.Condition.unconditionally e list
+default e list = caseif unconditionally e list
 
 caseList : List ConditionedEvent
 caseList = []

@@ -174,6 +174,7 @@ story =
                    (narrate "'It's just you and me out here on the starboard.'"
                     |> ln "'Been years and years since I seen anyone else.'"
                     |> ln "'Damn near forgot how to talk.'"
+                    |> ln "..."
                     |> ln "He smiles."
                     |> goto "visitor-intro")
                 ))
@@ -190,7 +191,7 @@ story =
     |> name "game-over"
     |> body (start
     |> ln "..."
-    |> ln " ~ to be continued..."
+    |> ln " ~ TO BE CONTINUED ~ "
     |> effect (Compound [ (DeactivateAction "search for wood")
                         , (DeactivateAction "investigate")
                         ])))
