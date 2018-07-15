@@ -141,6 +141,7 @@ story =
         |> ln "Its bony blonde head snaps from its shoulders..."
         |> ln "And rolls into the grass."
         |> ln "..."
+        |> effect (SetMilestoneReached "corpse-defiled")
         |> goto "defile-corpse-choice")
       ]))
 
@@ -155,7 +156,7 @@ story =
         |> ln "But only find an insect den among its fleshy bones."
         |> ln "There is nothing of value here."
         |> ln "Except the dress."
-        |> effect (SetMilestoneReached "corpse-defiled"))
+        |> effect (SetMilestoneReached "corpse-dress-taken"))
       , choice "Return to Fire"
         |> consq (start
         |> ln "You leave the weeping skull be."
@@ -173,33 +174,31 @@ story =
     |> choices
         [ choice "Who are you?"
           |> consq (start
-            |> ln "..."
-            |> ln "The man looks up."
-            |> ln "'It's been years since I've seen anyone else on the starboard.'"
-            |> ln "'Except for ol' Cathy.'"
-            |> cond 
-                (milestoneReached "corpse-defiled")
-                (narrate "'...whose poor neck you decided to crush.'"
-                  |> ln "The man chuckles to himself.")
-            |> goto "visitor-intro")
+          |> ln "..."
+          |> ln "The man looks up."
+          |> di "Didn't expect to ever find another soul up here on AL 50."
+          |> di "Except for ol' Cathy."
+          |> cond (milestoneReached "corpse-dress-taken")
+              (speak "...whose dress I see you've taken to wearing."
+               |> di "An original look, I can give you that."
+               |> ln "The man chuckles to himself.")
+          |> cond (milestoneReached "corpse-defiled")
+              (speak "Poor girl's head came right off her poor head."
+               |> di "Wonder what kind of nasty critter would do something like that...")
+          |> goto "visitor-intro")
         , choice "Get out!"
           |> consq (start
-            |> ln "..."
-            |> ln "The man is unfazed."
-            |> ln "'You ought to relax, stranger.'"
-            |> cases (caseList
-               |> caseif 
-                   (milestoneReached "corpse-defiled")
-                   (narrate "'You aren't going to be able to crush my head like you did ol' Cathy's.'"
-                    |> goto "game-over")
-               |> default
-                   (narrate "'It's just you and me out here on the starboard.'"
-                    |> ln "'Been years and years since I seen anyone else.'"
-                    |> ln "'Damn near forgot how to talk.'"
-                    |> ln "..."
-                    |> ln "He smiles."
-                    |> goto "visitor-intro")
-                ))
+          |> ln "..."
+          |> ln "The man is unfazed."
+          |> di "You ought to relax, stranger."
+          |> cases (caseList
+              |> caseif (milestoneReached "corpse-dress-taken")
+                  (speak "I ain't afraid of a haggard man in a flowery dress.")
+              |> caseif (milestoneReached "corpse-defiled")
+                  (speak "You aren't going to be able to crush my bony head like you did poor Cathy's."))
+          |> di "Ain't nobody up here on AL 50 except me..."
+          |> di "And you."
+          |> goto "visitor-intro")
         ]))
   
   |> add (topLevel

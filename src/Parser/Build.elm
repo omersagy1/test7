@@ -13,6 +13,9 @@ start = Sequenced []
 narrate : String -> StoryEvent
 narrate s = start |> ln s
 
+speak : String -> StoryEvent
+speak s = start |> di s
+
 -- CONVENIENCE BUILDERS FOR SEQUENCING 
 
 seq : StoryEvent -> StoryEvent -> StoryEvent

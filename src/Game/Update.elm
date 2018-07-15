@@ -74,23 +74,24 @@ processUserAction msg state =
 
 updateGame : Time -> Model -> Model
 updateGame t m =
-  updateGameTime t m
-  |> Printer.update t
-  |> triggerStoryEvents
-  |> (if not (Printer.isPrinting m) then processEventQueue else identity)
-  |> Model.clearActions 
+  let
+    timePassed = 
+        if m.fastForward 
+        then t * Constants.fastForwardFactor        
+        else t
+  in
+    updateGameTime timePassed m
+    |> Printer.update timePassed
+    |> triggerStoryEvents
+    |> (if not (Printer.isPrinting m) then processEventQueue else identity)
+    |> Model.clearActions 
 
 
 updateGameTime : Time -> Model -> Model
 updateGameTime timePassed m =
-    let
-      t = if m.fastForward 
-          then timePassed * Constants.fastForwardFactor        
-          else timePassed
-    in
-      { m | gameState = GameState.update t m.gameState
-          , eventQueue = TimedQueue.update t m.eventQueue 
-      }
+  { m | gameState = GameState.update timePassed m.gameState
+      , eventQueue = TimedQueue.update timePassed m.eventQueue 
+  }
 
 
 triggerStoryEvents : Model -> Model
@@ -289,4 +290,4 @@ displayText text model =
 
 displayDialogue : String -> Model -> Model
 displayDialogue text model =
-  displayText ("'" ++ text ++ "'") model
+  displayText ("\"" ++ text ++ "\"") model
