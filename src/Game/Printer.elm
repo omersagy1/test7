@@ -76,7 +76,7 @@ currentText sm =
 
 
 timePerCharacter : Time
-timePerCharacter = 0.025 * Time.second
+timePerCharacter = 0.03 * Time.second
 
 
 scrollTime : String -> Time

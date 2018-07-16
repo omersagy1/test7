@@ -152,6 +152,7 @@ getDelay : StoryEvent -> Time
 getDelay event =
   case event of
     Atomic (Narration _) -> Constants.defaultMessageDelay
+    Atomic (Dialogue _) -> Constants.defaultMessageDelay
     Atomic (Effectful _) -> Constants.mutatorDelay
     Atomic (Goto _) -> 0
     PlayerChoice _ -> Constants.choiceButtonsDelay
