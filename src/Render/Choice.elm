@@ -6,15 +6,14 @@ import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
-import Game.Model exposing (Model)
-import Game.StoryEvent exposing (Choice)
 import Game.Update exposing (Message)
 import Render.Constants as Constants
+import Render.ViewModel exposing (ChoiceButton)
 
 
-choiceButtons : Model -> Maybe (Html Message)
-choiceButtons m =
-  case m.activeChoices of
+choiceButtons : List (ChoiceButton) -> Maybe (Html Message)
+choiceButtons choiceButtons =
+  case choiceButtons of
     [] -> Nothing
     choices ->
       div [ css [ marginBottom (px 25) ] ] 
@@ -22,7 +21,7 @@ choiceButtons m =
       |> Just
 
 
-choiceButton : Choice -> Html Message
+choiceButton : ChoiceButton -> Html Message
 choiceButton c =
   button [ css [ width (px Constants.choiceButtonLength)
                , height (px Constants.choiceButtonHeight)
@@ -35,5 +34,6 @@ choiceButton c =
                , marginRight (px Constants.choiceButtonMargin)
                , padding (px 0)
                ]
-         , onClick (Game.Update.MakeChoice c)] 
-         [text c.prompt]
+         , onClick c.callback
+         ] 
+         [text c.label]

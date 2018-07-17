@@ -5,6 +5,8 @@ import Game.Cooldown
 import Game.Fire
 import Game.GameState
 import Game.Model exposing (Model)
+import Game.Printer
+import Game.Resource exposing (Resource)
 import Game.StoryEvent exposing (Choice)
 import Game.Update exposing (Message)
 
@@ -14,6 +16,7 @@ type alias ViewModel =
   , fireMeter : Meter
   , actionMeters : List Meter
   , choiceButtons : List ChoiceButton
+  , resourceDisplays : List ResourceDisplay
   }
 
 
@@ -31,12 +34,19 @@ type alias ChoiceButton =
   }
 
 
-viewModel : Model -> ViewModel
-viewModel model =
-  { messageHistory = model.messageHistory
+type alias ResourceDisplay =
+  { name : String
+  , amount : Int
+  }
+
+
+init : Model -> ViewModel
+init model =
+  { messageHistory = Game.Printer.allMessages model
   , fireMeter = buildFireMeter model
   , actionMeters = buildActionMeters model
   , choiceButtons = buildChoiceButtons model
+  , resourceDisplays = buildResources model
   }
 
 
@@ -74,4 +84,16 @@ buildChoiceButton : Choice -> ChoiceButton
 buildChoiceButton choice =
   { label = choice.prompt
   , callback = Game.Update.MakeChoice choice
+  }
+
+
+buildResources : Model -> List ResourceDisplay
+buildResources model =
+  List.map buildResource (Game.GameState.activeResources model.gameState)
+
+
+buildResource : Resource -> ResourceDisplay
+buildResource resource =
+  { name = resource.name
+  , amount = resource.amount
   }
