@@ -1,4 +1,4 @@
-module App.Render exposing (view)
+module App.View exposing (view)
 
 import Css exposing (..)
 import Css.Foreign
@@ -7,8 +7,8 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value, css)
 
 import App.Model exposing (..)
-import Editor.Render
-import Render.Game
+import Editor.View
+import Render.View
 import Render.NavBar
 
 
@@ -18,10 +18,10 @@ view model =
     case model.currentPage of
 
       EditorPage -> Html.Styled.map EditorMessage 
-                      (Editor.Render.view model.editorModel)
+                      (Editor.View.view model.editorModel)
 
       GamePage -> Html.Styled.map GameMessage 
-                    (Render.Game.view model.gameModel)
+                    (Render.View.view model.gameModel)
   in
     styled div 
       [ height (pct 100) 

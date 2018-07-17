@@ -1,4 +1,4 @@
-module Render.Game exposing (view)
+module Render.View exposing (view)
 
 import Css exposing (..)
 import Css.Colors as Colors

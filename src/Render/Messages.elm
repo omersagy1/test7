@@ -26,9 +26,9 @@ messageHistory msgs =
     msgsToDisplay = List.take displaySize msgs
     opacities = 1::(rangeToZero 0.65 (displaySize - 1))
   in
-    div [css [ width displayWidth
-             , marginRight rightMargin
-             ]
+    div [ css [ width displayWidth
+              , marginRight rightMargin
+              ]
         ]
         (List.map2 message msgsToDisplay opacities)
 

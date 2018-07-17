@@ -3,7 +3,7 @@ import Task
 import Time
 
 import App.Model exposing (..)
-import App.Render
+import App.View
 import Editor.Main
 import Game.Model
 import Game.Update
@@ -14,7 +14,7 @@ main : Program Never Model Message
 main =
   Html.Styled.program
     { init = init
-    , view = App.Render.view
+    , view = App.View.view
     , update = update
     , subscriptions = subscriptions
     }
