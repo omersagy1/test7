@@ -15,26 +15,26 @@ story : Story
 story =
   begin
   |> add (topLevel
-    |> trigger (gameTimePassed (1.5*Time.second))
-    |> body (start
-    |> ln "The room is cold."
-    |> ln "Foul water drips from the ceiling."
-    |> ln "..."
-    |> ln "You shiver."
-    |> choices 
-        [ choice "Meditate"
-          |> consq (start
-            |> ln "You breathe deeply."
-            |> ln "The freezing air bites your face."
-            |> goto "need-a-light")
-
-        , choice "Look up"
-          |> consq (start
-            |> ln "A thick haze clouds your vision."
-            |> ln "But pale white letters speak to you..."
-            |> ln "FUMIGATION CHAMBER"
+  |> trigger (gameTimePassed (1.5*Time.second))
+  |> body (start
+  |> ln "The room is cold."
+  |> ln "Foul water drips from the ceiling."
+  |> ln "..."
+  |> ln "You shiver."
+  |> choices 
+      [ choice "Meditate"
+        |> consq (start
+          |> ln "You breathe deeply."
+          |> ln "The freezing air bites your face."
           |> goto "need-a-light")
-        ]))
+
+      , choice "Look up"
+        |> consq (start
+          |> ln "A thick haze clouds your vision."
+          |> ln "But pale white letters speak to you..."
+          |> ln "FUMIGATION CHAMBER"
+        |> goto "need-a-light")
+      ]))
 
   |> add (topLevel
     |> name "need-a-light"
