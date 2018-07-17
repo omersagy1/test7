@@ -37,67 +37,67 @@ story =
       ]))
 
   |> add (topLevel
-    |> name "need-a-light"
-    |> body (start
-    |> ln "..."
-    |> ln "The cold is unbearable."
-    |> effect (ActivateAction "search for wood")))
+  |> name "need-a-light"
+  |> body (start
+  |> ln "..."
+  |> ln "The cold is unbearable."
+  |> effect (ActivateAction "search for wood")))
 
   |> add (topLevel
-    |> trigger (and (actionPerformed "search for wood")
-                    (milestoneAtCount "wood-searched" 1))
-    |> body (start
-    |> ln "The ground is covered in grass..."
-    |> ln "And dry little twigs."
-    |> ln "They're meager, but they'll feed a fire."))
+  |> trigger (and (actionPerformed "search for wood")
+                  (milestoneAtCount "wood-searched" 1))
+  |> body (start
+  |> ln "The ground is covered in grass..."
+  |> ln "And dry little twigs."
+  |> ln "They're meager, but they'll feed a fire."))
 
   |> add (topLevel
-    |> trigger fireStoked
-    |> body (start
-    |> ln "Embers hatch in the brush."
-    |> ln "You hover your hands over the flame."
-    |> ln "..."
-    |> ln "The fire is roaring."
-    |> effect (IncrementMilestone "fire-stoked")))
+  |> trigger fireStoked
+  |> body (start
+  |> ln "Embers hatch in the brush."
+  |> ln "You hover your hands over the flame."
+  |> ln "..."
+  |> ln "The fire is roaring."
+  |> effect (IncrementMilestone "fire-stoked")))
   
   |> add (topLevel
-    |> trigger (and fireStoked (milestoneAtCount "fire-stoked" 1))
-    |> body (start
-    |> ln "You bring your face close to the flames."
-    |> ln "A foreign smile stretches your lips."
-    |> effect (IncrementMilestone "fire-stoked")))
+  |> trigger (and fireStoked (milestoneAtCount "fire-stoked" 1))
+  |> body (start
+  |> ln "You bring your face close to the flames."
+  |> ln "A foreign smile stretches your lips."
+  |> effect (IncrementMilestone "fire-stoked")))
 
   |> add (topLevel
-    |> reoccurring
-    |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 1))
-    |> body (start
-    |> rand [ narrate "The fire is roaring."
-            , narrate "The fire is roaring."
-            , narrate "The fire is roaring."
-            , narrate "The flames double in height."
-            , narrate "The fire crackles with a human voice."
-            , narrate "You shiver with warmth."
-            , narrate "The flames rise."
-            , narrate "The fire dances with primitive urgency."
-            ]
-    |> effect (IncrementMilestone "fire-stoked")))
+  |> reoccurring
+  |> trigger (and fireStoked (milestoneGreaterThan "fire-stoked" 1))
+  |> body (start
+  |> rand [ narrate "The fire is roaring."
+          , narrate "The fire is roaring."
+          , narrate "The fire is roaring."
+          , narrate "The flames double in height."
+          , narrate "The fire crackles with a human voice."
+          , narrate "You shiver with warmth."
+          , narrate "The flames rise."
+          , narrate "The fire dances with primitive urgency."
+          ]
+  |> effect (IncrementMilestone "fire-stoked")))
 
   |> add (topLevel
-    |> trigger (milestoneAtCount "wood-searched" 2)
-    |> body (start
-    |> ln "You feel around in the dark."
-    |> ln "The false starlight illuminates a rotting log."))
+  |> trigger (milestoneAtCount "wood-searched" 2)
+  |> body (start
+  |> ln "You feel around in the dark."
+  |> ln "The false starlight illuminates a rotting log."))
 
   |> add (topLevel
-    |> reoccurring
-    |> trigger (and (milestoneGreaterThan "wood-searched" 2)
-                    (actionPerformed "search for wood"))
-    |> body (start
-    |> rand 
-        [ narrate "A few more twigs for the fire..."
-        , narrate "The twigs are dirty, but dry enough..."
-        , narrate "From your dark wandering you return with a small bounty..."
-        ]))
+  |> reoccurring
+  |> trigger (and (milestoneGreaterThan "wood-searched" 2)
+                  (actionPerformed "search for wood"))
+  |> body (start
+  |> rand 
+      [ narrate "A few more twigs for the fire..."
+      , narrate "The twigs are dirty, but dry enough..."
+      , narrate "From your dark wandering you return with a small bounty..."
+      ]))
 
   |> add (topLevel
   |> trigger (timeSinceMilestone "fire-stoked" (5*Time.second))
