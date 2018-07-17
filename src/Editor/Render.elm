@@ -1,4 +1,4 @@
-module Render.Editor exposing (view)
+module Editor.Render exposing (view)
 
 import Css exposing (..)
 import Css.Colors as Colors
