@@ -1,9 +1,11 @@
 module Render.ViewModel exposing (..)
 
-import Game.Action
+import Game.Action exposing (CustomAction)
+import Game.Cooldown
 import Game.Fire
-import Game.Model exposing (Model)
 import Game.GameState
+import Game.Model exposing (Model)
+import Game.StoryEvent exposing (Choice)
 import Game.Update exposing (Message)
 
 
@@ -42,20 +44,34 @@ buildFireMeter : Model -> Meter
 buildFireMeter model =
   { proportion = Game.Fire.strength model.gameState.fire
   , label = "stoke fire"
-  , clickable = Game.GameState.canStokeFire model.gameState
+  , clickable = (Game.GameState.canStokeFire model.gameState) 
+                && not (Game.Model.gameplayPaused model)
   , callback = Game.Update.GameplayMessage Game.Action.StokeFire
   }
 
 
-fireClickable : Model -> Bool
-fireClickable model =
-  (Game.GameState.canStokeFire model.gameState) 
-  && not (Game.Model.gameplayPaused model)
-
-
 buildActionMeters : Model -> List Meter
-buildActionMeters model = []
+buildActionMeters model =
+  List.map (buildActionMeter model) (Game.GameState.activeActions model.gameState)
+
+
+buildActionMeter : Model -> CustomAction -> Meter
+buildActionMeter model action =
+  { proportion = Game.Cooldown.currentFraction action.cooldown
+  , label = action.name
+  , clickable = not (Game.Model.gameplayPaused model) 
+                && (Game.Action.canPerform action)
+  , callback = Game.Update.GameplayMessage (Game.Action.CA action)
+  }
 
 
 buildChoiceButtons : Model -> List ChoiceButton
-buildChoiceButtons model = []
+buildChoiceButtons model =
+  List.map buildChoiceButton model.activeChoices
+
+
+buildChoiceButton : Choice -> ChoiceButton
+buildChoiceButton choice =
+  { label = choice.prompt
+  , callback = Game.Update.MakeChoice choice
+  }

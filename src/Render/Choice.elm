@@ -15,8 +15,8 @@ import Render.Constants as Constants
 choiceButtons : Model -> Maybe (Html Message)
 choiceButtons m =
   case m.activeChoices of
-    Nothing -> Nothing
-    Just choices ->
+    [] -> Nothing
+    choices ->
       div [ css [ marginBottom (px 25) ] ] 
           (List.map choiceButton choices) 
       |> Just

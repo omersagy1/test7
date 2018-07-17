@@ -20,7 +20,7 @@ initialModel =
   , story = Parser.Main.story
   , paused = False
   , fastForward = False
-  , activeChoices = Nothing
+  , activeChoices = []
   , activeScrollingMessage = Nothing
   }
 
@@ -49,7 +49,7 @@ type alias Model =
   , fastForward : Bool
 
   -- The choice the player must make to continue the game.
-  , activeChoices : Maybe (List Choice)
+  , activeChoices : List Choice
 
   , activeScrollingMessage : Maybe ScrollingMessage
 
@@ -77,7 +77,7 @@ hardPaused m = m.paused
 
 
 waitingOnChoice : Model -> Bool
-waitingOnChoice m = m.activeChoices /= Nothing
+waitingOnChoice m = not (List.isEmpty m.activeChoices)
 
 
 togglePause : Model -> Model
@@ -102,7 +102,7 @@ clearActions m = { m | gameState = GameState.clearActions m.gameState }
 
 displayChoices : List Choice -> Model -> Model
 displayChoices choices m =
-  { m | activeChoices = Just choices }
+  { m | activeChoices = choices }
 
 
 applyEffect : Effect -> Model -> Model
@@ -116,7 +116,7 @@ setGameState s m = { m | gameState = s }
 
 clearActiveChoices : Model -> Model
 clearActiveChoices m =
-  { m | activeChoices = Nothing }
+  { m | activeChoices = [] }
 
 
 updateRandomizer : Randomizer -> Model -> Model
