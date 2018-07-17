@@ -7,9 +7,9 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value, css)
 
 import App.Model exposing (..)
+import App.NavBar
 import Editor.View
 import Render.View
-import Render.NavBar
 
 
 view : Model -> Html Message
@@ -61,7 +61,7 @@ navExtension m =
   case m.currentPage of
     GamePage ->
       (List.map (\h -> Html.Styled.map GameMessage h) 
-                (Render.NavBar.navExtension m.gameModel))
+                (App.NavBar.navExtension m.gameModel))
     other ->
       []
 

@@ -1,4 +1,4 @@
-module Render.NavBar exposing (navExtension)
+module App.NavBar exposing (navExtension)
 
 import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
