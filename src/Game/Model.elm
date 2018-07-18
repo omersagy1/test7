@@ -69,11 +69,15 @@ initialize t m =
 
 gameplayPaused : Model -> Bool
 gameplayPaused m =
-  hardPaused m || waitingOnChoice m
+  hardPaused m || softPaused m
 
 
 hardPaused : Model -> Bool
 hardPaused m = m.paused
+
+
+softPaused : Model -> Bool
+softPaused = waitingOnChoice
 
 
 waitingOnChoice : Model -> Bool

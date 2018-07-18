@@ -55,7 +55,7 @@ buildFireMeter model =
   { proportion = Game.Fire.strength model.gameState.fire
   , label = "stoke fire"
   , clickable = (Game.GameState.canStokeFire model.gameState) 
-                && not (Game.Model.gameplayPaused model)
+                && not (Game.Model.softPaused model)
   , callback = Game.Update.GameplayMessage Game.Action.StokeFire
   }
 
@@ -69,7 +69,7 @@ buildActionMeter : Model -> CustomAction -> Meter
 buildActionMeter model action =
   { proportion = Game.Cooldown.currentFraction action.cooldown
   , label = action.name
-  , clickable = not (Game.Model.gameplayPaused model) 
+  , clickable = not (Game.Model.softPaused model) 
                 && (Game.Action.canPerform action)
   , callback = Game.Update.GameplayMessage (Game.Action.CA action)
   }

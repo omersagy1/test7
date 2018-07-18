@@ -1,5 +1,6 @@
-module Render.Meter exposing (meter)
+module Render.Meter exposing (..)
 
+import Color
 import Css exposing (..)
 import Css.Colors as Colors
 import Html.Styled exposing (Html, button, div, text, input)
@@ -18,19 +19,34 @@ type alias Params =
   , active : Bool
   , label : String
   , borderColorFn : Meter -> Color
+  , borderWidth : Px
   }
 
 new : Meter
 new = Meter
-  { width = px 200
-  , height = px 50
+  { width = px Constants.meterLength
+  , height = px Constants.meterHeight
   , background = Colors.black
   , barColorFn = (\_ -> Colors.gray)
   , fractionFilled = 1.0
   , active = True
-  , label = "default"
+  , label = ""
   , borderColorFn = (\_ -> Colors.yellow)
+  , borderWidth = px Constants.borderWidth
   }
+
+
+fractionFilled : Float -> Meter -> Meter
+fractionFilled f (Meter params) = Meter { params | fractionFilled = f }
+
+
+setLabel : String -> Meter -> Meter
+setLabel l (Meter params) = Meter { params | label = l }
+
+
+active : Bool -> Meter -> Meter
+active isActive (Meter params) = Meter { params | active = isActive }
+
 
 setBorderColorFn : (Meter -> Color) -> Meter -> Meter
 setBorderColorFn fn (Meter params) =
@@ -53,44 +69,54 @@ fixedBarColor c (Meter params) =
 -- Interpolate between two colors based on the fraction
 -- of the bar that is filled.
 colorBarOnFraction : Color -> Color -> Meter -> Meter
-colorBarOnFraction emptyColor fullColor (Meter params) = Meter params
+colorBarOnFraction emptyColor fullColor (Meter params) =
+  Meter { params | barColorFn = 
+                    (\(Meter params) -> 
+                       interpolateColors emptyColor fullColor params.fractionFilled) }
+
+
+interpolateColors : Color -> Color -> Float -> Color
+interpolateColors begin end frac =
+  let
+    factor = min 1 (max 0 frac)
+    inverse = 1 - frac
+    mult : Int -> Float -> Int
+    mult x y = Basics.round ((toFloat x) * y)
+  in
+    rgb ((mult begin.red inverse) + (mult end.red factor))
+        ((mult begin.green inverse) + (mult end.green factor))
+        ((mult begin.blue inverse) + (mult end.blue factor))
 
 
 margin : Float
 margin = 12
 
-activeBorderColor : Color
-activeBorderColor = Colors.yellow
 
-inactiveBorderColor : Color
-inactiveBorderColor = (rgb 60 60 60)
-
-
-meter : Float -> String -> Bool -> Html a
-meter fractionFilled labelText isActive = 
+render : Meter -> Html a
+render (Meter params) = 
   let
-    borderC = if isActive then activeBorderColor else inactiveBorderColor
+    borderC = params.borderColorFn (Meter params)
   in
     div [css [ width (px Constants.meterLength)
-            , height (px Constants.meterHeight)
-            , backgroundColor Colors.black
-            , marginTop (px margin)
-            , marginBottom (px margin)
-            , borderColor borderC
-            , borderWidth (px Constants.borderWidth)
-            , borderStyle solid
-            ]
+             , height (px Constants.meterHeight)
+             , backgroundColor Colors.black
+             , marginTop (px margin)
+             , marginBottom (px margin)
+             , borderColor borderC
+             , borderWidth (px Constants.borderWidth)
+             , borderStyle solid
+             ]
         ] 
-        [ bar fractionFilled
-        , label labelText
+        [ bar params.fractionFilled (params.barColorFn (Meter params))
+        , label params.label
         ]
 
 
-bar : Float -> Html a
-bar fractionFilled =
+bar : Float -> Color -> Html a
+bar fractionFilled c =
   div [css [ width (px <| Constants.meterLength * fractionFilled)
            , height (px Constants.meterHeight)
-           , backgroundColor Colors.gray
+           , backgroundColor c
            , position absolute
            ]
       ]

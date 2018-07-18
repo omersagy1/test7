@@ -11,6 +11,7 @@ import Common.Annex exposing(..)
 import Game.Model exposing (Model)
 import Game.Update exposing (Message)
 
+import Render.Constants as Constants
 import Render.Choice as Choice
 import Render.Messages as Messages
 import Render.Meter as Meter
@@ -36,7 +37,6 @@ renderViewModel model =
         ]
 
 
-
 interactiveDisplay : ViewModel -> Html Message
 interactiveDisplay model =
   div [ css [flexGrow (num 1)] ]
@@ -51,11 +51,15 @@ interactiveDisplay model =
 fire : ViewModel.Meter -> Html Message
 fire fireMeter =
   div [ onClick fireMeter.callback ]
-      [ Meter.meter fireMeter.proportion
-                    fireMeter.label 
-                    fireMeter.clickable
+      [ Meter.new
+        |> Meter.fractionFilled fireMeter.proportion
+        |> Meter.setLabel fireMeter.label
+        |> Meter.active fireMeter.clickable
+        |> Meter.colorBorderOnActive Constants.inactiveBorderColor 
+                                     Constants.activeBorderColor 
+        |> Meter.colorBarOnFraction Constants.deadFireColor Constants.fullFireColor
+        |> Meter.render
       ]
-
 
 
 resources : List (ViewModel.ResourceDisplay) -> Maybe (Html Message)
@@ -88,7 +92,11 @@ actionMeters actions =
 actionMeter : ViewModel.Meter -> Html Message
 actionMeter action =
   div [ onClick action.callback ]
-      [ Meter.meter action.proportion
-                    action.label
-                    action.clickable
+      [ Meter.new 
+        |> Meter.fractionFilled action.proportion
+        |> Meter.setLabel action.label
+        |> Meter.active action.clickable
+        |> Meter.colorBorderOnActive Constants.inactiveBorderColor 
+                                     Constants.activeBorderColor 
+        |> Meter.render
       ]
