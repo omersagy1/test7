@@ -146,7 +146,7 @@ story =
   |> choices
       [ choice "Search Body"
         |> consq (start
-        |> ln "Your rip off the body's dress..."
+        |> ln "You rip off the corpse's dress..."
         |> ln "But only find an insect den among its fleshy bones."
         |> ln "There is nothing of value here."
         |> ln "Except the dress."
@@ -200,6 +200,23 @@ story =
   |> body (start
   |> ln "The man reaches out his hand."
   |> ln "You shake it."
+  |> di "You look like you need some food, friend."
+  |> di "Have a critter."
+  |> ln "The man plops a dead rat into your trembling palm."
+  |> effect (AddToResource "rats" 1)
+  |> di "I tell you I never seen rats on the whole Ark like I seen 'em here."
+  |> di "Name's Don."
+  |> di "Mine, not the rat's."
+  |> effect (ActivateAction "hunt rats")))
+
+  |> add (topLevel
+  |> trigger (milestoneAtCount "rats-hunted" 1)
+  |> body (start
+  |> ln "You scramble in the mud and dig your nails into a writhing mass."))
+
+  |> add (topLevel
+  |> trigger (timeSinceMilestone "rats-hunted" (10*Time.second))
+  |> body (start
   |> goto "game-over"))
   
   |> add (topLevel
@@ -228,3 +245,9 @@ init =
       (Action.init "investigate"
         |> Action.cooldown (40*Time.second)
         |> Action.effect (IncrementMilestone "did-investigate"))
+
+  |> GameState.addCustomAction
+      (Action.init "hunt rats"
+        |> Action.cooldown (60*Time.second)
+        |> Action.effect (Compound2 (AddToResourceRand "rats" 1 2)
+                                    (IncrementMilestone "rats-hunted")))
