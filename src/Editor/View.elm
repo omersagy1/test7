@@ -7,9 +7,6 @@ import Html.Styled.Attributes exposing (style, value, css)
 
 import Editor.Main exposing (Model)
 
-view m = text ""
-
-{-
 
 view : Model -> Html a
 view model = 
@@ -17,6 +14,7 @@ view model =
             , padding (px 30)
             , backgroundColor Colors.black
             , color Colors.white
+            , fontFamilies ["courier new", "courier"]
             ]
       ]
       [ header
@@ -62,5 +60,3 @@ unusedActions model =
 
 entry : String -> Html a
 entry s = div [] [text ("- \"" ++ s ++ "\"")]
-
--}

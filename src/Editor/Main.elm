@@ -2,7 +2,6 @@ module Editor.Main exposing (..)
 
 import Set
 
-import Common.Annex exposing (..)
 import Game.Condition exposing (..)
 import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
