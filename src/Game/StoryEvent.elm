@@ -1,5 +1,6 @@
 module Game.StoryEvent exposing (..)
 
+import Common.Annex exposing (..)
 import Game.Condition as Condition exposing (Condition)
 import Game.Effect as Effect exposing (Effect)
 
@@ -66,3 +67,29 @@ append event latest =
   case event of
     Sequenced seq -> Sequenced (seq ++ [latest])
     other -> Sequenced [other, latest]
+
+
+map : (StoryEvent -> Maybe a) -> StoryEvent -> List a
+map fn event =
+  let
+    first = maybeToList (fn event)
+    rest =
+      case event of
+        Atomic atom -> []
+        
+        Sequenced events -> 
+          List.concat (List.map (map fn) events)
+
+        PlayerChoice choices ->
+          List.concat (List.map (map fn) (List.map .consq choices))
+
+        Conditioned (ConditionedEvent condition event) ->
+          map fn event
+
+        Random events ->
+          List.concat (List.map (map fn) events)
+        
+        Cases events ->
+          List.concat (List.map (\(ConditionedEvent c e) -> (map fn e)) events)
+  in
+    first ++ rest

@@ -70,9 +70,11 @@ scrollComplete msg = Animation.complete msg.animation
 currentText : ScrollingMessage -> String
 currentText sm =
   let
-    numChars = (toFloat (String.length (sm.fullText))) * (Animation.currentValue sm.animation)
+    totalNumChars = String.length (sm.fullText)
+    fracToDisplay = Animation.currentValue sm.animation
+    numCharsToDisplay = (toFloat totalNumChars) * fracToDisplay
   in
-    String.left (round numChars) sm.fullText
+    String.left (round numCharsToDisplay) sm.fullText
 
 
 timePerCharacter : Time

@@ -7,6 +7,7 @@ import Game.Condition exposing (..)
 import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
 import Game.Story as Story exposing (Story)
+import Game.StoryEvent as StoryEvent exposing (..)
 import Parser.Main
 
 
@@ -15,6 +16,10 @@ type alias Model =
   , milestonesUsed : List String
   , actionsSet : List String
   , actionsUsed : List String
+  , eventNames : List String
+  , eventsReferenced : List String
+  , resourcesSet : List String
+  , resourcesUsed : List String
   }
 
 
@@ -27,6 +32,10 @@ initialModel =
     , milestonesUsed = []
     , actionsSet = []
     , actionsUsed = []
+    , eventNames = []
+    , eventsReferenced = []
+    , resourcesSet = []
+    , resourcesUsed = []
     }
 
 
@@ -35,9 +44,6 @@ update msg model =
   case msg of
       Initialize -> analyze model
 
-analyze m = m
-
-{-
 
 analyze : Model -> Model
 analyze m =
@@ -58,8 +64,8 @@ actionsSet state =
 
 actionsUsed : Story -> List String
 actionsUsed story = 
-  List.map actionsReferenced (getConditions story)
-  |> (++) (List.map actionsReferencedInEffect (getEffects story))
+  List.map actionsReferencedInCondition (getAllConditions story)
+  |> (++) (List.map actionsReferencedInEffect (getAllEffects story))
   |> List.concat
   |> Set.fromList
   |> Set.toList
@@ -79,15 +85,15 @@ unusedActions model =
   |> Set.toList
 
 
-actionsReferenced : Condition -> List String
-actionsReferenced cond =
+actionsReferencedInCondition : Condition -> List String
+actionsReferencedInCondition cond =
   case cond of
     Not c -> 
-      actionsReferenced c
+      actionsReferencedInCondition c
     And c1 c2 -> 
-      (actionsReferenced c1) ++ (actionsReferenced c2)
+      (actionsReferencedInCondition c1) ++ (actionsReferencedInCondition c2)
     Or c1 c2 -> 
-      (actionsReferenced c1) ++ (actionsReferenced c2)
+      (actionsReferencedInCondition c1) ++ (actionsReferencedInCondition c2)
     Pure (ActionPerformed name) -> 
       [name]
     other -> 
@@ -104,32 +110,37 @@ actionsReferencedInEffect effect =
     other -> []
 
 
-getConditions : Story -> List Condition
-getConditions story =
-  List.map getConditionsForEvent story
-  |> List.concat
+getAllConditions : Story -> List Condition
+getAllConditions story =
+  List.concat (List.map getConditions (List.map StoryEvent.getEvent story))
 
 
-getConditionsForEvent : StoryEvent -> List Condition
-getConditionsForEvent event =
-  [event.trigger] ++ 
-  (concatMaybes (List.map .condition event.subsequents))
+getConditions : StoryEvent -> List Condition
+getConditions event =
+  List.concat (StoryEvent.map (conditionMatcher >> Just) event)
 
 
-getEffects : Story -> List Effect
-getEffects story =
-  List.map getEffectsForEvent story
-  |> List.concat
+-- Just matches a node without recursing.
+conditionMatcher : StoryEvent -> List Condition
+conditionMatcher event =
+  case event of
+    Conditioned (ConditionedEvent condition e) -> [condition]
+    PlayerChoice choices -> List.map .condition choices
+    other -> []
 
 
-getEffectsForEvent : StoryEvent -> List Effect
-getEffectsForEvent event =
-  concatMaybes [event.effect] ++ (List.map getEffectsForConsequence event.subsequents |> List.concat )
+getAllEffects : Story -> List Effect
+getAllEffects story =
+  List.concat (List.map getEffects (List.map StoryEvent.getEvent story))
 
 
-getEffectsForConsequence : Consequence -> List Effect
-getEffectsForConsequence consq =
-  case consq.eventOrName of
-    Story.EventName s -> []
-    Story.ActualEvent e -> getEffectsForEvent e
--}
+getEffects : StoryEvent -> List Effect
+getEffects event = StoryEvent.map effectMatcher event
+
+
+-- Just matches a node without recursing.
+effectMatcher : StoryEvent -> Maybe Effect
+effectMatcher event =
+  case event of
+    Atomic (Effectful eff) -> Just eff
+    other -> Nothing
