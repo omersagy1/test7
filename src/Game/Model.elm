@@ -83,6 +83,9 @@ softPaused = waitingOnChoice
 waitingOnChoice : Model -> Bool
 waitingOnChoice m = not (List.isEmpty m.activeChoices)
 
+isGameOver : Model -> Bool
+isGameOver m = m.gameState.gameOver
+
 
 togglePause : Model -> Model
 togglePause m = { m | paused = not m.paused }
