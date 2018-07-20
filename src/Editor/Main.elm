@@ -111,7 +111,8 @@ actionsReferencedInEffect effect =
 
 getAllConditions : Story -> List Condition
 getAllConditions story =
-  List.concat (List.map getConditions (List.map StoryEvent.getEvent story))
+  List.map StoryEvent.getTrigger story
+  |> (++) (List.concat (List.map getConditions (List.map StoryEvent.getEvent story)))
 
 
 getConditions : StoryEvent -> List Condition
