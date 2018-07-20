@@ -46,16 +46,37 @@ actionsUsed model =
 
 badActionReferences : Model -> Html a
 badActionReferences model =
-  div [css [marginBottom (px 20)]] 
-      ([ text "The following action references are broken:" ] ++
-       List.map entry (Editor.Main.badActionReferences model))
+  let
+    brokenReferences = List.map entry (Editor.Main.badActionReferences model)
+  in
+    case brokenReferences of
+      [] -> 
+        div [css [marginBottom (px 20)]] 
+            [text "No broken action references."]
+      refs ->
+        div [ css [ marginBottom (px 20)
+                  , color Colors.red
+                  ]
+            ] 
+            ([ text "The following action references are broken:" ] ++ refs)
+       
 
 
 unusedActions : Model -> Html a
 unusedActions model =
-  div [css [marginBottom (px 20)]] 
-      ([ text "The following actions are never referenced:" ] ++
-       List.map entry (Editor.Main.unusedActions model))
+  let
+    unusedReferences = List.map entry (Editor.Main.unusedActions model)
+  in
+    case unusedReferences of
+      [] -> 
+        div [css [marginBottom (px 20)]] 
+            [text "No unused action references."]
+      refs ->
+        div [ css [ marginBottom (px 20)
+                  , color Colors.red
+                  ]
+            ] 
+            ([ text "The following actions are never referenced:" ] ++ refs)
 
 
 entry : String -> Html a
