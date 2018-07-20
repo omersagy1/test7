@@ -18,10 +18,10 @@ view model =
             ]
       ]
       [ header
-      , actionsSet model
-      , actionsUsed model
       , badActionReferences model
       , unusedActions model
+      , actionsSet model
+      , actionsUsed model
       ]
 
 
