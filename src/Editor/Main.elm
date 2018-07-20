@@ -2,6 +2,7 @@ module Editor.Main exposing (..)
 
 import Set
 
+import Common.Annex exposing (concatMaybes)
 import Game.Condition exposing (..)
 import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
@@ -117,7 +118,7 @@ getAllConditions story =
 
 getConditions : StoryEvent -> List Condition
 getConditions event =
-  List.concat (StoryEvent.map (conditionMatcher >> Just) event)
+  List.concat (StoryEvent.map (conditionMatcher) event)
 
 
 -- Just matches a node without recursing.
@@ -135,7 +136,7 @@ getAllEffects story =
 
 
 getEffects : StoryEvent -> List Effect
-getEffects event = StoryEvent.map effectMatcher event
+getEffects event = concatMaybes (StoryEvent.map effectMatcher event)
 
 
 -- Just matches a node without recursing.

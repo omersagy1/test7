@@ -32,6 +32,8 @@ type AtomicEvent =
   -- Dialogue causes "interaction mode" to start if it hasn't started already.
   -- This freezes many aspects of the game. It will also print the text in quotes.
   | Dialogue String
+  -- Starts interaction mode, pausing gameplay outside the interaction.
+  | StartInteraction
   -- Ends interaction mode and resumes the running of time in the game.
   | EndInteraction
   -- Reference to the name of another StoryEvent.
@@ -69,10 +71,10 @@ append event latest =
     other -> Sequenced [other, latest]
 
 
-map : (StoryEvent -> Maybe a) -> StoryEvent -> List a
+map : (StoryEvent -> a) -> StoryEvent -> List a
 map fn event =
   let
-    first = maybeToList (fn event)
+    first = [fn event]
     rest =
       case event of
         Atomic atom -> []
