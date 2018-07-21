@@ -54,6 +54,12 @@ default e list = caseif unconditionally e list
 caseList : List ConditionedEvent
 caseList = []
 
+interact : StoryEvent -> StoryEvent
+interact = seq (Atomic StartInteraction)
+
+resume : StoryEvent -> StoryEvent
+resume = seq (Atomic EndInteraction)
+
 
 -- BUILDERS FOR CHOICES
 

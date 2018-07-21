@@ -27,4 +27,12 @@ story = begin
   |> name "first"
   |> trigger (gameTimePassed (0*Time.second))
   |> body (start
-  |> di "Hello to you!"))
+  |> effect (ActivateAction "search for wood")
+  |> ln "narrating...."
+  |> ln "mysterious..."
+  |> interact
+  |> di "Hello to you!"
+  |> di "We're talking together!"
+  |> di "one more line..."
+  |> resume
+  |> ln "back to narration."))

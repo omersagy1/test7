@@ -8,7 +8,7 @@ import Data.Simple
 
 
 initialGameState : GameState
-initialGameState = Data.Space.init
+initialGameState = Data.Simple.init
 
 story : Story
-story = Data.Space.story
+story = Data.Simple.story

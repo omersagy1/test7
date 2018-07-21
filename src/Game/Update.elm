@@ -56,7 +56,7 @@ update msg model =
         updateGame time model
 
     GameplayMessage action -> 
-      if Model.gameplayPaused model then model
+      if Model.gameplayPaused model || model.interactionMode then model
       else
         { model | gameState = processUserAction action model.gameState }
 
@@ -80,7 +80,8 @@ updateGame t m =
         then t * Constants.fastForwardFactor        
         else t
   in
-    updateGameTime timePassed m
+    m
+    |> updateGameTime timePassed
     |> Printer.update timePassed
     |> triggerStoryEvents
     |> (if not (Printer.isPrinting m) then processEventQueue else identity)
@@ -89,9 +90,13 @@ updateGame t m =
 
 updateGameTime : Time -> Model -> Model
 updateGameTime timePassed m =
-  { m | gameState = GameState.update timePassed m.gameState
-      , eventQueue = TimedQueue.update timePassed m.eventQueue 
-  }
+  let
+    newState = if m.interactionMode then m.gameState
+               else GameState.update timePassed m.gameState
+  in
+    { m | gameState = newState
+        , eventQueue = TimedQueue.update timePassed m.eventQueue 
+    }
 
 
 triggerStoryEvents : Model -> Model
@@ -211,8 +216,12 @@ playAtomicEvent e model =
     Goto ref ->
       (maybePerform playStoryEvent) 
         (Story.getEventByName ref model.story |> maybeChain StoryEvent.getEvent)
+    
+    StartInteraction ->
+      (\model -> { model | interactionMode = True })
 
-    other -> identity
+    EndInteraction ->
+      (\model -> { model | interactionMode = False })
 
 
 playSequencedEvent : List StoryEvent -> Model -> Model

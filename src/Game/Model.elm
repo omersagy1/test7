@@ -23,6 +23,7 @@ initialModel =
   , fastForward = False
   , activeChoices = []
   , activeScrollingMessage = Nothing
+  , interactionMode = False
   }
 
 
@@ -55,6 +56,8 @@ type alias Model =
   , activeChoices : List Choice
 
   , activeScrollingMessage : Maybe ScrollingMessage
+
+  , interactionMode : Bool
 
   }
 
@@ -89,6 +92,7 @@ softPaused = waitingOnChoice
 
 waitingOnChoice : Model -> Bool
 waitingOnChoice m = not (List.isEmpty m.activeChoices)
+
 
 isGameOver : Model -> Bool
 isGameOver m = m.gameState.gameOver
