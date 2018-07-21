@@ -79,7 +79,6 @@ story =
   |> add (topLevel
   |> trigger (milestoneAtCount "wood-searched" 2)
   |> body (start
-  |> ln "You feel around in the dark."
   |> ln "The false starlight illuminates a rotting log."))
 
   |> add (topLevel
