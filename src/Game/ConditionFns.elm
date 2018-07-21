@@ -3,14 +3,20 @@ module Game.ConditionFns exposing (condition)
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
-import Common.Randomizer as Randomizer
+import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Action as Action exposing (Action)
 import Game.Condition exposing (..)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)
 
 
-condition : Condition -> GameState -> (Bool, GameState)
+-- Narrows the type of the function so it can't access/modify anything
+-- but the randomizer.
+type alias RandomState a =
+  { a | randomizer : Randomizer }
+
+
+condition : Condition -> GameState -> (Bool, RandomState GameState)
 condition c s =
   case c of
     Pure pureCondition -> (pure pureCondition s, s)
@@ -93,7 +99,7 @@ milestoneGreaterThan name target =
     |> (<) target)
 
 
-chance : Float -> GameState -> (Bool, GameState)
+chance : Float -> RandomState GameState -> (Bool, RandomState GameState)
 chance p s =
   let
     (x, r) = Randomizer.float 0 1 s.randomizer
@@ -102,7 +108,7 @@ chance p s =
     (success, { s | randomizer = r })
 
 
-and : Condition -> Condition -> GameState -> (Bool, GameState)
+and : Condition -> Condition -> GameState -> (Bool, RandomState GameState)
 and c1 c2 s =
   let
     (a, s1) = condition c1 s
@@ -111,7 +117,7 @@ and c1 c2 s =
     (a && b, s2)
 
 
-or : Condition -> Condition -> GameState -> (Bool, GameState)
+or : Condition -> Condition -> GameState -> (Bool, RandomState GameState)
 or c1 c2 s =
   let
     (a, s1) = condition c1 s
@@ -120,7 +126,7 @@ or c1 c2 s =
     (a || b, s2)
 
 
-notFn : Condition -> GameState -> (Bool, GameState)
+notFn : Condition -> GameState -> (Bool, RandomState GameState)
 notFn c s =
   let
     (a, s1) = condition c s
