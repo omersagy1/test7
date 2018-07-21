@@ -79,9 +79,14 @@ initialize t m =
     }
 
 
+storyPaused : Model -> Bool
+storyPaused m =
+  hardPaused m || softPaused m
+
+
 gameplayPaused : Model -> Bool
 gameplayPaused m =
-  hardPaused m || softPaused m
+  storyPaused m || inInteractionMode m
 
 
 hardPaused : Model -> Bool
@@ -94,6 +99,10 @@ softPaused = waitingOnChoice
 
 waitingOnChoice : Model -> Bool
 waitingOnChoice m = not (List.isEmpty m.activeChoices)
+
+
+inInteractionMode : Model -> Bool
+inInteractionMode m = m.interactionMode
 
 
 isGameOver : Model -> Bool

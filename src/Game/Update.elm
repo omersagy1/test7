@@ -51,12 +51,12 @@ update msg model =
         makeChoice choice model
 
     UpdateTime time -> 
-      if Model.gameplayPaused model then model
+      if Model.storyPaused model then model
       else
         updateGame time model
 
     GameplayMessage action -> 
-      if Model.gameplayPaused model || model.interactionMode then model
+      if Model.gameplayPaused model then model
       else
         { model | gameState = processUserAction action model.gameState }
 
