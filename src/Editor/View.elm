@@ -70,7 +70,7 @@ unusedActions model =
     case unusedReferences of
       [] -> 
         div [css [marginBottom (px 20)]] 
-            [text "No unused action references."]
+            [text "All initialized actions were referenced."]
       refs ->
         div [ css [ marginBottom (px 20)
                   , color Colors.red

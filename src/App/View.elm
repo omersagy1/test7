@@ -17,11 +17,11 @@ view model =
   let mainPage =
     case model.currentPage of
 
-      EditorPage -> Html.Styled.map EditorMessage 
-                      (Editor.View.view model.editorModel)
+      Editor -> Html.Styled.map EditorMessage 
+                  (Editor.View.view model.editorModel)
 
-      GamePage -> Html.Styled.map GameMessage 
-                    (Render.View.view model.gameModel)
+      Game -> Html.Styled.map GameMessage 
+               (Render.View.view model.gameModel)
   in
     styled div 
       [ height (pct 100) 
@@ -59,7 +59,7 @@ navBar model = div [ style [ ("background-color", "grey")
 navExtension : Model -> List (Html Message)
 navExtension m =
   case m.currentPage of
-    GamePage ->
+    Game ->
       (List.map (\h -> Html.Styled.map GameMessage h) 
                 (App.NavBar.navExtension m.gameModel))
     other ->
@@ -71,8 +71,8 @@ switchPageButton currentPage =
   let 
     buttonText = 
       case currentPage of
-        EditorPage -> "START GAME"
-        GamePage -> "GO TO EDITOR"
+        Editor -> "START GAME"
+        Game -> "GO TO EDITOR"
   in    
     button [ style [("margin", "5px")]
            , onClick SwitchPage

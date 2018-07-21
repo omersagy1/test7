@@ -15,6 +15,7 @@ import Queue.TimedQueue as TimedQueue exposing (TimedQueue)
 initialModel : Model
 initialModel = 
   { gameState = Parser.Main.initialGameState 
+  , initialized = False
   , messageHistory = []
   , eventQueue = TimedQueue.new
   , story = Parser.Main.story
@@ -32,6 +33,8 @@ type alias Model =
   -- the conceptual understanding of the game, not
   -- the state of the machinery.
   { gameState : GameState
+
+  , initialized : Bool
 
   -- Messages to be displayed on-screen.
   , messageHistory : List String 
@@ -64,7 +67,11 @@ type alias ScrollingMessage =
 
 initialize : Time -> Model -> Model
 initialize t m =
-  { m | gameState = GameState.initRandomizer t m.gameState }
+  if m.initialized then m
+  else
+    { m | gameState = GameState.initRandomizer t m.gameState 
+        , initialized = True
+    }
 
 
 gameplayPaused : Model -> Bool
