@@ -7,18 +7,6 @@ handlers:
   static_files: www/index.html
   upload: www/index.html
 
-- url: /game
-  static_files: www/index.html
-  upload: www/index.html
-
-- url: /editor
-  static_files: www/index.html
-  upload: www/index.html
-
-- url: /.*
-  static_files: www/index.html
-  upload: www/index.html
-
 - url: /(.*)
   static_files: www/\1
   upload: www/(.*)
