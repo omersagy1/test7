@@ -23,17 +23,19 @@ choiceButtons choiceButtons =
 
 choiceButton : ChoiceButton -> Html Message
 choiceButton c =
-  button [ css [ width (px Constants.choiceButtonLength)
-               , height (px Constants.choiceButtonHeight)
-               , backgroundColor (rgb 60 60 60)
-               , color Colors.white
-               , borderColor Colors.yellow
-               , borderWidth (px Constants.borderWidth)
-               , borderStyle solid
-               , fontSize (px 16)
-               , marginRight (px Constants.choiceButtonMargin)
-               , padding (px 0)
-               ]
+  div [ css [ width (px Constants.choiceButtonLength)
+            , height (px Constants.choiceButtonHeight)
+            , backgroundColor (rgb 60 60 60)
+            , color Colors.white
+            , borderColor Colors.yellow
+            , borderWidth (px Constants.borderWidth)
+            , borderStyle solid
+            , marginBottom (px Constants.choiceButtonMargin)
+            , padding (px 0)
+            , displayFlex
+            , alignItems center
+            , justifyContent center
+            ]
          , onClick c.callback
          ] 
          [text c.label]

@@ -18,10 +18,10 @@ choiceButtonMargin : Float
 choiceButtonMargin = 10
 
 choiceButtonLength : Float
-choiceButtonLength = 98
+choiceButtonLength = meterLength
 
 choiceButtonHeight : Float
-choiceButtonHeight = meterHeight * 1.5
+choiceButtonHeight = meterHeight
 
 activeBorderColor : Color
 activeBorderColor = Colors.yellow
