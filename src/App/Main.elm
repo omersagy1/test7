@@ -22,8 +22,7 @@ main =
 
 
 init : Navigation.Location -> (Model, Cmd Message)
-init location = 
-  update (UrlChange location) model
+init location = update (UrlChange location) model
 
 
 model : Model
@@ -72,8 +71,8 @@ update msg model =
 navigateToPage : AppPage -> Model -> (Model, Cmd Message)
 navigateToPage page model =
   case page of
-    Editor -> (model, Navigation.newUrl (pathForPage Game))
-    Game -> (model, Navigation.newUrl (pathForPage Editor))
+    Editor -> (model, Navigation.newUrl (pathForPage Editor))
+    Game -> (model, Navigation.newUrl (pathForPage Game))
 
 
 switchPage : Model -> (Model, Cmd Message)
@@ -91,10 +90,8 @@ handleUrlChange location model =
     page = Maybe.withDefault Editor (pageForPath lastPart)
   in
     case page of
-      Editor -> 
-        initializeGame { model | currentPage = Game }
-      Game -> 
-        initializeEditor { model | currentPage = Editor }
+      Editor -> initializeEditor { model | currentPage = Editor }
+      Game -> initializeGame { model | currentPage = Game }
 
 
 initializeGame : Model -> (Model, Cmd Message)
