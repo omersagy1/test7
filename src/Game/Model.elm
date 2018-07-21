@@ -46,9 +46,6 @@ type alias Model =
   -- All story events that could be Conditioned.
   , story : Story
 
-  -- Whether the game receives update time events.
-  , paused : Bool
-
   -- Whether the game is sped up.
   , fastForward : Bool
 
@@ -57,6 +54,11 @@ type alias Model =
 
   , activeScrollingMessage : Maybe ScrollingMessage
 
+  -- Whether the game receives update time events.
+  , paused : Bool
+
+  -- In 'interaction' mode normal gameplay actions can't
+  -- be taken. Only narration and choices can proceed.
   , interactionMode : Bool
 
   }

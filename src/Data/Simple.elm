@@ -30,7 +30,7 @@ story = begin
   |> effect (ActivateAction "search for wood")
   |> ln "narrating...."
   |> ln "mysterious..."
-  |> interact
+  |> restrict
   |> di "Hello to you!"
   |> di "We're talking together!"
   |> di "one more line..."

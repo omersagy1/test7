@@ -103,6 +103,7 @@ story =
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 1)
   |> body (start
+  |> restrict
   |> ln "The grass seems to stretch on for miles..."
   |> ln "And the stars look false."
   |> choices
@@ -116,12 +117,13 @@ story =
             |> ln "But your eyes see better in silence."
             |> ln "The haze hangs heavily over the surrounding forest."
             |> ln "You return to the fire.")
-      ]))
+      ]
+  |> resume))
 
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 2)
   |> body (start
-  |> interact
+  |> restrict
   |> ln "You find a body lying in the grass."
   |> ln "It's not moving."
   |> ln "The mud-stained dress on its back is speckled with flowers."
@@ -163,7 +165,7 @@ story =
   |> add (topLevel
     |> trigger (milestoneAtCount "did-investigate" 3)
     |> body (start
-    |> interact
+    |> restrict
     |> ln "It's raining..."
     |> ln "The drops sting your body."
     |> ln "You go back inside."
