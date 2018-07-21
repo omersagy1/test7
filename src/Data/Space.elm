@@ -121,6 +121,7 @@ story =
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 2)
   |> body (start
+  |> interact
   |> ln "You find a body lying in the grass."
   |> ln "It's not moving."
   |> ln "The mud-stained dress on its back is speckled with flowers."
@@ -156,11 +157,13 @@ story =
         |> ln "You leave the weeping skull be."
         |> ln "The body fades into the haze..."
         |> ln "But not your memory of its flowery dress.")
-      ]))
+      ]
+  |> resume))
 
   |> add (topLevel
     |> trigger (milestoneAtCount "did-investigate" 3)
     |> body (start
+    |> interact
     |> ln "It's raining..."
     |> ln "The drops sting your body."
     |> ln "You go back inside."
@@ -206,6 +209,7 @@ story =
   |> effect (AddToResource "rats" 1)
   |> di "I tell you I never seen rats on the whole Ark like I seen 'em here."
   |> di "Name's Don."
+  |> resume
   |> di "Mine, not the rat's."
   |> effect (ActivateAction "hunt rats")))
 
