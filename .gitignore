@@ -2,8 +2,6 @@ elm-stuff/
 
 tests/elm-stuff/
 
-compiled/
-
 index.html
 .DS_Store
 src/.DS_Store
