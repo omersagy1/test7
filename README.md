@@ -1,8 +1,11 @@
-to build:
-elm-make src/App/Main.elm --output advtest-210413/www/index.html
+dev server:
+elm-live --pushstate
 
 to test:
 elm-test
 
-dev mode:
-elm-reactor
+build:
+./build.sh
+
+deploy:
+./deploy.sh
