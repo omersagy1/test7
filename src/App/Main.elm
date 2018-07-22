@@ -86,12 +86,13 @@ handleUrlChange : Navigation.Location -> Model -> (Model, Cmd Message)
 handleUrlChange location model = 
   let
     parts = String.split "/" location.pathname
-    lastPart = Maybe.withDefault "" (List.head (List.reverse parts))
-    page = Maybe.withDefault Editor (pageForPath lastPart)
+    page = List.head (List.reverse parts)
+           |> Maybe.andThen pageForPath
   in
     case page of
-      Editor -> initializeEditor { model | currentPage = Editor }
-      Game -> initializeGame { model | currentPage = Game }
+      Nothing -> update (Navigate Editor) model
+      Just Editor -> initializeEditor { model | currentPage = Editor }
+      Just Game -> initializeGame { model | currentPage = Game }
 
 
 initializeGame : Model -> (Model, Cmd Message)
