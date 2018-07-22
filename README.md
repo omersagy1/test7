@@ -2,7 +2,7 @@ to test:
 elm-test
 
 dev server:
-./devserver
+./devserver.sh
 
 build:
 ./build.sh
