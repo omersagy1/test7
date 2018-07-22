@@ -102,8 +102,8 @@ story =
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 1)
   |> body (start
-  |> restrict
   |> ln "The grass seems to stretch on for miles..."
+  |> restrict
   |> ln "And the stars look false."
   |> choices
       [ choice "call out"
