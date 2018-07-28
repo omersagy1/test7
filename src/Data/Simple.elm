@@ -14,7 +14,7 @@ init : GameState
 init = GameState.init 
   |> GameState.initFire (50*Time.second) (20*Time.second)
   |> GameState.addResource (Resource.init "wood" 0)
-  |> GameState.addCustomAction
+  |> GameState.addAction
       (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
         |> Action.effect (Compound2 (AddToResourceRand "wood" 2 4)

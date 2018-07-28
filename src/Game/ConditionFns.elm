@@ -67,12 +67,14 @@ fireExtinguished : ConditionFn
 fireExtinguished s = Fire.isExtinguished s.fire
 
 
-actionPerformed : Action -> ConditionFn
+actionPerformed : Action.Name -> ConditionFn
 actionPerformed a = (\s -> GameState.actionPerformed a s)
+
 
 customActionPerformed : String -> ConditionFn
 customActionPerformed name = 
-  (\s -> GameState.customActionPerformed name s)
+  (\s -> GameState.actionPerformed (Action.UserDefined name) s)
+
 
 milestoneReached : String -> ConditionFn
 milestoneReached name = GameState.milestoneReached name

@@ -6,6 +6,7 @@ import Task
 import Common.Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
+import Game.ActionSet as ActionSet
 import Game.Constants as Constants
 import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
@@ -22,7 +23,7 @@ type Message = TogglePause
                | Restart
                | UpdateTime Time
                | MakeChoice Choice
-               | GameplayMessage Action
+               | GameplayMessage Action.Name
                | StartTime Time
 
 
@@ -58,18 +59,7 @@ update msg model =
     GameplayMessage action -> 
       if Model.gameplayPaused model then model
       else
-        { model | gameState = processUserAction action model.gameState }
-
-
-processUserAction : Action -> GameState -> GameState
-processUserAction msg state =
-  case msg of 
-
-    Action.StokeFire ->
-      GameState.stokeFire state
-    
-    Action.CA customAction ->
-      GameState.performCustomAction customAction state
+        { model | gameState = performAction action model.gameState }
 
 
 updateGame : Time -> Model -> Model
@@ -97,6 +87,24 @@ updateGameTime timePassed m =
     { m | gameState = newState
         , eventQueue = TimedQueue.update timePassed m.eventQueue 
     }
+
+
+performAction : Action.Name -> GameState -> GameState
+performAction n s =
+  let
+    ma = ActionSet.getAction n s.actions
+  in
+    case ma of
+      Nothing -> s
+      Just a ->
+        let
+          (success, s2) = ConditionFns.condition a.condition s
+        in
+          if not ((Action.ready a) && success) then s2
+          else
+            GameState.applyToAction a.name Action.performAction s2
+            |> GameState.applyEffect a.effect
+            |> GameState.addAction a
 
 
 triggerStoryEvents : Model -> Model

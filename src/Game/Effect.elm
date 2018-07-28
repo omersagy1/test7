@@ -11,6 +11,7 @@ type Effect = NoEffect
               | IncrementMilestone String
               | ActivateAction String
               | DeactivateAction String
+              | StokeFire
               | GameOver
               | Compound (List Effect)
               | Compound2 Effect Effect

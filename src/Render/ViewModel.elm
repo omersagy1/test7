@@ -1,6 +1,7 @@
 module Render.ViewModel exposing (..)
 
-import Game.Action exposing (CustomAction)
+import Game.Action exposing (Action)
+import Game.ActionSet
 import Game.Cooldown
 import Game.Fire
 import Game.GameState
@@ -55,23 +56,23 @@ buildFireMeter model =
   { proportion = Game.Fire.strength model.gameState.fire
   , label = "stoke fire"
   , clickable = (Game.GameState.canStokeFire model.gameState) 
-                && not (Game.Model.gameplayPaused model)
+                 && not (Game.Model.gameplayPaused model)
   , callback = Game.Update.GameplayMessage Game.Action.StokeFire
   }
 
 
 buildActionMeters : Model -> List Meter
 buildActionMeters model =
-  List.map (buildActionMeter model) (Game.GameState.activeActions model.gameState)
+  List.map (buildActionMeter model) (Game.ActionSet.activeActions model.gameState.actions)
 
 
-buildActionMeter : Model -> CustomAction -> Meter
+buildActionMeter : Model -> Action -> Meter
 buildActionMeter model action =
   { proportion = Game.Cooldown.currentFraction action.cooldown
-  , label = action.name
+  , label = Game.Action.nameAsString action.name
   , clickable = not (Game.Model.gameplayPaused model) 
-                && (Game.Action.canPerform action)
-  , callback = Game.Update.GameplayMessage (Game.Action.CA action)
+                && (Game.Action.ready action)
+  , callback = Game.Update.GameplayMessage action.name
   }
 
 

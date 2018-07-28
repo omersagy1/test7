@@ -2,64 +2,81 @@ module Game.Action exposing (..)
 
 import Time exposing (Time)
 
+import Game.Condition as Condition exposing (Condition)
 import Game.Cooldown as Cooldown exposing (Cooldown)
 import Game.Effect as Effect exposing (Effect)
 
 
-type Action = StokeFire
-              | CA CustomAction
-
-
--- Custom Actions are defined in the configuraton
--- that defines the game. There is also room for
--- the possibility that they coudl be dynamically
--- created during the running of the game.
-type alias CustomAction =
-  { name : String
+type alias Action =
+  { name : Name
   , active: Bool
   , effect : Effect
   , cooldown : Cooldown
+  , condition : Condition
   }
 
 
-init : String -> CustomAction
+type Name = StokeFire 
+            | UserDefined String
+
+
+init : String -> Action
 init name =
-  { name = name
+  { name = UserDefined name
   , active = False
   , effect = Effect.NoEffect
   , cooldown = Cooldown.new 0
+  , condition = (Condition.Pure Condition.Always)
   }
 
 
-effect : Effect -> CustomAction -> CustomAction
+fireAction : Time -> Action
+fireAction cooldownTime =
+  { name = StokeFire
+  , active = True
+  , effect = Effect.Compound2 Effect.StokeFire 
+                              (Effect.SubtractResource "wood" 1)
+  , cooldown = Cooldown.new cooldownTime
+  , condition = (Condition.Pure (Condition.ResourceAmountAbove "wood" 1))
+  }
+
+
+effect : Effect -> Action -> Action
 effect e a = { a | effect = e }
 
 
-cooldown : Time -> CustomAction -> CustomAction
+cooldown : Time -> Action -> Action
 cooldown t a = { a | cooldown = Cooldown.new t }
 
 
-updateCooldown : Time -> CustomAction -> CustomAction
+updateCooldown : Time -> Action -> Action
 updateCooldown t a =
   if not a.active then a
   else
     { a | cooldown = Cooldown.update t a.cooldown }
 
 
-activate : CustomAction -> CustomAction
+activate : Action -> Action
 activate a = { a | active = True }
 
 
-deactivate : CustomAction -> CustomAction
+deactivate : Action -> Action
 deactivate a = { a | active = False }
 
 
-canPerform : CustomAction -> Bool
-canPerform a = not (Cooldown.isCoolingDown a.cooldown)
+ready : Action -> Bool
+ready a = not (Cooldown.isCoolingDown a.cooldown)
 
 
-performAction : CustomAction -> CustomAction
+performAction : Action -> Action
 performAction a =
-  if not (canPerform a) then a
+  if not (ready a) then a
   else
     { a | cooldown = Cooldown.start a.cooldown }
+
+
+nameAsString : Name -> String
+nameAsString name = 
+  case name of
+    UserDefined n -> n
+    StokeFire -> "stoke fire"

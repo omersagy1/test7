@@ -5,37 +5,19 @@ import Time exposing (Time)
 import Game.Cooldown as Cooldown exposing (Cooldown)
 
 
-type alias Fire = 
-  { strength : Cooldown,
-    stokeCooldown : Cooldown
-  }
+type alias Fire = { strength : Cooldown }
 
 
-init : Time -> Time -> Fire
-init burnTime stokeCooldown = 
-  { strength = Cooldown.new burnTime 
-  , stokeCooldown = Cooldown.new stokeCooldown
-  }
+init : Time -> Fire
+init burnTime = { strength = Cooldown.new burnTime }
 
 
 update : Time -> Fire -> Fire
-update t f =
-  { f | strength = Cooldown.update t f.strength 
-      , stokeCooldown = Cooldown.update t f.stokeCooldown
-  }
-
-
-canStoke : Fire -> Bool
-canStoke f = not (Cooldown.isCoolingDown f.stokeCooldown)
+update t f = { f | strength = Cooldown.update t f.strength }
 
 
 stoke : Fire -> Fire
-stoke f = 
-  if not (canStoke f) then f
-  else
-    { strength = Cooldown.start f.strength 
-    , stokeCooldown = Cooldown.start f.stokeCooldown
-    }
+stoke f = { strength = Cooldown.start f.strength }
 
 
 strength : Fire -> Float

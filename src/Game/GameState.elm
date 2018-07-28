@@ -4,8 +4,8 @@ import Time exposing (Time)
 
 import Common.Annex exposing (..)
 import Common.Randomizer as Randomizer exposing (Randomizer)
-import Game.Action as Action exposing (Action, CustomAction)
-import Game.ActionHistory as ActionHistory exposing (ActionHistory)
+import Game.Action as Action exposing (Action)
+import Game.ActionSet as ActionSet exposing (ActionSet)
 import Game.Effect as Effect exposing (Effect)
 import Game.Milestones as Milestones exposing (Milestones)
 import Game.Resource as Resource exposing (Resource)
@@ -20,9 +20,9 @@ type alias GameState =
   -- List of actions performed since the last update.
   -- Read by Condition to decide whether to Condition a
   -- StoryEvent.
-  , actionHistory : ActionHistory
+  , actionHistory : ActionSet
   , milestones : Milestones
-  , customActions : List CustomAction
+  , actions : ActionSet
   , randomizer : Randomizer
   , gameOver : Bool
   }
@@ -32,10 +32,10 @@ init : GameState
 init =
   { gameTime = 0
   , resources = []
-  , fire = Fire.init 0 0
-  , actionHistory = ActionHistory.newHistory
+  , fire = Fire.init 0
+  , actionHistory = ActionSet.init
   , milestones = Milestones.init
-  , customActions = []
+  , actions = ActionSet.init
   , randomizer = Randomizer.init 0
   , gameOver = False
   }
@@ -63,21 +63,34 @@ addResource r s =
 
 initFire : Time -> Time -> GameState -> GameState
 initFire burnTime stokeCooldown s =
-  { s | fire = Fire.init burnTime stokeCooldown }
+  { s | fire = Fire.init burnTime 
+      , actions = s.actions 
+                  |> ActionSet.addAction (Action.fireAction stokeCooldown)
+  }
+
+
+canStokeFire : GameState -> Bool
+canStokeFire s = 
+  let
+    a = ActionSet.getAction Action.StokeFire s.actions
+  in
+    case a of
+      Nothing -> False
+      Just action -> canPerformAction action s
+
+
+canPerformAction : Action -> GameState -> Bool
+canPerformAction a s = False
 
 
 updateActionCooldowns : Time -> GameState -> GameState
 updateActionCooldowns t s =
-  { s | customActions = List.map (Action.updateCooldown t) s.customActions }
+  { s | actions = ActionSet.map (Action.updateCooldown t) s.actions }
 
 
 activeResources : GameState -> List Resource
 activeResources s =
   List.filter (\r -> r.active) s.resources
-
-activeActions : GameState -> List CustomAction
-activeActions s =
-  List.filter (\a -> a.active) s.customActions
 
 resourceActive : String -> GameState -> Bool
 resourceActive name s =
@@ -105,38 +118,19 @@ resourceAmount name s =
   |> Maybe.withDefault 0
 
 
-canStokeFire : GameState -> Bool
-canStokeFire s =
-  (Fire.canStoke s.fire) && (resourceAmount "wood" s > 0)
-
-
-stokeFire : GameState -> GameState
-stokeFire s =
-  if not (canStokeFire s) then s
-  else
-    { s | fire = Fire.stoke s.fire }
-    |> applyToResource "wood" (Resource.subtract 1)
-    |> addAction Action.StokeFire
-
-
 addAction : Action -> GameState -> GameState
 addAction a s = 
     { s | actionHistory = 
-            ActionHistory.addAction a s.actionHistory}
+            ActionSet.addAction a s.actionHistory}
 
 
-actionPerformed : Action -> GameState -> Bool
-actionPerformed a s = ActionHistory.hasAction a s.actionHistory
-
-
-customActionPerformed : String -> GameState -> Bool
-customActionPerformed name s = 
-  ActionHistory.hasCustomAction name s.actionHistory
+actionPerformed : Action.Name -> GameState -> Bool
+actionPerformed a s = ActionSet.hasActionNamed a s.actionHistory
 
 
 clearActions : GameState -> GameState
 clearActions s = 
-  { s | actionHistory = ActionHistory.clearActions s.actionHistory }
+  { s | actionHistory = ActionSet.clearActions }
 
 
 milestoneReached : String -> GameState -> Bool
@@ -161,26 +155,14 @@ timeSince : String -> GameState -> Maybe Time
 timeSince name s = Milestones.timeSince name s.gameTime s.milestones
 
 
-addCustomAction : CustomAction -> GameState -> GameState
-addCustomAction a s = { s | customActions = a::s.customActions }
+applyToAction : Action.Name -> (Action -> Action) -> GameState -> GameState
+applyToAction n f s =
+  { s | actions = ActionSet.applyToNamed n f s.actions }
 
 
-applyToAction : String -> (CustomAction -> CustomAction) -> GameState -> GameState
-applyToAction name fn s =
-  { s | customActions = List.map (\a -> if a.name == name then
-                                          fn a 
-                                        else a) 
-                             s.customActions
-  }
-
-
-performCustomAction : CustomAction -> GameState -> GameState
-performCustomAction a s =
-  if not (Action.canPerform a) then s
-  else
-    applyToAction a.name Action.performAction s
-    |> (applyEffect a.effect) 
-    |> addAction (Action.CA a)
+applyToNamedAction : String -> (Action -> Action) -> GameState -> GameState
+applyToNamedAction n f s =
+  { s | actions = ActionSet.applyToNamed (Action.UserDefined n) f s.actions }
 
 
 applyEffect : Effect -> GameState -> GameState
@@ -210,10 +192,13 @@ applyEffect e s =
       incrementMilestone name s
 
     Effect.ActivateAction name -> 
-      applyToAction name (Action.activate) s
+      applyToNamedAction name (Action.activate) s
 
     Effect.DeactivateAction name -> 
-      applyToAction name (Action.deactivate) s
+      applyToNamedAction name (Action.deactivate) s
+    
+    Effect.StokeFire ->
+      { s | fire = Fire.stoke s.fire }
     
     Effect.GameOver ->
       gameOver s

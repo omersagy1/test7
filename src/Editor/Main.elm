@@ -3,6 +3,7 @@ module Editor.Main exposing (..)
 import Set
 
 import Common.Annex exposing (concatMaybes)
+import Game.ActionSet as ActionSet
 import Game.Condition exposing (..)
 import Game.Effect exposing (..)
 import Game.GameState exposing (GameState)
@@ -58,7 +59,7 @@ analyze m =
 
 actionsSet : GameState -> List String
 actionsSet state =
-  List.map .name state.customActions
+  ActionSet.names state.actions
   |> List.sort
 
 

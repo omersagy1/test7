@@ -240,18 +240,18 @@ init =
   |> GameState.addResource (Resource.init "rats" 0)
   |> GameState.addResource (Resource.init "gold" 0)
 
-  |> GameState.addCustomAction
+  |> GameState.addAction
       (Action.init "search for wood"
         |> Action.cooldown (30*Time.second)
         |> Action.effect (Compound2 (AddToResourceRand "wood" 2 4)
                                     (IncrementMilestone "wood-searched")))
 
-  |> GameState.addCustomAction
+  |> GameState.addAction
       (Action.init "investigate"
         |> Action.cooldown (40*Time.second)
         |> Action.effect (IncrementMilestone "did-investigate"))
 
-  |> GameState.addCustomAction
+  |> GameState.addAction
       (Action.init "hunt rats"
         |> Action.cooldown (60*Time.second)
         |> Action.effect (Compound2 (AddToResourceRand "rats" 1 2)
