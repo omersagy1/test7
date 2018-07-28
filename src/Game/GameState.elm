@@ -64,8 +64,7 @@ addResource r s =
 initFire : Time -> Time -> GameState -> GameState
 initFire burnTime stokeCooldown s =
   { s | fire = Fire.init burnTime 
-      , actions = s.actions 
-                  |> ActionSet.addAction (Action.fireAction stokeCooldown)
+      , actions = ActionSet.addAction (Action.fireAction stokeCooldown) s.actions
   }
 
 
@@ -119,9 +118,7 @@ resourceAmount name s =
 
 
 addAction : Action -> GameState -> GameState
-addAction a s = 
-    { s | actionHistory = 
-            ActionSet.addAction a s.actionHistory}
+addAction a s = { s | actions = ActionSet.addAction a s.actions}
 
 
 actionPerformed : Action.Name -> GameState -> Bool
@@ -129,8 +126,7 @@ actionPerformed a s = ActionSet.hasActionNamed a s.actionHistory
 
 
 clearActions : GameState -> GameState
-clearActions s = 
-  { s | actionHistory = ActionSet.clearActions }
+clearActions s = { s | actions = ActionSet.clearActions }
 
 
 milestoneReached : String -> GameState -> Bool
