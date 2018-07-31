@@ -125,8 +125,8 @@ restart paused =
     { fresh | paused = paused }
 
 
-clearActions : Model -> Model
-clearActions m = { m | gameState = GameState.clearActions m.gameState }
+clearActionHistory : Model -> Model
+clearActionHistory m = { m | gameState = GameState.clearActionHistory m.gameState }
 
 
 displayChoices : List Choice -> Model -> Model

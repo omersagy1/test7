@@ -76,7 +76,7 @@ updateGame t m =
     |> Printer.update timePassed
     |> triggerStoryEvents
     |> (if not (Printer.isPrinting m) then processEventQueue else identity)
-    |> Model.clearActions 
+    |> Model.clearActionHistory 
 
 
 updateGameTime : Time -> Model -> Model
@@ -105,7 +105,7 @@ performAction n s =
           else
             GameState.applyToAction a.name Action.performAction s2
             |> GameState.applyEffect a.effect
-            |> GameState.addAction a
+            |> GameState.addActionToHistory a
 
 
 triggerStoryEvents : Model -> Model

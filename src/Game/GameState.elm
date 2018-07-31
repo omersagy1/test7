@@ -1,5 +1,6 @@
 module Game.GameState exposing(..)
 
+import Debug
 import Time exposing (Time)
 
 import Common.Annex exposing (..)
@@ -126,8 +127,12 @@ actionPerformed : ActionName.Name -> GameState -> Bool
 actionPerformed a s = ActionSet.hasActionNamed a s.actionHistory
 
 
-clearActions : GameState -> GameState
-clearActions s = { s | actions = ActionSet.clearActions }
+addActionToHistory : Action -> GameState -> GameState
+addActionToHistory a s = { s | actionHistory = ActionSet.addAction a s.actionHistory }
+
+
+clearActionHistory : GameState -> GameState
+clearActionHistory s = { s | actionHistory = ActionSet.clearActions }
 
 
 milestoneReached : String -> GameState -> Bool
@@ -184,7 +189,9 @@ applyEffect e s =
       incrementMilestone name s
 
     Effect.ActivateAction name -> 
-      applyToAction name (Action.activate) s
+      let x = Debug.log "ACTIVATING ACTION" name
+          y = Debug.log "ACTIONS" s.actions 
+      in (applyToAction name (Action.activate) s)
 
     Effect.DeactivateAction name -> 
       applyToAction name (Action.deactivate) s
