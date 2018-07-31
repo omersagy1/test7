@@ -27,7 +27,7 @@ story = begin
   |> name "first"
   |> trigger (gameTimePassed (0*Time.second))
   |> body (start
-  |> effect (ActivateAction "search for wood")
+  |> effect (ActivateAction (ud "search for wood"))
   |> ln "narrating...."
   |> ln "mysterious..."
   |> restrict

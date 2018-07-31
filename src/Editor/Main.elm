@@ -3,6 +3,7 @@ module Editor.Main exposing (..)
 import Set
 
 import Common.Annex exposing (concatMaybes)
+import Game.Action as Action
 import Game.ActionName as ActionName
 import Game.ActionSet as ActionSet
 import Game.Condition exposing (..)
@@ -107,8 +108,8 @@ actionsReferencedInCondition cond =
 actionsReferencedInEffect : Effect -> List String
 actionsReferencedInEffect effect =
   case effect of
-    ActivateAction a -> [a]
-    DeactivateAction a -> [a]
+    ActivateAction a -> [Action.nameAsString a]
+    DeactivateAction a -> [Action.nameAsString a]
     Compound2 e1 e2 -> (actionsReferencedInEffect e1) ++ (actionsReferencedInEffect e2)
     Compound effects -> List.map actionsReferencedInEffect effects |> List.concat 
     other -> []

@@ -1,5 +1,6 @@
 module Parser.Build exposing (..)
 
+import Game.ActionName as ActionName
 import Game.Condition as Condition exposing (Condition)
 import Game.Effect exposing (Effect)
 import Game.StoryEvent exposing (..)
@@ -97,3 +98,9 @@ trigger t (TopLevel p) = TopLevel { p | trigger = t }
 
 body : StoryEvent -> TopLevelEvent -> TopLevelEvent
 body e (TopLevel p) = TopLevel { p | event = e }
+
+
+-- EFFECT BUILDERS
+
+ud : String -> ActionName.Name
+ud x = ActionName.UserDefined x

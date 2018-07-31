@@ -157,11 +157,6 @@ applyToAction n f s =
   { s | actions = ActionSet.applyToNamed n f s.actions }
 
 
-applyToNamedAction : String -> (Action -> Action) -> GameState -> GameState
-applyToNamedAction n f s =
-  { s | actions = ActionSet.applyToNamed (ActionName.UserDefined n) f s.actions }
-
-
 applyEffect : Effect -> GameState -> GameState
 applyEffect e s =
   case e of
@@ -189,10 +184,10 @@ applyEffect e s =
       incrementMilestone name s
 
     Effect.ActivateAction name -> 
-      applyToNamedAction name (Action.activate) s
+      applyToAction name (Action.activate) s
 
     Effect.DeactivateAction name -> 
-      applyToNamedAction name (Action.deactivate) s
+      applyToAction name (Action.deactivate) s
     
     Effect.StokeFire ->
       { s | fire = Fire.stoke s.fire }

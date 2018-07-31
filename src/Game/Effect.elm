@@ -1,5 +1,7 @@
 module Game.Effect exposing (..)
 
+import Game.ActionName as ActionName
+
 
 type Effect = NoEffect
               | ActivateResource String
@@ -9,8 +11,8 @@ type Effect = NoEffect
               | SetResourceAmount String Int
               | SetMilestoneReached String
               | IncrementMilestone String
-              | ActivateAction String
-              | DeactivateAction String
+              | ActivateAction ActionName.Name
+              | DeactivateAction ActionName.Name
               | StokeFire
               | GameOver
               | Compound (List Effect)
