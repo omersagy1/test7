@@ -35,7 +35,7 @@ story =
       ]
   |> ln "..."
   |> ln "The cold is unbearable."
-  |> effect (ActivateAction "search for wood")))
+  |> effect (ActivateAction (ud "search for wood"))))
 
   |> add (topLevel
   |> trigger (and (actionPerformed "search for wood")
@@ -97,7 +97,7 @@ story =
   |> body (start
   |> ln "..."
   |> ln "There is something artificial about this place."
-  |> effect (ActivateAction "investigate")))
+  |> effect (ActivateAction (ud "investigate"))))
 
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 1)
@@ -212,7 +212,7 @@ story =
   |> di "Name's Don."
   |> resume
   |> di "Mine, not the rat's."
-  |> effect (ActivateAction "hunt rats")))
+  |> effect (ActivateAction (ud "hunt rats"))))
 
   |> add (topLevel
   |> trigger (milestoneAtCount "rats-hunted" 1)
