@@ -47,13 +47,13 @@ size timedQueue = (Queue.size timedQueue.queue)
 nextDelay : TimedQueue a -> Maybe Time
 nextDelay timedQueue =
   Queue.peek timedQueue.queue 
-    |> maybeChain .delay
+  |> Maybe.map .delay
 
 canDequeue : TimedQueue a -> Bool
 canDequeue timedQueue =
   nextDelay timedQueue
-    |> maybeChain ((>=) timedQueue.currentTime)
-    |> (==) (Just True)
+  |> Maybe.map ((>=) timedQueue.currentTime)
+  |> (==) (Just True)
 
 dequeue : TimedQueue a -> (Maybe a, TimedQueue a)
 dequeue timedQueue =
@@ -61,7 +61,7 @@ dequeue timedQueue =
     let 
       (entry, q) = (Queue.dequeue timedQueue.queue)
     in
-      (entry |> maybeChain .item, { timedQueue | queue = q 
-                                               , currentTime = 0 })
+      (entry |> Maybe.map .item, 
+       { timedQueue | queue = q , currentTime = 0 })
   else
     (Nothing, timedQueue)

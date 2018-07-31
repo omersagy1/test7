@@ -232,7 +232,8 @@ playAtomicEvent e model =
 
     Goto ref ->
       (maybePerform playStoryEvent) 
-        (Story.getEventByName ref model.story |> maybeChain StoryEvent.getEvent)
+        (Story.getEventByName ref model.story 
+         |> Maybe.map StoryEvent.getEvent)
     
     StartInteraction ->
       (\model -> { model | interactionMode = True })

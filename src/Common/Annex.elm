@@ -21,17 +21,6 @@ rangeToZero initial len =
     List.map (\x -> initial - step * toFloat(x)) (List.range 0 (len - 1))
 
 
--- Given a function guarateed to produce a value
--- and an argument that might exist, produce a
--- result that might exist.
-maybeChain : (a -> b) -> Maybe a -> Maybe b
-maybeChain callback maybe =
-  case maybe of
-    Nothing -> Nothing
-    Just value ->
-      Just (callback value)
-
-
 ignoreResult : (s -> (a, s)) -> (s -> s)
 ignoreResult f = (\x -> (f x) |> Tuple.second)
 

@@ -101,7 +101,7 @@ applyToResource name fn s =
 resourceAmount : String -> GameState -> Int
 resourceAmount name s =
   getResourceNamed name s
-  |> maybeChain .amount
+  |> Maybe.map .amount
   |> Maybe.withDefault 0
 
 

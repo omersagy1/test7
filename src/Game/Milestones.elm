@@ -43,8 +43,8 @@ newMilestone name timeReached =
 timeSince : String -> Time -> Milestones -> Maybe Time
 timeSince name currentTime milestones =
   Dict.get name milestones
-  |> maybeChain .timeReached
-  |> maybeChain (\t -> currentTime - t)
+  |> Maybe.map .timeReached
+  |> Maybe.map (\t -> currentTime - t)
 
 
 increment : String -> Time -> Milestones -> Milestones
@@ -59,5 +59,5 @@ increment name time milestones =
 counter : String -> Milestones -> Int
 counter name milestones =
   Dict.get name milestones 
-  |> maybeChain .counter
+  |> Maybe.map .counter
   |> Maybe.withDefault 0
