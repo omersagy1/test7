@@ -9,6 +9,7 @@ import Game.Resource as Resource
 import Game.Story exposing (..)
 import Parser.Build exposing (..)
 import Parser.Condition exposing (..)
+import Parser.Effect exposing (..)
 
 
 story : Story
@@ -35,7 +36,7 @@ story =
       ]
   |> ln "..."
   |> ln "The cold is unbearable."
-  |> effect (ActivateAction (ud "search for wood"))))
+  |> effect (activateAction "search for wood")))
 
   |> add (topLevel
   |> trigger (and (actionPerformed "search for wood")
@@ -97,7 +98,7 @@ story =
   |> body (start
   |> ln "..."
   |> ln "There is something artificial about this place."
-  |> effect (ActivateAction (ud "investigate"))))
+  |> effect (activateAction "investigate")))
 
   |> add (topLevel
   |> trigger (milestoneAtCount "did-investigate" 1)
@@ -212,7 +213,7 @@ story =
   |> di "Name's Don."
   |> resume
   |> di "Mine, not the rat's."
-  |> effect (ActivateAction (ud "hunt rats"))))
+  |> effect (activateAction "hunt rats")))
 
   |> add (topLevel
   |> trigger (milestoneAtCount "rats-hunted" 1)

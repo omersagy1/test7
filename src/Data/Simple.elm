@@ -9,6 +9,7 @@ import Game.Resource as Resource
 import Game.Story exposing (..)
 import Parser.Build exposing (..)
 import Parser.Condition exposing (..)
+import Parser.Effect exposing (..)
 
 init : GameState
 init = GameState.init 
@@ -27,7 +28,7 @@ story = begin
   |> name "first"
   |> trigger (gameTimePassed (0*Time.second))
   |> body (start
-  |> effect (ActivateAction (ud "search for wood"))
+  |> effect (activateAction "search for wood")
   |> ln "narrating...."
   |> ln "mysterious..."
   |> restrict

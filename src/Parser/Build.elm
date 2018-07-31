@@ -98,9 +98,3 @@ trigger t (TopLevel p) = TopLevel { p | trigger = t }
 
 body : StoryEvent -> TopLevelEvent -> TopLevelEvent
 body e (TopLevel p) = TopLevel { p | event = e }
-
-
--- EFFECT BUILDERS
-
-ud : String -> ActionName.Name
-ud x = ActionName.UserDefined x
