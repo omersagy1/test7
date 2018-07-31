@@ -4,6 +4,7 @@ import Dict exposing (Dict)
 import Time exposing (Time)
 
 import Game.Action as Action exposing (Action)
+import Game.ActionName as ActionName exposing (Name)
 
 
 type alias ActionSet = Dict String Action
@@ -25,11 +26,11 @@ hasAction : Action -> ActionSet -> Bool
 hasAction a s = hasActionNamed a.name s
 
 
-hasActionNamed : Action.Name -> ActionSet -> Bool
+hasActionNamed : Name -> ActionSet -> Bool
 hasActionNamed n s = Dict.member (key n) s
 
 
-getAction : Action.Name -> ActionSet -> Maybe Action
+getAction : Name -> ActionSet -> Maybe Action
 getAction n = Dict.get (key n)
 
 
@@ -46,11 +47,15 @@ map : (Action -> Action) -> ActionSet -> ActionSet
 map f s = Dict.map (\_ -> f) s
 
 
-applyIfNamed : Action.Name -> (Action -> Action) -> Action -> Action
+filter : (Action -> Bool) -> ActionSet -> ActionSet
+filter pred s = Dict.filter (\_ -> pred) s
+
+
+applyIfNamed : Name -> (Action -> Action) -> Action -> Action
 applyIfNamed name f a = if name == a.name then f a else a
 
 
-applyToNamed : Action.Name -> (Action -> Action) -> ActionSet -> ActionSet
+applyToNamed : Name -> (Action -> Action) -> ActionSet -> ActionSet
 applyToNamed name f s = map (applyIfNamed name f) s
 
 
@@ -58,5 +63,14 @@ names : ActionSet -> List String
 names s = Dict.keys s
 
 
-key : Action.Name -> String
+-- user-defined names only.
+userDefinedNames : ActionSet -> List String
+userDefinedNames s = filter (\a -> case a.name of 
+                                    ActionName.UserDefined x -> True
+                                    other -> False)
+                            s
+                     |> names
+
+
+key : Name -> String
 key n = Action.nameAsString n

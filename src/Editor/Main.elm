@@ -3,6 +3,7 @@ module Editor.Main exposing (..)
 import Set
 
 import Common.Annex exposing (concatMaybes)
+import Game.ActionName as ActionName
 import Game.ActionSet as ActionSet
 import Game.Condition exposing (..)
 import Game.Effect exposing (..)
@@ -59,7 +60,7 @@ analyze m =
 
 actionsSet : GameState -> List String
 actionsSet state =
-  ActionSet.names state.actions
+  ActionSet.userDefinedNames state.actions
   |> List.sort
 
 
@@ -96,7 +97,9 @@ actionsReferencedInCondition cond =
     Or c1 c2 -> 
       (actionsReferencedInCondition c1) ++ (actionsReferencedInCondition c2)
     Pure (ActionPerformed name) -> 
-      [name]
+      case name of
+        ActionName.UserDefined s -> [s]
+        other -> []
     other -> 
       []
 

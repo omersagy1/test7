@@ -6,6 +6,7 @@ import Task
 import Common.Annex exposing (..)
 import Queue.TimedQueue as TimedQueue
 import Game.Action as Action exposing (Action)
+import Game.ActionName as ActionName
 import Game.ActionSet as ActionSet
 import Game.Constants as Constants
 import Game.Condition as Condition exposing (Condition)
@@ -23,7 +24,7 @@ type Message = TogglePause
                | Restart
                | UpdateTime Time
                | MakeChoice Choice
-               | GameplayMessage Action.Name
+               | GameplayMessage ActionName.Name
                | StartTime Time
 
 
@@ -89,7 +90,7 @@ updateGameTime timePassed m =
     }
 
 
-performAction : Action.Name -> GameState -> GameState
+performAction : ActionName.Name -> GameState -> GameState
 performAction n s =
   let
     ma = ActionSet.getAction n s.actions

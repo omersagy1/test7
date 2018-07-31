@@ -2,6 +2,8 @@ module Game.Condition exposing (..)
 
 import Time exposing (Time)
 
+import Game.ActionName as ActionName
+
 
 type Condition = Pure PureCondition
                  | Chance Float
@@ -16,7 +18,7 @@ type PureCondition = GameTimePassed Time
                      | ResourceActive String
                      | FireExtinguished
                      | FireStoked
-                     | ActionPerformed String
+                     | ActionPerformed ActionName.Name
                      | MilestoneReached String
                      | TimeSinceMilestone String Time
                      | MilestoneAtCount String Int

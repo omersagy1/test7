@@ -1,6 +1,7 @@
 module Render.ViewModel exposing (..)
 
 import Game.Action exposing (Action)
+import Game.ActionName
 import Game.ActionSet
 import Game.Cooldown
 import Game.Fire
@@ -57,7 +58,7 @@ buildFireMeter model =
   , label = "stoke fire"
   , clickable = (Game.GameState.canStokeFire model.gameState) 
                  && not (Game.Model.gameplayPaused model)
-  , callback = Game.Update.GameplayMessage Game.Action.StokeFire
+  , callback = Game.Update.GameplayMessage Game.ActionName.StokeFire
   }
 
 

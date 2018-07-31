@@ -5,6 +5,7 @@ import Time exposing (Time)
 import Common.Annex exposing (..)
 import Common.Randomizer as Randomizer exposing (Randomizer)
 import Game.Action as Action exposing (Action)
+import Game.ActionName as ActionName
 import Game.ActionSet as ActionSet exposing (ActionSet)
 import Game.Effect as Effect exposing (Effect)
 import Game.Milestones as Milestones exposing (Milestones)
@@ -71,7 +72,7 @@ initFire burnTime stokeCooldown s =
 canStokeFire : GameState -> Bool
 canStokeFire s = 
   let
-    a = ActionSet.getAction Action.StokeFire s.actions
+    a = ActionSet.getAction ActionName.StokeFire s.actions
   in
     case a of
       Nothing -> False
@@ -121,7 +122,7 @@ addAction : Action -> GameState -> GameState
 addAction a s = { s | actions = ActionSet.addAction a s.actions}
 
 
-actionPerformed : Action.Name -> GameState -> Bool
+actionPerformed : ActionName.Name -> GameState -> Bool
 actionPerformed a s = ActionSet.hasActionNamed a s.actionHistory
 
 
@@ -151,14 +152,14 @@ timeSince : String -> GameState -> Maybe Time
 timeSince name s = Milestones.timeSince name s.gameTime s.milestones
 
 
-applyToAction : Action.Name -> (Action -> Action) -> GameState -> GameState
+applyToAction : ActionName.Name -> (Action -> Action) -> GameState -> GameState
 applyToAction n f s =
   { s | actions = ActionSet.applyToNamed n f s.actions }
 
 
 applyToNamedAction : String -> (Action -> Action) -> GameState -> GameState
 applyToNamedAction n f s =
-  { s | actions = ActionSet.applyToNamed (Action.UserDefined n) f s.actions }
+  { s | actions = ActionSet.applyToNamed (ActionName.UserDefined n) f s.actions }
 
 
 applyEffect : Effect -> GameState -> GameState

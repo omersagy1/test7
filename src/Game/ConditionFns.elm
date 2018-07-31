@@ -4,7 +4,7 @@ import Time exposing (Time)
 
 import Common.Annex exposing (..)
 import Common.Randomizer as Randomizer exposing (Randomizer)
-import Game.Action as Action exposing (Action)
+import Game.ActionName as ActionName
 import Game.Condition exposing (..)
 import Game.Fire as Fire
 import Game.GameState as GameState exposing (GameState)
@@ -35,7 +35,7 @@ pure c s =
     ResourceAmountAbove name val -> resourceAbove name val s
     ResourceActive name -> resourceActive name s
     FireExtinguished -> fireExtinguished s
-    FireStoked -> actionPerformed Action.StokeFire s
+    FireStoked -> actionPerformed ActionName.StokeFire s
     ActionPerformed action -> customActionPerformed action s
     MilestoneReached name -> milestoneReached name s
     TimeSinceMilestone name t -> timePassedSince name t s
@@ -67,13 +67,13 @@ fireExtinguished : ConditionFn
 fireExtinguished s = Fire.isExtinguished s.fire
 
 
-actionPerformed : Action.Name -> ConditionFn
+actionPerformed : ActionName.Name -> ConditionFn
 actionPerformed a = (\s -> GameState.actionPerformed a s)
 
 
-customActionPerformed : String -> ConditionFn
+customActionPerformed : ActionName.Name -> ConditionFn
 customActionPerformed name = 
-  (\s -> GameState.actionPerformed (Action.UserDefined name) s)
+  (\s -> GameState.actionPerformed name s)
 
 
 milestoneReached : String -> ConditionFn

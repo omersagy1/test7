@@ -2,6 +2,7 @@ module Game.Action exposing (..)
 
 import Time exposing (Time)
 
+import Game.ActionName exposing (..)
 import Game.Condition as Condition exposing (Condition)
 import Game.Cooldown as Cooldown exposing (Cooldown)
 import Game.Effect as Effect exposing (Effect)
@@ -14,10 +15,6 @@ type alias Action =
   , cooldown : Cooldown
   , condition : Condition
   }
-
-
-type Name = StokeFire 
-            | UserDefined String
 
 
 init : String -> Action

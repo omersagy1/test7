@@ -1,6 +1,7 @@
 module Parser.Condition exposing (..)
 
 import Common.Annex exposing (..)
+import Game.ActionName as ActionName exposing (..)
 import Game.Condition as Condition exposing (..)
 
 
@@ -15,7 +16,7 @@ resourceAmountAbove = ResourceAmountAbove >>> Pure
 resourceActive = ResourceActive >> Pure
 fireExtinguished = FireExtinguished |> Pure
 fireStoked = FireStoked |> Pure
-actionPerformed = ActionPerformed >> Pure
+actionPerformed = UserDefined >> ActionPerformed >> Pure
 milestoneReached = MilestoneReached >> Pure
 timeSinceMilestone = TimeSinceMilestone >>> Pure
 milestoneAtCount = MilestoneAtCount >>> Pure
