@@ -70,20 +70,6 @@ initFire burnTime stokeCooldown s =
   }
 
 
-canStokeFire : GameState -> Bool
-canStokeFire s = 
-  let
-    a = ActionSet.getAction ActionName.StokeFire s.actions
-  in
-    case a of
-      Nothing -> False
-      Just action -> canPerformAction action s
-
-
-canPerformAction : Action -> GameState -> Bool
-canPerformAction a s = False
-
-
 updateActionCooldowns : Time -> GameState -> GameState
 updateActionCooldowns t s =
   { s | actions = ActionSet.map (Action.updateCooldown t) s.actions }

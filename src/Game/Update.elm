@@ -92,20 +92,28 @@ updateGameTime timePassed m =
 
 performAction : ActionName.Name -> GameState -> GameState
 performAction n s =
+  if not (canPerformAction n s) then s
+  else
+    let
+      ma = ActionSet.getAction n s.actions
+    in
+      case ma of
+        Nothing -> s
+        Just a ->
+          GameState.applyToAction a.name Action.performAction s
+          |> GameState.applyEffect a.effect
+          |> GameState.addActionToHistory a
+
+
+canPerformAction : ActionName.Name -> GameState -> Bool
+canPerformAction n s =
   let
-    ma = ActionSet.getAction n s.actions
+    action = ActionSet.getAction n s.actions
   in
-    case ma of
-      Nothing -> s
+    case action of
+      Nothing -> False
       Just a ->
-        let
-          (success, s2) = ConditionFns.condition a.condition s
-        in
-          if not ((Action.ready a) && success) then s2
-          else
-            GameState.applyToAction a.name Action.performAction s2
-            |> GameState.applyEffect a.effect
-            |> GameState.addActionToHistory a
+        (Action.ready a) && (ConditionFns.pure a.condition s)
 
 
 triggerStoryEvents : Model -> Model

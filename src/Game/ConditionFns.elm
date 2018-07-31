@@ -1,4 +1,4 @@
-module Game.ConditionFns exposing (condition)
+module Game.ConditionFns exposing (condition, pure)
 
 import Time exposing (Time)
 

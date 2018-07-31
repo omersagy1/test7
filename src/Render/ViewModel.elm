@@ -56,7 +56,7 @@ buildFireMeter : Model -> Meter
 buildFireMeter model =
   { proportion = Game.Fire.strength model.gameState.fire
   , label = "stoke fire"
-  , clickable = (Game.GameState.canStokeFire model.gameState) 
+  , clickable = (Game.Update.canPerformAction Game.ActionName.StokeFire model.gameState) 
                  && not (Game.Model.gameplayPaused model)
   , callback = Game.Update.GameplayMessage Game.ActionName.StokeFire
   }
@@ -64,7 +64,9 @@ buildFireMeter model =
 
 buildActionMeters : Model -> List Meter
 buildActionMeters model =
-  List.map (buildActionMeter model) (Game.ActionSet.activeActions model.gameState.actions)
+  List.filter (\a -> a.name /= Game.ActionName.StokeFire) 
+              (Game.ActionSet.activeActions model.gameState.actions)
+  |> List.map (buildActionMeter model) 
 
 
 buildActionMeter : Model -> Action -> Meter
