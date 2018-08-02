@@ -14,13 +14,6 @@ import Game.StoryEvent as StoryEvent exposing (..)
 import Game.UpdateTime as UpdateTime
 
 
-command : Message -> Cmd Message
-command msg =
-  case msg of
-    Restart -> Task.perform StartTime Time.now
-    other -> Cmd.none
-
-
 update : Message -> Model -> Model
 update msg model =
   case msg of
@@ -47,6 +40,13 @@ update msg model =
       if Model.gameplayPaused model then model
       else
         { model | gameState = performAction action model.gameState }
+
+
+command : Message -> Cmd Message
+command msg =
+  case msg of
+    Restart -> Task.perform StartTime Time.now
+    other -> Cmd.none
 
 
 makeChoice : Choice -> Model -> Model
