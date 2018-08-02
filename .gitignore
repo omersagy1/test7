@@ -3,6 +3,7 @@ elm-stuff/
 tests/elm-stuff/
 
 index.html
+main.js
 .DS_Store
 src/.DS_Store
 

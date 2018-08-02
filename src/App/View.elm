@@ -1,7 +1,6 @@
 module App.View exposing (view)
 
 import Css exposing (..)
-import Css.Foreign
 import Html.Styled exposing (Html, button, div, text, input, styled)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (style, value, css)
@@ -28,23 +27,9 @@ view model =
       , fontFamily serif
       ] 
       [] 
-      [ globalStyle
-      , navBar model 
+      [ navBar model 
       , mainPage 
       ]
-
-
-globalStyle : Html a
-globalStyle =
-  Css.Foreign.global
-    [ Css.Foreign.selector "html"
-      [ height (pct 100) 
-      ]
-    , Css.Foreign.selector "body"
-      [ height (pct 100) 
-      , margin (px 0)
-      ]
-    ]
 
 
 navBar : Model -> Html Message
