@@ -6,6 +6,7 @@ import Time
 import App.Model exposing (..)
 import App.View
 import Editor.Main
+import Game.Message
 import Game.Model
 import Game.Update
 import Game.Subs
@@ -96,7 +97,7 @@ handleUrlChange location model =
 
 
 initializeGame : Model -> (Model, Cmd Message)
-initializeGame m = (m, Task.perform (GameMessage << Game.Update.StartTime) Time.now)
+initializeGame m = (m, Task.perform (GameMessage << Game.Message.StartTime) Time.now)
 
 
 initializeEditor : Model -> (Model, Cmd Message)

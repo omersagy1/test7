@@ -12,20 +12,11 @@ import Game.Constants as Constants
 import Game.Condition as Condition exposing (Condition)
 import Game.ConditionFns as ConditionFns
 import Game.GameState as GameState exposing (GameState)
+import Game.Message exposing (..)
 import Game.Model as Model exposing (Model)
 import Game.Printer as Printer
 import Game.Story as Story
 import Game.StoryEvent as StoryEvent exposing (..)
-
-
--- Messages to control the running of the game
-type Message = TogglePause
-               | ToggleFastForward
-               | Restart
-               | UpdateTime Time
-               | MakeChoice Choice
-               | GameplayMessage ActionName.Name
-               | StartTime Time
 
 
 command : Message -> Cmd Message

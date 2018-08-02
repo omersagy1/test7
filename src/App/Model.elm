@@ -4,7 +4,8 @@ import Navigation
 
 import Editor.Main
 import Game.Model
-import Game.Update
+import Game.Message
+
 
 type alias Model = 
   { currentPage : AppPage
@@ -18,7 +19,7 @@ type AppPage = Editor
 -- MESSAGES
 
 type Message = EditorMessage Editor.Main.Message
-               | GameMessage Game.Update.Message
+               | GameMessage Game.Message.Message
                | SwitchPage
                | Navigate AppPage
                | UrlChange Navigation.Location

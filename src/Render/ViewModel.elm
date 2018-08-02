@@ -10,7 +10,8 @@ import Game.Model exposing (Model)
 import Game.Printer
 import Game.Resource exposing (Resource)
 import Game.StoryEvent exposing (Choice)
-import Game.Update exposing (Message)
+import Game.Update
+import Game.Message exposing (Message)
 
 
 type alias ViewModel =
@@ -58,7 +59,7 @@ buildFireMeter model =
   , label = "stoke fire"
   , clickable = (Game.Update.canPerformAction Game.ActionName.StokeFire model.gameState) 
                  && not (Game.Model.gameplayPaused model)
-  , callback = Game.Update.GameplayMessage Game.ActionName.StokeFire
+  , callback = Game.Message.GameplayMessage Game.ActionName.StokeFire
   }
 
 
@@ -75,7 +76,7 @@ buildActionMeter model action =
   , label = Game.Action.nameAsString action.name
   , clickable = not (Game.Model.gameplayPaused model) 
                 && (Game.Action.ready action)
-  , callback = Game.Update.GameplayMessage action.name
+  , callback = Game.Message.GameplayMessage action.name
   }
 
 
@@ -87,7 +88,7 @@ buildChoiceButtons model =
 buildChoiceButton : Choice -> ChoiceButton
 buildChoiceButton choice =
   { label = choice.prompt
-  , callback = Game.Update.MakeChoice choice
+  , callback = Game.Message.MakeChoice choice
   }
 
 

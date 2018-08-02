@@ -6,7 +6,7 @@ import Html.Styled exposing (Html, button, div, text, input)
 import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
-import Game.Update exposing (Message)
+import Game.Message exposing (Message)
 import Render.Constants as Constants
 import Render.ViewModel exposing (ChoiceButton)
 

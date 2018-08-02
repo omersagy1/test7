@@ -9,7 +9,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Common.Annex exposing(..)
 
 import Game.Model exposing (Model)
-import Game.Update exposing (Message)
+import Game.Message exposing (Message)
 
 import Render.Constants as Constants
 import Render.Choice as Choice

@@ -5,7 +5,7 @@ import Html.Styled.Attributes exposing (style, value, css)
 import Html.Styled.Events exposing (onClick, onInput)
 
 import Css exposing (..)
-import Game.Update exposing (Message)
+import Game.Message exposing (Message)
 import Game.Model exposing (Model)
 
 
@@ -22,14 +22,14 @@ togglePauseButton paused =
     buttonText = if paused then "PLAY" else "PAUSE"
   in
     button [ css [ margin (px 5) ]
-           , onClick Game.Update.TogglePause]
+           , onClick Game.Message.TogglePause]
            [text buttonText]
 
 
 restartButton : Html Message
 restartButton = 
   button [ css [ margin (px 5) ]
-         , onClick Game.Update.Restart]
+         , onClick Game.Message.Restart]
          [text "RESTART"]
 
 
@@ -39,6 +39,6 @@ toggleFastForwardButton fastForward =
     buttonText = if fastForward then "RESTORE SPEED" else "SPEED UP"
   in
     button [ css [ margin (px 5)]
-           , onClick Game.Update.ToggleFastForward
+           , onClick Game.Message.ToggleFastForward
            ]
            [text buttonText]
